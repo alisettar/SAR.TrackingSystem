@@ -8,6 +8,15 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SAR.TrackingSystem.Infrastructure\SAR.TrackingSystem.Infrastructure.csproj" />
+    <ProjectReference Include="..\SAR.TrackingSystem.Domain\SAR.TrackingSystem.Domain.csproj" />
   </ItemGroup>
 
 </Project>
