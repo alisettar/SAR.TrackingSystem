@@ -4,25 +4,65 @@ namespace SAR.TrackingSystem.UnitTests.Factories;
 
 public static class VolunteerMockFactory
 {
+    private static readonly string[] FirstNames =
+    [
+        "Ahmet", "Mehmet", "Mustafa", "Ali", "Hasan", "Hüseyin", "İbrahim", "İsmail", "Ömer", "Osman",
+        "Fatma", "Ayşe", "Emine", "Hatice", "Zeynep", "Elif", "Meryem", "Khadija", "Zümra", "Sümeyye",
+        "Burak", "Emre", "Murat", "Serkan", "Tolga", "Kemal", "Selim", "Taner", "Yasin", "Yusuf",
+        "Seda", "Gül", "Cansu", "Burcu", "Pınar", "Şebnem", "Nilgün", "Sevgi", "Dilek", "Fulya"
+    ];
+
+    private static readonly string[] LastNames = 
+    [
+        "Yılmaz", "Kaya", "Demir", "Çelik", "Şahin", "Yıldız", "Yıldırım", "Öztürk", "Aydın", "Özdemir",
+        "Arslan", "Doğan", "Kılıç", "Aslan", "Çetin", "Kara", "Koç", "Kurt", "Özkan", "Şimşek",
+        "Erdoğan", "Ünal", "Keskin", "Başar", "Taş", "Polat", "Gül", "Karaca", "Güner", "Özer"
+    ];
+
+    private static readonly string[] BloodTypes = { "A+", "A-", "B+", "B-", "AB+", "AB-", "0+", "0-" };
+    
+    private static readonly Random Random = new();
+
     public static List<Volunteer> GetSampleVolunteers(List<Team> teams)
     {
-        var teamA = teams.First(t => t.Code == "A");
-        var teamB = teams.First(t => t.Code == "B");
-        var medikal = teams.First(t => t.Code == "MEDIKAL");
-
-        return
-        [
-            Volunteer.Create(12345678901, "Ahmet Yılmaz", teamA.Id, "A+", "05551234567", "Emergency1", "05559999991", "Ali", "Veli"),
-            Volunteer.Create(12345678902, "Mehmet Öz", teamA.Id, "0+", "05551234568", "Emergency2", "05559999992", "Can", "Cem"),
-            Volunteer.Create(12345678903, "Fatma Kaya", teamB.Id, "AB+", "05551234569", "Emergency3", "05559999993", "Ayşe", "Zeynep"),
-            Volunteer.Create(12345678904, "Dr. Kemal Arslan", medikal.Id, "B-", "05551234570", "Emergency4", "05559999994", "Selim", "Taner"),
-            Volunteer.Create(12345678905, "Elif Şahin", teamB.Id, "A-", "05551234571", "Emergency5", "05559999995", "Seda", "Gül")
-        ];
+        var volunteers = new List<Volunteer>();
+        
+        for (int i = 0; i < 2000; i++)
+        {
+            var team = teams[Random.Next(teams.Count)];
+            var firstName = FirstNames[Random.Next(FirstNames.Length)];
+            var lastName = LastNames[Random.Next(LastNames.Length)];
+            var fullName = $"{firstName} {lastName}";
+            
+            var tcKimlik = GenerateTcKimlik(i);
+            var bloodType = BloodTypes[Random.Next(BloodTypes.Length)];
+            var phone = GeneratePhone();
+            var emergencyName = $"Acil {firstName}";
+            var emergencyPhone = GeneratePhone();
+            var buddy1 = FirstNames[Random.Next(FirstNames.Length)];
+            var buddy2 = FirstNames[Random.Next(FirstNames.Length)];
+            
+            volunteers.Add(Volunteer.Create(tcKimlik, fullName, team.Id, bloodType, 
+                phone, emergencyName, emergencyPhone, buddy1, buddy2));
+        }
+        
+        return volunteers;
+    }
+    
+    private static long GenerateTcKimlik(int index)
+    {
+        // Generate realistic TC Kimlik numbers starting from 10000000000
+        return 10000000000L + index;
+    }
+    
+    private static string GeneratePhone()
+    {
+        return $"0555{Random.Next(1000000, 9999999)}";
     }
 
     public static Volunteer GetTestVolunteer(Guid teamId)
     {
-        return Volunteer.Create(11111111111, "Test Gönüllü", teamId, "A+", "05551111111", "Emergency Test", "05559999999", "Buddy1", "Buddy2");
+        return Volunteer.Create(11111111111, "Test Ekip Üyesi", teamId, "A+", "05551111111", "Emergency Test", "05559999999", "Buddy1", "Buddy2");
     }
 
     public static Volunteer GetMedikalVolunteer(Guid medikalTeamId)

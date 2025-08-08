@@ -24,7 +24,7 @@
             <table class="table table-hover">
                 <thead class="table-dark">
                     <tr>
-                        <th>Gönüllü</th>
+                        <th>Ekip Üyesi</th>
                         <th>Kaynak</th>
                         <th>Hedef</th>
                         <th>Zaman</th>
@@ -70,13 +70,58 @@
         {
             <nav>
                 <ul class="pagination justify-content-center">
-                    @for (int i = 1; i <= Model.TotalPages; i++)
+                    @* İlk sayfa *@
+                    @if (Model.Page > 1)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1">İlk</a>
+                        </li>
+                    }
+                    
+                    @* Önceki sayfa *@
+                    @if (Model.Page > 1)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="?page=@(Model.Page - 1)">‹</a>
+                        </li>
+                    }
+                    
+                    @* Sayfa numaraları (mevcut sayfanın çevresinde 5 sayfa) *@
+                    @{
+                        var startPage = Math.Max(1, Model.Page - 2);
+                        var endPage = Math.Min(Model.TotalPages, Model.Page + 2);
+                    }
+                    
+                    @for (int i = startPage; i <= endPage; i++)
                     {
                         <li class="page-item @(i == Model.Page ? "active" : "")">
                             <a class="page-link" href="?page=@i">@i</a>
                         </li>
                     }
+                    
+                    @* Sonraki sayfa *@
+                    @if (Model.Page < Model.TotalPages)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="?page=@(Model.Page + 1)">›</a>
+                        </li>
+                    }
+                    
+                    @* Son sayfa *@
+                    @if (Model.Page < Model.TotalPages)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="?page=@Model.TotalPages">Son (@Model.TotalPages)</a>
+                        </li>
+                    }
                 </ul>
+                
+                <div class="text-center mt-2">
+                    <small class="text-muted">
+                        Sayfa @Model.Page / @Model.TotalPages - 
+                        Toplam @Model.TotalCount hareket
+                    </small>
+                </div>
             </nav>
         }
     </div>

@@ -25,16 +25,16 @@ public class VolunteerRepository(SarDbContext context) : IVolunteerRepository
             .Where(v => v.TeamId == teamId)
             .ToListAsync(cancellationToken);
 
-    public async Task<(List<Volunteer> items, long totalCount)> GetPaginatedAsync(PaginationRequest request, CancellationToken cancellationToken)
+    public async Task<(List<Volunteer> items, long totalCount)> GetPaginatedAsync(PaginationRequest request, string? search = null, CancellationToken cancellationToken = default)
     {
         var query = context.Volunteers.Include(v => v.Team).AsQueryable();
 
         // Apply search filter
-        if (!string.IsNullOrEmpty(request.SearchText))
+        if (!string.IsNullOrEmpty(search))
         {
-            query = query.Where(v => v.FullName.Contains(request.SearchText) ||
-                                   v.TcKimlik.ToString().Contains(request.SearchText) ||
-                                   v.Team.Name.Contains(request.SearchText));
+            query = query.Where(v => v.FullName.Contains(search) ||
+                                   v.TcKimlik.ToString().Contains(search) ||
+                                   v.Team.Name.Contains(search));
         }
 
         var totalCount = await query.LongCountAsync(cancellationToken);

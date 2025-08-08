@@ -1,4 +1,4 @@
-@model SAR.TrackingSystem.Web.Models.DashboardStats
+@model SAR.TrackingSystem.Web.Models.DashboardViewModel
 @{
     ViewData["Title"] = "Dashboard";
 }
@@ -7,7 +7,7 @@
     <div class="col-md-12">
         <h1 class="mb-4">
             <i class="bi bi-speedometer2 text-primary"></i>
-            SAR Operasyon Dashboard
+            Gösterge Paneli
         </h1>
     </div>
 </div>
@@ -20,118 +20,34 @@
     </div>
 }
 
-@if (Model != null)
-{
-    <div class="row g-3 mb-4">
-        <div class="col-md-3">
-            <div class="card stat-card h-100">
-                <div class="card-body text-center">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h3 class="text-primary fw-bold mb-0">@Model.TotalVolunteers</h3>
-                            <p class="text-muted mb-0">Toplam Gönüllü</p>
-                        </div>
-                        <i class="bi bi-people-fill text-primary fs-2"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div id="dashboard-content">
+    @await Html.PartialAsync("_DashboardContent", Model)
+</div>
 
-        <div class="col-md-3">
-            <div class="card stat-card h-100">
-                <div class="card-body text-center">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h3 class="text-success fw-bold mb-0">@Model.InHubCount</h3>
-                            <p class="text-muted mb-0">BOO'da</p>
-                        </div>
-                        <i class="bi bi-house-check-fill text-success fs-2"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card stat-card h-100">
-                <div class="card-body text-center">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h3 class="text-warning fw-bold mb-0">@Model.InSectorCount</h3>
-                            <p class="text-muted mb-0">Sektörde</p>
-                        </div>
-                        <i class="bi bi-geo-alt-fill text-warning fs-2"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card stat-card h-100">
-                <div class="card-body text-center">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h3 class="text-info fw-bold mb-0">@Model.EntryCount</h3>
-                            <p class="text-muted mb-0">İntikal</p>
-                        </div>
-                        <i class="bi bi-arrow-right-circle-fill text-info fs-2"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">
-                        <i class="bi bi-activity"></i>
-                        Hızlı İşlemler
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div class="d-grid gap-2">
-                        <a href="/volunteers/create" class="btn btn-primary">
-                            <i class="bi bi-person-plus"></i>
-                            Yeni Gönüllü Ekle
-                        </a>
-                        <a href="/movements/create" class="btn btn-success">
-                            <i class="bi bi-arrow-left-right"></i>
-                            Hareket Kaydı
-                        </a>
-                        <a href="/volunteers" class="btn btn-outline-primary">
-                            <i class="bi bi-list"></i>
-                            Gönüllü Listesi
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">
-                        <i class="bi bi-info-circle"></i>
-                        Sistem Durumu
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div class="alert alert-info">
-                        <strong>Operasyon Aktif:</strong> Sistem çalışır durumda
-                    </div>
-                    <small class="text-muted">
-                        Son Güncelleme: @DateTime.Now.ToString("dd.MM.yyyy HH:mm")
-                    </small>
-                </div>
-            </div>
-        </div>
-    </div>
-}
-else
-{
-    <div class="alert alert-warning">
-        <i class="bi bi-exclamation-triangle"></i>
-        Dashboard verileri yüklenemedi. API bağlantısını kontrol edin.
-    </div>
+@section Scripts {
+    <script>
+        let refreshInterval;
+        
+        function refreshDashboard() {
+            fetch('/Home/GetDashboardData')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('dashboard-content').innerHTML = html;
+                    console.log('Dashboard updated:', new Date().toLocaleTimeString());
+                })
+                .catch(error => {
+                    console.error('Dashboard refresh failed:', error);
+                });
+        }
+        
+        // Start auto-refresh every 30 seconds
+        refreshInterval = setInterval(refreshDashboard, 30000);
+        
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+            }
+        });
+    </script>
 }

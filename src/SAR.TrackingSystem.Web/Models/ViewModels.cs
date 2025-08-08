@@ -11,6 +11,12 @@ public class DashboardStats
     public int ExitCount { get; set; }
 }
 
+public class DashboardViewModel
+{
+    public DashboardStats Stats { get; set; } = new();
+    public List<MovementViewModel> RecentMovements { get; set; } = new();
+}
+
 public class PaginatedResponse<T>
 {
     public IEnumerable<T> Items { get; set; } = [];

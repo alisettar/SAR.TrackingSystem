@@ -1,0 +1,65 @@
+@model PaginatedResponse<object>
+@{
+    var searchTerm = ViewBag.SearchTerm as string;
+    var searchParam = !string.IsNullOrEmpty(searchTerm) ? $"&search={Uri.EscapeDataString(searchTerm)}" : "";
+    var itemName = ViewBag.ItemName as string ?? "öğe";
+}
+
+@if (Model.TotalPages > 1)
+{
+    <nav>
+        <ul class="pagination justify-content-center">
+            @* İlk sayfa *@
+            @if (Model.Page > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="?page=1@searchParam">İlk</a>
+                </li>
+            }
+            
+            @* Önceki sayfa *@
+            @if (Model.Page > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="?page=@(Model.Page - 1)@searchParam">‹</a>
+                </li>
+            }
+            
+            @* Sayfa numaraları (mevcut sayfanın çevresinde 5 sayfa) *@
+            @{
+                var startPage = Math.Max(1, Model.Page - 2);
+                var endPage = Math.Min(Model.TotalPages, Model.Page + 2);
+            }
+            
+            @for (int i = startPage; i <= endPage; i++)
+            {
+                <li class="page-item @(i == Model.Page ? "active" : "")">
+                    <a class="page-link" href="?page=@i@searchParam">@i</a>
+                </li>
+            }
+            
+            @* Sonraki sayfa *@
+            @if (Model.Page < Model.TotalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="?page=@(Model.Page + 1)@searchParam">›</a>
+                </li>
+            }
+            
+            @* Son sayfa *@
+            @if (Model.Page < Model.TotalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="?page=@Model.TotalPages@searchParam">Son (@Model.TotalPages)</a>
+                </li>
+            }
+        </ul>
+        
+        <div class="text-center mt-2">
+            <small class="text-muted">
+                Sayfa @Model.Page / @Model.TotalPages - 
+                Toplam @Model.TotalCount @itemName
+            </small>
+        </div>
+    </nav>
+}

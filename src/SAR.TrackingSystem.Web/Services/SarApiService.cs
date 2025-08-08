@@ -45,11 +45,31 @@ public class SarApiService : ISarApiService
         }
     }
 
-    public async Task<PaginatedResponse<VolunteerViewModel>> GetVolunteersAsync(int page = 1, int pageSize = 10)
+    public async Task<List<MovementViewModel>> GetRecentMovementsAsync(int count = 5)
     {
         try
         {
-            var response = await _httpClient.GetAsync($"/volunteers?page={page}&pageSize={pageSize}");
+            var response = await _httpClient.GetAsync($"/movements?page=1&pageSize={count}");
+            response.EnsureSuccessStatusCode();
+            
+            var json = await response.Content.ReadAsStringAsync();
+            var apiResponse = JsonSerializer.Deserialize<PaginationResponse<MovementViewModel>>(json, _jsonOptions)!;
+            
+            return apiResponse.Items.Take(count).ToList();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting recent movements");
+            return new List<MovementViewModel>();
+        }
+    }
+
+    public async Task<PaginatedResponse<VolunteerViewModel>> GetVolunteersAsync(int page = 1, int pageSize = 10, string search = "")
+    {
+        try
+        {
+            var searchParam = string.IsNullOrEmpty(search) ? "" : $"&search={Uri.EscapeDataString(search)}";
+            var response = await _httpClient.GetAsync($"/volunteers?page={page}&pageSize={pageSize}{searchParam}");
             
             if (response.StatusCode == HttpStatusCode.NotFound)
                 return new PaginatedResponse<VolunteerViewModel> { Items = [], TotalCount = 0 };
@@ -74,7 +94,7 @@ public class SarApiService : ISarApiService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error getting volunteers");
-            throw new ApplicationException("Gönüllüler yüklenirken hata oluştu.");
+            throw new ApplicationException("Ekip üyeleri yüklenirken hata oluştu.");
         }
     }
 
@@ -118,7 +138,7 @@ public class SarApiService : ISarApiService
         catch (Exception ex) when (ex is not ApplicationException)
         {
             _logger.LogError(ex, "Error creating volunteer");
-            throw new ApplicationException("Gönüllü oluşturulurken hata oluştu.");
+            throw new ApplicationException("Ekip üyesi oluşturulurken hata oluştu.");
         }
     }
 

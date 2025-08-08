@@ -16,6 +16,7 @@ public class DatabaseIntegrationTests : IDisposable
             .Options;
 
         _context = new SarDbContext(options);
+        _context.Database.EnsureCreatedAsync().GetAwaiter();
     }
 
     [Fact]
@@ -39,7 +40,7 @@ public class DatabaseIntegrationTests : IDisposable
         await _context.SaveChangesAsync();
 
         // Act - Create Movements
-        var movements = MovementMockFactory.GetSampleMovements(volunteers[0].Id, sectors);
+        var movements = MovementMockFactory.GetSampleMovements(volunteers, sectors);
         _context.Movements.AddRange(movements);
         await _context.SaveChangesAsync();
 

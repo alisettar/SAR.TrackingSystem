@@ -73,11 +73,12 @@ public class VolunteersModule : ICarterModule
 
     private static async Task<Ok<PaginationResponse<VolunteerResponse>>> GetVolunteers(
         [FromQuery] PaginationRequest? paginationRequest,
+        [FromQuery] string? search,
         [FromServices] ISender sender,
         HttpContext context)
     {
         var result = await sender.Send(
-            new GetVolunteersQuery(paginationRequest),
+            new GetVolunteersQuery(paginationRequest, search),
             context.RequestAborted);
 
         return TypedResults.Ok(result);

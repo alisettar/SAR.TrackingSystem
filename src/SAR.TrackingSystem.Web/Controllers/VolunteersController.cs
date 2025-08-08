@@ -13,9 +13,10 @@ public class VolunteersController : Controller
         _apiService = apiService;
     }
 
-    public async Task<IActionResult> Index(int page = 1)
+    public async Task<IActionResult> Index(int page = 1, string search = "")
     {
-        var volunteers = await _apiService.GetVolunteersAsync(page, 20);
+        ViewBag.SearchTerm = search;
+        var volunteers = await _apiService.GetVolunteersAsync(page, 20, search);
         return View(volunteers);
     }
 
@@ -37,7 +38,7 @@ public class VolunteersController : Controller
         try
         {
             await _apiService.CreateVolunteerAsync(model);
-            TempData["Success"] = "Gönüllü başarıyla oluşturuldu.";
+            TempData["Success"] = "Ekip üyesi başarıyla oluşturuldu.";
             return RedirectToAction(nameof(Index));
         }
         catch (Exception ex)
@@ -86,12 +87,12 @@ public class VolunteersController : Controller
             var success = await _apiService.UpdateVolunteerAsync(id, model);
             if (success)
             {
-                TempData["Success"] = "Gönüllü başarıyla güncellendi.";
+                TempData["Success"] = "Ekip üyesi başarıyla güncellendi.";
                 return RedirectToAction(nameof(Index));
             }
             else
             {
-                ViewBag.Error = "Gönüllü bulunamadı.";
+                ViewBag.Error = "Ekip üyesi bulunamadı.";
             }
         }
         catch (Exception ex)
@@ -110,9 +111,9 @@ public class VolunteersController : Controller
         {
             var success = await _apiService.DeleteVolunteerAsync(id);
             if (success)
-                TempData["Success"] = "Gönüllü başarıyla silindi.";
+                TempData["Success"] = "Ekip üyesi başarıyla silindi.";
             else
-                TempData["Error"] = "Gönüllü silinemedi.";
+                TempData["Error"] = "Ekip üyesi silinemedi.";
         }
         catch (Exception ex)
         {

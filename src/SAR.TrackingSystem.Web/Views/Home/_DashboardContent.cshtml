@@ -1,0 +1,168 @@
+@model SAR.TrackingSystem.Web.Models.DashboardViewModel
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card stat-card h-100">
+            <div class="card-body text-center">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="text-primary fw-bold mb-0">@Model.Stats.TotalVolunteers</h3>
+                        <p class="text-muted mb-0">Toplam Ekip Üyesi</p>
+                    </div>
+                    <i class="bi bi-people-fill text-primary fs-2"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card stat-card h-100">
+            <div class="card-body text-center">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="text-success fw-bold mb-0">@Model.Stats.InHubCount</h3>
+                        <p class="text-muted mb-0">BOO'da</p>
+                    </div>
+                    <i class="bi bi-house-check-fill text-success fs-2"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card stat-card h-100">
+            <div class="card-body text-center">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="text-warning fw-bold mb-0">@Model.Stats.InSectorCount</h3>
+                        <p class="text-muted mb-0">Sektörde</p>
+                    </div>
+                    <i class="bi bi-geo-alt-fill text-warning fs-2"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card stat-card h-100">
+            <div class="card-body text-center">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="text-info fw-bold mb-0">@Model.Stats.EntryCount</h3>
+                        <p class="text-muted mb-0">İntikal</p>
+                    </div>
+                    <i class="bi bi-arrow-right-circle-fill text-info fs-2"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-activity"></i>
+                    Hızlı İşlemler
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="/volunteers/create" class="btn btn-primary">
+                        <i class="bi bi-person-plus"></i>
+                        Yeni Ekip Üyesi Ekle
+                    </a>
+                    <a href="/movements/create" class="btn btn-success">
+                        <i class="bi bi-arrow-left-right"></i>
+                        Hareket Kaydı
+                    </a>
+                    <a href="/teams/create" class="btn btn-warning">
+                        <i class="bi bi-people-fill"></i>
+                        Yeni Takım Ekle
+                    </a>
+                    <a href="/sectors/create" class="btn btn-info">
+                        <i class="bi bi-building"></i>
+                        Yeni Sektör Ekle
+                    </a>
+                    <a href="/volunteers" class="btn btn-outline-primary">
+                        <i class="bi bi-list"></i>
+                        Ekip Üyesi Listesi
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-info-circle"></i>
+                    Sistem Durumu
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <strong>Operasyon Aktif:</strong> Sistem çalışır durumda
+                </div>
+                
+                @if (Model.RecentMovements.Any())
+                {
+                    <h6 class="mb-2">
+                        <i class="bi bi-clock-history"></i> Son Hareketler
+                    </h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Ekip Üyesi</th>
+                                    <th>Hareket</th>
+                                    <th>Zaman</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var movement in Model.RecentMovements.Take(5))
+                                {
+                                    <tr>
+                                        <td><small>@movement.VolunteerName</small></td>
+                                        <td>
+                                            <small>
+                                                @if (!string.IsNullOrEmpty(movement.FromSectorName))
+                                                {
+                                                    <span class="text-muted">@movement.FromSectorName</span>
+                                                    <i class="bi bi-arrow-right mx-1"></i>
+                                                }
+                                                <span class="text-primary">@movement.ToSectorName</span>
+                                            </small>
+                                        </td>
+                                        <td><small class="text-muted">@movement.MovementTime.ToString("HH:mm")</small></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-center mt-2">
+                        <a href="/movements" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-list"></i> Tüm Hareketler
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-secondary">
+                        <i class="bi bi-info-circle"></i> Henüz hareket kaydı yok.
+                    </div>
+                }
+                
+                <hr>
+                <small class="text-muted">
+                    Son Güncelleme: @DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss")
+                    <span id="autoRefresh" class="badge bg-success ms-2">
+                        <i class="bi bi-arrow-clockwise"></i> Otomatik
+                    </span>
+                </small>
+            </div>
+        </div>
+    </div>
+</div>

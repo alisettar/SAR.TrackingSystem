@@ -1,0 +1,90 @@
+```mermaid
+flowchart TD
+    User[👤 SAR Operatörü] --> WebUI[🌐 Web UI<br/>SAR.TrackingSystem.Web<br/>Port: 5257]
+    ExtAPI[📱 External API Clients] --> API[🔌 REST API<br/>SAR.TrackingSystem.Api<br/>Port: 5039]
+    
+    WebUI --> |HttpClient| API
+    
+    API --> |MediatR| App[📋 Application Layer<br/>SAR.TrackingSystem.Application<br/>CQRS + Commands/Queries]
+    
+    App --> Domain[🏛️ Domain Layer<br/>SAR.TrackingSystem.Domain<br/>Entities + Business Rules]
+    App --> |Repository Pattern| Infra[🗄️ Infrastructure Layer<br/>SAR.TrackingSystem.Infrastructure<br/>EF Core + SQLite]
+    
+    Infra --> |EF Core| DB[(🗃️ SQLite Database<br/>SarTrackingDb.db)]
+    
+    Tests[🧪 Unit Tests<br/>SAR.TrackingSystem.UnitTests<br/>xUnit + Moq] --> |Test| Domain
+    Tests --> |Test| App
+    Tests --> |Test| Infra
+    
+    subgraph "Web UI Components"
+        Controllers[Controllers<br/>Home, Volunteers, Movements]
+        Views[Razor Views<br/>Bootstrap 5 + Custom Theme]
+        Services[API Services<br/>HttpClient Integration]
+    end
+    
+    subgraph "API Components"
+        Carter[Carter Modules<br/>Minimal APIs]
+        Swagger[OpenAPI/Swagger<br/>Documentation]
+        GlobalEx[Global Exception Handler]
+    end
+    
+    subgraph "Application Components"
+        Commands[Commands<br/>Create, Update, Delete]
+        Queries[Queries<br/>Get, GetById, Paginated]
+        Validators[FluentValidation<br/>Business Rule Validation]
+        Repos[Repository Interfaces<br/>IVolunteerRepository, etc.]
+    end
+    
+    subgraph "Domain Components"
+        Entities[Entities<br/>Volunteer, Team, Sector, Movement]
+        BusinessRules[Business Rules<br/>Movement Validation Logic]
+        Config[Configuration<br/>SectorConfiguration]
+        SeedData[Default Seed Data<br/>Teams, Sectors, Volunteers]
+    end
+    
+    subgraph "Infrastructure Components"
+        EFContext[DbContext<br/>SarDbContext]
+        RepoImpl[Repository Implementations<br/>VolunteerRepository, etc.]
+        Configurations[EF Configurations<br/>Entity Mappings]
+        Seeder[Database Seeder<br/>Initial Data Setup]
+    end
+    
+    WebUI --> Controllers
+    Controllers --> Services
+    Services --> Views
+    
+    API --> Carter
+    Carter --> GlobalEx
+    API --> Swagger
+    
+    App --> Commands
+    App --> Queries
+    App --> Validators
+    App --> Repos
+    
+    Domain --> Entities
+    Domain --> BusinessRules
+    Domain --> Config
+    Domain --> SeedData
+    
+    Infra --> EFContext
+    Infra --> RepoImpl
+    Infra --> Configurations
+    Infra --> Seeder
+    
+    classDef webLayer fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef apiLayer fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef appLayer fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
+    classDef domainLayer fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef infraLayer fill:#fce4ec,stroke:#880e4f,stroke-width:2px
+    classDef testLayer fill:#f1f8e9,stroke:#33691e,stroke-width:2px
+    classDef dbLayer fill:#e0f2f1,stroke:#00695c,stroke-width:2px
+    
+    class WebUI,Controllers,Views,Services webLayer
+    class API,Carter,Swagger,GlobalEx apiLayer
+    class App,Commands,Queries,Validators,Repos appLayer
+    class Domain,Entities,BusinessRules,Config,SeedData domainLayer
+    class Infra,EFContext,RepoImpl,Configurations,Seeder infraLayer
+    class Tests testLayer
+    class DB dbLayer
+```
