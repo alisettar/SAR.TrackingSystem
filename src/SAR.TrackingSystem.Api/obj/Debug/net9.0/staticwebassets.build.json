@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "M0dhHGTtUC6Maqa8I7R3NvurM/vIxeXDf2tuazejL0A=",
+  "Source": "SAR.TrackingSystem.Api",
+  "BasePath": "_content/SAR.TrackingSystem.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

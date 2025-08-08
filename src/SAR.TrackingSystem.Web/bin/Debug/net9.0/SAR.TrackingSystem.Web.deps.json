@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v9.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v9.0": {
+      "SAR.TrackingSystem.Web/1.0.0": {
+        "runtime": {
+          "SAR.TrackingSystem.Web.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "SAR.TrackingSystem.Web/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

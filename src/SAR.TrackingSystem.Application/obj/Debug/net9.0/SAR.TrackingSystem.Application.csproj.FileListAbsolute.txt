@@ -1,0 +1,16 @@
+D:\sar\src\SAR.TrackingSystem.Application\bin\Debug\net9.0\SAR.TrackingSystem.Application.deps.json
+D:\sar\src\SAR.TrackingSystem.Application\bin\Debug\net9.0\SAR.TrackingSystem.Application.dll
+D:\sar\src\SAR.TrackingSystem.Application\bin\Debug\net9.0\SAR.TrackingSystem.Application.pdb
+D:\sar\src\SAR.TrackingSystem.Application\bin\Debug\net9.0\SAR.TrackingSystem.Domain.dll
+D:\sar\src\SAR.TrackingSystem.Application\bin\Debug\net9.0\SAR.TrackingSystem.Domain.pdb
+D:\sar\src\SAR.TrackingSystem.Application\obj\Debug\net9.0\SAR.TrackingSystem.Application.csproj.AssemblyReference.cache
+D:\sar\src\SAR.TrackingSystem.Application\obj\Debug\net9.0\SAR.TrackingSystem.Application.GeneratedMSBuildEditorConfig.editorconfig
+D:\sar\src\SAR.TrackingSystem.Application\obj\Debug\net9.0\SAR.TrackingSystem.Application.AssemblyInfoInputs.cache
+D:\sar\src\SAR.TrackingSystem.Application\obj\Debug\net9.0\SAR.TrackingSystem.Application.AssemblyInfo.cs
+D:\sar\src\SAR.TrackingSystem.Application\obj\Debug\net9.0\SAR.TrackingSystem.Application.csproj.CoreCompileInputs.cache
+D:\sar\src\SAR.TrackingSystem.Application\obj\Debug\net9.0\SAR.TrackingSystem.Application.sourcelink.json
+D:\sar\src\SAR.TrackingSystem.Application\obj\Debug\net9.0\SAR.Trac.9B495784.Up2Date
+D:\sar\src\SAR.TrackingSystem.Application\obj\Debug\net9.0\SAR.TrackingSystem.Application.dll
+D:\sar\src\SAR.TrackingSystem.Application\obj\Debug\net9.0\refint\SAR.TrackingSystem.Application.dll
+D:\sar\src\SAR.TrackingSystem.Application\obj\Debug\net9.0\SAR.TrackingSystem.Application.pdb
+D:\sar\src\SAR.TrackingSystem.Application\obj\Debug\net9.0\ref\SAR.TrackingSystem.Application.dll

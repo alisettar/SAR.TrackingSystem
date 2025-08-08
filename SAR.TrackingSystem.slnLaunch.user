@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "src\\SAR.TrackingSystem.Api\\SAR.TrackingSystem.Api.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "src\\SAR.TrackingSystem.Web\\SAR.TrackingSystem.Web.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

@@ -1,0 +1,6 @@
+@SAR.TrackingSystem.Api_HostAddress = http://localhost:5039
+
+GET {{SAR.TrackingSystem.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

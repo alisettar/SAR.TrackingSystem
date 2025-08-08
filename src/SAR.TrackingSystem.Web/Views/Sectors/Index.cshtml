@@ -1,0 +1,52 @@
+﻿@model List<SectorViewModel>
+@{
+    ViewData["Title"] = "Sektörler";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-grid"></i> Sektörler</h2>
+    <a href="/sectors/create" class="btn btn-success">
+        <i class="bi bi-plus"></i> Yeni Ekle
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Ad</th>
+                        <th>Kod</th>
+                        <th>Durum</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var sector in Model)
+                    {
+                        <tr>
+                            <td>@sector.Name</td>
+                            <td>@sector.Code</td>
+                            <td>
+                                @if (sector.IsActive)
+                                {
+                                    <span class="badge bg-success">Aktif</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Pasif</span>
+                                }
+                            </td>
+                            <td>
+                                <a href="/sectors/details/@sector.Id" class="btn btn-sm btn-primary">
+                                    <i class="bi bi-eye"></i> Detay
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
