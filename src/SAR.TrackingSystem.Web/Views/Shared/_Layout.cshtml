@@ -1,50 +1,135 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="tr">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - SAR.TrackingSystem.Web</title>
-    <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/SAR.TrackingSystem.Web.styles.css" asp-append-version="true" />
+    <title>@ViewData["Title"] - SAR Takip Sistemi</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --sar-primary: #1e3a8a;
+            --sar-secondary: #64748b;
+            --sar-accent: #f97316;
+            --sar-success: #16a34a;
+            --sar-warning: #eab308;
+            --sar-danger: #dc2626;
+        }
+        
+        .navbar-brand { 
+            font-weight: 700; 
+            color: white !important;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, var(--sar-primary) 0%, #1e40af 100%) !important;
+            border-bottom: 3px solid var(--sar-accent);
+        }
+        
+        .nav-link {
+            color: rgba(255,255,255,0.9) !important;
+            font-weight: 500;
+        }
+        
+        .nav-link:hover {
+            color: var(--sar-accent) !important;
+        }
+        
+        .btn-primary {
+            background-color: var(--sar-primary);
+            border-color: var(--sar-primary);
+        }
+        
+        .btn-primary:hover {
+            background-color: #1e40af;
+            border-color: #1e40af;
+        }
+        
+        .card-header {
+            background: linear-gradient(90deg, var(--sar-primary) 0%, #3b82f6 100%);
+            color: white;
+            font-weight: 600;
+        }
+        
+        .stat-card {
+            border-left: 4px solid var(--sar-accent);
+            transition: transform 0.2s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .table-hover tbody tr:hover {
+            background-color: rgba(30, 58, 138, 0.05);
+        }
+        
+        .alert-info {
+            background-color: rgba(30, 58, 138, 0.1);
+            border-color: var(--sar-primary);
+            color: var(--sar-primary);
+        }
+        
+        footer {
+            background-color: var(--sar-primary);
+            color: white;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">SAR.TrackingSystem.Web</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            &copy; 2025 - SAR.TrackingSystem.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-shield-check me-2"></i>SAR Takip Sistemi
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="bi bi-house me-1"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/volunteers">
+                            <i class="bi bi-people me-1"></i>Gönüllüler
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/movements">
+                            <i class="bi bi-arrow-left-right me-1"></i>Hareketler
+                        </a>
+                    </li>
+                </ul>
+                
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <span class="nav-link">
+                            <i class="bi bi-clock me-1"></i>@DateTime.Now.ToString("HH:mm")
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container my-4">
+        @RenderBody()
+    </main>
+
+    <footer class="mt-5 py-3">
+        <div class="container text-center">
+            <small>&copy; @DateTime.Now.Year SAR Tracking System - Arama Kurtarma Gönüllü Takip Sistemi</small>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

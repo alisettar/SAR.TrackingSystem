@@ -1,32 +1,28 @@
 using Microsoft.AspNetCore.Mvc;
-using SAR.TrackingSystem.Web.Models;
-using System.Diagnostics;
+using SAR.TrackingSystem.Web.Services;
 
-namespace SAR.TrackingSystem.Web.Controllers
+namespace SAR.TrackingSystem.Web.Controllers;
+
+public class HomeController : Controller
 {
-    public class HomeController : Controller
+    private readonly ISarApiService _apiService;
+
+    public HomeController(ISarApiService apiService)
     {
-        private readonly ILogger<HomeController> _logger;
+        _apiService = apiService;
+    }
 
-        public HomeController(ILogger<HomeController> logger)
+    public async Task<IActionResult> Index()
+    {
+        try
         {
-            _logger = logger;
+            var stats = await _apiService.GetDashboardStatsAsync();
+            return View(stats);
         }
-
-        public IActionResult Index()
+        catch (Exception ex)
         {
+            ViewBag.Error = $"API bağlantısı başarısız: {ex.Message}";
             return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }
