@@ -1,4 +1,7 @@
+using Carter;
 using Microsoft.EntityFrameworkCore;
+using SAR.TrackingSystem.Application;
+using SAR.TrackingSystem.Infrastructure;
 using SAR.TrackingSystem.Infrastructure.Persistence;
 using SAR.TrackingSystem.Infrastructure.Services;
 
@@ -10,6 +13,13 @@ builder.Services.AddOpenApi();
 // Add Entity Framework
 builder.Services.AddDbContext<SarDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Add Application & Infrastructure layers
+builder.Services.AddApplication();
+builder.Services.AddInfrastructure();
+
+// Add Carter
+builder.Services.AddCarter();
 
 var app = builder.Build();
 
@@ -26,5 +36,8 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
+// Map Carter routes
+app.MapCarter();
 
 app.Run();

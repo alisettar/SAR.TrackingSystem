@@ -18,4 +18,26 @@ public class Movement : Entity
     public Volunteer Volunteer { get; set; } = null!;
     public Sector? FromSector { get; set; }
     public Sector ToSector { get; set; } = null!;
+
+    public static Movement Create(
+        Guid volunteerId,
+        Guid? fromSectorId,
+        Guid toSectorId,
+        MovementType type,
+        bool isGroupMovement = false,
+        Guid? groupId = null,
+        string? notes = null)
+    {
+        return new Movement
+        {
+            VolunteerId = volunteerId,
+            FromSectorId = fromSectorId,
+            ToSectorId = toSectorId,
+            MovementTime = DateTime.Now,
+            Type = type,
+            IsGroupMovement = isGroupMovement,
+            GroupId = groupId,
+            Notes = notes
+        };
+    }
 }
