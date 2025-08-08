@@ -154,6 +154,16 @@ public class SarApiService : ISarApiService
         var json = await response.Content.ReadAsStringAsync();
         return JsonSerializer.Deserialize<List<SectorViewModel>>(json, _jsonOptions)!;
     }
+    public async Task<SectorViewModel?> GetSectorByIdAsync(Guid id)
+    {
+        var response = await _httpClient.GetAsync($"/sectors/{id}");
+        if (response.StatusCode == HttpStatusCode.NotFound)
+            return null;
+
+        response.EnsureSuccessStatusCode();
+        var json = await response.Content.ReadAsStringAsync();
+        return JsonSerializer.Deserialize<SectorViewModel>(json, _jsonOptions);
+    }
 
     public async Task<PaginatedResponse<MovementViewModel>> GetMovementsAsync(int page = 1, int pageSize = 10)
     {
@@ -178,6 +188,17 @@ public class SarApiService : ISarApiService
             _logger.LogError(ex, "Error getting movements");
             throw new ApplicationException("Hareketler yüklenirken hata oluştu.");
         }
+    }
+
+    public async Task<TeamViewModel?> GetTeamByIdAsync(Guid id)
+    {
+        var response = await _httpClient.GetAsync($"/teams/{id}");
+        if (response.StatusCode == HttpStatusCode.NotFound)
+            return null;
+
+        response.EnsureSuccessStatusCode();
+        var json = await response.Content.ReadAsStringAsync();
+        return JsonSerializer.Deserialize<TeamViewModel>(json, _jsonOptions);
     }
 
     public async Task<Guid> CreateMovementAsync(MovementCreateViewModel model)
@@ -212,4 +233,17 @@ public class SarApiService : ISarApiService
             throw new ApplicationException("Hareket kaydı yapılırken hata oluştu.");
         }
     }
+
+    public async Task<bool> CreateSectorAsync(SectorViewModel model)
+    {
+        var response = await _httpClient.PostAsJsonAsync("/api/sectors", model);
+        return response.IsSuccessStatusCode;
+    }
+
+    public async Task<bool> CreateTeamAsync(TeamViewModel model)
+    {
+        var response = await _httpClient.PostAsJsonAsync("/api/teams", model);
+        return response.IsSuccessStatusCode;
+    }
+
 }

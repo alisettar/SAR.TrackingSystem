@@ -2,6 +2,7 @@ using Carter;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using SAR.TrackingSystem.Application.Data.Teams.Commands;
 using SAR.TrackingSystem.Application.Data.Teams.Queries;
 
 namespace SAR.TrackingSystem.Api.Modules.Teams;
@@ -25,6 +26,15 @@ public class TeamsModule : ICarterModule
             {
                 operation.Summary = "List all teams";
                 operation.Description = "Retrieves all teams for dropdown/selection.";
+                return operation;
+            });
+
+        app.MapPost("/teams", CreateTeam)
+            .WithName(nameof(CreateTeam))
+            .WithOpenApi(operation =>
+            {
+                operation.Summary = "Create new team";
+                operation.Description = "Creates a new team with the provided data.";
                 return operation;
             });
     }
@@ -51,5 +61,16 @@ public class TeamsModule : ICarterModule
             context.RequestAborted);
 
         return TypedResults.Ok(result);
+    }
+
+    private static async Task<Results<Created, ValidationProblem>> CreateTeam(
+        TeamRequest request,
+        [FromServices] ISender sender,
+        HttpContext context)
+    {
+        var command = new CreateTeamCommand(request);
+        var teamId = await sender.Send(command, context.RequestAborted);
+
+        return TypedResults.Created($"/teams/{teamId}");
     }
 }
