@@ -1,6 +1,8 @@
 using Carter;
 using Microsoft.EntityFrameworkCore;
+using SAR.TrackingSystem.Api.Middleware.ExceptionHandler;
 using SAR.TrackingSystem.Application;
+using SAR.TrackingSystem.Domain.Configuration;
 using SAR.TrackingSystem.Infrastructure;
 using SAR.TrackingSystem.Infrastructure.Persistence;
 using SAR.TrackingSystem.Infrastructure.Services;
@@ -9,6 +11,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddOpenApi();
+
+// Add Configuration
+builder.Services.Configure<SectorConfiguration>(
+    builder.Configuration.GetSection(SectorConfiguration.SectionName));
 
 // Add Entity Framework
 builder.Services.AddDbContext<SarDbContext>(options =>
@@ -20,6 +26,9 @@ builder.Services.AddInfrastructure();
 
 // Add Carter
 builder.Services.AddCarter();
+
+// Add Global Exception Handler
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>().AddProblemDetails();
 
 var app = builder.Build();
 

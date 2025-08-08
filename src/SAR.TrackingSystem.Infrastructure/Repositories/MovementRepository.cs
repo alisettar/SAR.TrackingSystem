@@ -61,4 +61,7 @@ public class MovementRepository(SarDbContext context) : IMovementRepository
         context.Movements.Add(movement);
         await context.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task<bool> HasMovementsAsync(Guid volunteerId, CancellationToken cancellationToken)
+        => await context.Movements.AnyAsync(m => m.VolunteerId == volunteerId, cancellationToken);
 }

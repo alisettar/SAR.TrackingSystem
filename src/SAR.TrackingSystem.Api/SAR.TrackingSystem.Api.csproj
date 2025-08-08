@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SAR.TrackingSystem.Infrastructure\SAR.TrackingSystem.Infrastructure.csproj" />
-    <ProjectReference Include="..\SAR.TrackingSystem.Domain\SAR.TrackingSystem.Domain.csproj" />
   </ItemGroup>
 
 </Project>

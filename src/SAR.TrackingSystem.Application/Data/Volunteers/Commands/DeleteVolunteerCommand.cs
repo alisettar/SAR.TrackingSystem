@@ -11,6 +11,10 @@ public sealed class DeleteVolunteerCommandHandler(IVolunteerRepository repositor
 {
     public async Task<bool> Handle(DeleteVolunteerCommand request, CancellationToken cancellationToken)
     {
+        var volunteer = await repository.GetByIdAsync(request.Id, cancellationToken);
+        if (volunteer == null)
+            throw new ValidationException("Volunteer not found.");
+
         await repository.DeleteAsync(request.Id, cancellationToken);
         return true;
     }
@@ -18,13 +22,10 @@ public sealed class DeleteVolunteerCommandHandler(IVolunteerRepository repositor
 
 public sealed class DeleteVolunteerCommandValidator : AbstractValidator<DeleteVolunteerCommand>
 {
-    public DeleteVolunteerCommandValidator(IVolunteerRepository repository)
+    public DeleteVolunteerCommandValidator()
     {
         RuleFor(x => x.Id)
             .NotEmpty()
-            .WithMessage("ID cannot be empty.")
-            .MustAsync(async (id, cancellation) => 
-                await repository.GetByIdAsync(id, cancellation) != null)
-            .WithMessage("Volunteer not found.");
+            .WithMessage("ID cannot be empty.");
     }
 }

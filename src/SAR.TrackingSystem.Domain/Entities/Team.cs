@@ -11,4 +11,18 @@ public class Team : Entity
     
     // Navigation
     public List<Volunteer> Volunteers { get; set; } = new();
+
+    public Team()
+    {
+        Id = Guid.NewGuid();
+    }
+
+    public Team(string code, string name, int capacity = 0, bool isActive = true)
+    {
+        Id = Guid.NewGuid();
+        Code = code;
+        Name = name;
+        Capacity = capacity;
+        IsActive = isActive;
+    }
 }

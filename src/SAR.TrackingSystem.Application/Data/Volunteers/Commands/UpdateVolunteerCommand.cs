@@ -12,7 +12,8 @@ public sealed class UpdateVolunteerCommandHandler(IVolunteerRepository repositor
 {
     public async Task<Guid> Handle(UpdateVolunteerCommand request, CancellationToken cancellationToken)
     {
-        var volunteer = await repository.GetByIdAsync(request.Request.Id, cancellationToken) ?? throw new ArgumentException("Volunteer not found");
+        var volunteer = await repository.GetByIdAsync(request.Request.Id, cancellationToken) 
+            ?? throw new ValidationException("Volunteer not found");
 
         var updatedVolunteer = Volunteer.Update(
             currentVolunteer: volunteer,
@@ -34,14 +35,11 @@ public sealed class UpdateVolunteerCommandHandler(IVolunteerRepository repositor
 
 public sealed class UpdateVolunteerCommandValidator : AbstractValidator<UpdateVolunteerCommand>
 {
-    public UpdateVolunteerCommandValidator(IVolunteerRepository repository)
+    public UpdateVolunteerCommandValidator()
     {
         RuleFor(x => x.Request.Id)
             .NotEmpty()
-            .WithMessage("ID cannot be empty.")
-            .MustAsync(async (id, cancellation) => 
-                await repository.GetByIdAsync(id, cancellation) != null)
-            .WithMessage("Volunteer not found.");
+            .WithMessage("ID cannot be empty.");
 
         RuleFor(x => x.Request.TcKimlik)
             .NotEmpty()
