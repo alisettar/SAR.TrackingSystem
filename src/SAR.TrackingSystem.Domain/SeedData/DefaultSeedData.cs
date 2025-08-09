@@ -17,14 +17,14 @@ public static class DefaultSeedData
 
     public static List<Team> Teams =>
     [
-        new Team { Id = new Guid("11111111-0000-0000-0000-000000000001"), Name = "EKİP LİDERİ", Code = "LDR", Capacity = 1 },
-        new Team { Id = new Guid("11111111-0000-0000-0000-000000000002"), Name = "LİDER YARDIMCISI", Code = "ALDR", Capacity = 1 },
-        new Team { Id = new Guid("11111111-0000-0000-0000-000000000003"), Name = "A TİMİ", Code = "A", Capacity = 25 },
-        new Team { Id = new Guid("11111111-0000-0000-0000-000000000004"), Name = "B TİMİ", Code = "B", Capacity = 15 },
-        new Team { Id = new Guid("11111111-0000-0000-0000-000000000005"), Name = "C TİMİ", Code = "C", Capacity = 20 },
-        new Team { Id = new Guid("11111111-0000-0000-0000-000000000006"), Name = "D TİMİ", Code = "D", Capacity = 18 },
-        new Team { Id = new Guid("11111111-0000-0000-0000-000000000007"), Name = "ARAMA", Code = "ARA", Capacity = 10 },
-        new Team { Id = new Guid("11111111-0000-0000-0000-000000000008"), Name = "MEDİKAL", Code = "MED", Capacity = 8 },
-        new Team { Id = new Guid("11111111-0000-0000-0000-000000000009"), Name = "LOJİSTİK", Code = "LOG", Capacity = 12 }
+        new Team { Id = new Guid("11111111-0000-0000-0000-000000000001"), Name = "EKİP LİDERİ", Code = "LDR" },
+        new Team { Id = new Guid("11111111-0000-0000-0000-000000000002"), Name = "LİDER YARDIMCISI", Code = "ALDR" },
+        new Team { Id = new Guid("11111111-0000-0000-0000-000000000003"), Name = "A TİMİ", Code = "A" },
+        new Team { Id = new Guid("11111111-0000-0000-0000-000000000004"), Name = "B TİMİ", Code = "B" },
+        new Team { Id = new Guid("11111111-0000-0000-0000-000000000005"), Name = "C TİMİ", Code = "C" },
+        new Team { Id = new Guid("11111111-0000-0000-0000-000000000006"), Name = "D TİMİ", Code = "D" },
+        new Team { Id = new Guid("11111111-0000-0000-0000-000000000007"), Name = "ARAMA", Code = "ARA" },
+        new Team { Id = new Guid("11111111-0000-0000-0000-000000000008"), Name = "MEDİKAL", Code = "MED" },
+        new Team { Id = new Guid("11111111-0000-0000-0000-000000000009"), Name = "LOJİSTİK", Code = "LOG" }
     ];
 }

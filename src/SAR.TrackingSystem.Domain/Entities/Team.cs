@@ -6,7 +6,7 @@ public class Team : Entity
 {
     public string Name { get; set; } = string.Empty;        // "A TİMİ", "MEDİKAL", "LOJİSTİK"
     public string Code { get; set; } = string.Empty;        // "A", "MED", "LOG"
-    public int Capacity { get; set; }
+    public string? City { get; set; }                       // Şehir bilgisi (opsiyonel)
     public bool IsActive { get; set; } = true;
     
     // Navigation
@@ -17,12 +17,12 @@ public class Team : Entity
         Id = Guid.NewGuid();
     }
 
-    public Team(string code, string name, int capacity = 0, bool isActive = true)
+    public Team(string code, string name, string? city = null, bool isActive = true)
     {
         Id = Guid.NewGuid();
         Code = code;
         Name = name;
-        Capacity = capacity;
+        City = city;
         IsActive = isActive;
     }
 }

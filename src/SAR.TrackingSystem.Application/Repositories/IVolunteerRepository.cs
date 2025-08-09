@@ -6,6 +6,7 @@ namespace SAR.TrackingSystem.Application.Repositories;
 public interface IVolunteerRepository
 {
     Task<Volunteer?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<bool> ExistsByQRIdAsync(string qrId, Guid? excludeVolunteerId = null, CancellationToken cancellationToken = default);
     Task<List<Volunteer>> GetAllAsync(CancellationToken cancellationToken);
     Task<List<Volunteer>> GetByTeamIdAsync(Guid teamId, CancellationToken cancellationToken);
     Task<(List<Volunteer> items, long totalCount)> GetPaginatedAsync(PaginationRequest request, string? search = null, CancellationToken cancellationToken = default);

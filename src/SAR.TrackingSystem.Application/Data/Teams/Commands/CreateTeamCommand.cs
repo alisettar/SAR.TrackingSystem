@@ -24,7 +24,7 @@ public sealed class CreateTeamCommandHandler(
         var team = new Team(
             code: request.Request.Code,
             name: request.Request.Name,
-            capacity: request.Request.Capacity,
+            city: request.Request.City,
             isActive: request.Request.IsActive);
 
         await teamRepository.AddAsync(team, cancellationToken);
@@ -45,10 +45,5 @@ public sealed class CreateTeamCommandValidator : AbstractValidator<CreateTeamCom
             .NotEmpty()
             .MaximumLength(100)
             .WithMessage("Takım adı maksimum 100 karakter olmalıdır.");
-
-        RuleFor(x => x.Request.Capacity)
-            .GreaterThanOrEqualTo(0)
-            .LessThanOrEqualTo(100)
-            .WithMessage("Kapasite 0 ile 100 arasında olmalıdır.");
     }
 }

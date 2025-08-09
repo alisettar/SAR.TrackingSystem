@@ -6,7 +6,7 @@ public sealed record TeamResponse(
     Guid Id,
     string Name,
     string Code,
-    int Capacity)
+    string? City)
 {
     public static TeamResponse FromDomain(Team team)
     {
@@ -14,11 +14,28 @@ public sealed record TeamResponse(
             team.Id,
             team.Name,
             team.Code,
-            team.Capacity);
+            team.City);
     }
 
     public static List<TeamResponse> FromDomainList(IEnumerable<Team> teams)
     {
         return [.. teams.Select(FromDomain)];
     }
+}
+
+public sealed record TeamDetailsResponse
+{
+    public Guid Id { get; init; }
+    public string Name { get; init; } = string.Empty;
+    public string Code { get; init; } = string.Empty;
+    public string? City { get; init; }
+    public List<TeamMemberResponse> Members { get; init; } = new();
+}
+
+public sealed record TeamMemberResponse
+{
+    public Guid Id { get; init; }
+    public string FullName { get; init; } = string.Empty;
+    public string? QRId { get; init; }
+    public string? Role { get; init; }
 }

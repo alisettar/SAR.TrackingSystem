@@ -77,9 +77,13 @@
                         <i class="bi bi-arrow-left-right"></i>
                         Hareket Kaydı
                     </a>
+                    <a href="/movements/quickentry" class="btn btn-warning">
+                        <i class="bi bi-qr-code-scan"></i>
+                        QR Giriş
+                    </a>
                     <a href="/teams/create" class="btn btn-warning">
                         <i class="bi bi-people-fill"></i>
-                        Yeni Takım Ekle
+                        Yeni Ekip Ekle
                     </a>
                     <a href="/sectors/create" class="btn btn-info">
                         <i class="bi bi-building"></i>
@@ -125,7 +129,13 @@
                                 @foreach (var movement in Model.RecentMovements.Take(5))
                                 {
                                     <tr>
-                                        <td><small>@movement.VolunteerName</small></td>
+                                        <td>
+                                            <div>
+                                                <small><strong>@movement.VolunteerName</strong></small>
+                                                <br>
+                                                <small class="text-muted">@movement.TeamName | @movement.Role</small>
+                                            </div>
+                                        </td>
                                         <td>
                                             <small>
                                                 @if (!string.IsNullOrEmpty(movement.FromSectorName))

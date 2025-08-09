@@ -8,16 +8,26 @@ public static class DatabaseSeeder
 {
     public static async Task SeedAsync(SarDbContext context)
     {
-        if (!await context.Teams.AnyAsync())
+        // Seed Teams with upsert logic
+        foreach (var team in DefaultSeedData.Teams)
         {
-            await context.Teams.AddRangeAsync(DefaultSeedData.Teams);
-            await context.SaveChangesAsync();
+            var existingTeam = await context.Teams.FirstOrDefaultAsync(t => t.Code == team.Code);
+            if (existingTeam == null)
+            {
+                context.Teams.Add(team);
+            }
         }
+        await context.SaveChangesAsync();
         
-        if (!await context.Sectors.AnyAsync())
+        // Seed Sectors with upsert logic
+        foreach (var sector in DefaultSeedData.Sectors)
         {
-            await context.Sectors.AddRangeAsync(DefaultSeedData.Sectors);
-            await context.SaveChangesAsync();
+            var existingSector = await context.Sectors.FirstOrDefaultAsync(s => s.Code == sector.Code);
+            if (existingSector == null)
+            {
+                context.Sectors.Add(sector);
+            }
         }
+        await context.SaveChangesAsync();
     }
 }

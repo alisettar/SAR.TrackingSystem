@@ -10,4 +10,7 @@ public interface IMovementRepository
     Task<(List<Movement> items, long totalCount)> GetPaginatedAsync(PaginationRequest request, CancellationToken cancellationToken);
     Task AddAsync(Movement movement, CancellationToken cancellationToken);
     Task<bool> HasMovementsAsync(Guid volunteerId, CancellationToken cancellationToken);
+    Task<Movement?> GetLastMovementAsync(Guid volunteerId, CancellationToken cancellationToken);
+    Task<List<Movement>> GetByVolunteerIdAsync(Guid volunteerId, CancellationToken cancellationToken);
+    Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken);
 }

@@ -8,4 +8,5 @@ public interface ISectorRepository
     Task<List<Sector>> GetAllAsync(CancellationToken cancellationToken);
     Task<Sector?> GetByCodeAsync(string code, CancellationToken cancellationToken);
     Task AddAsync(Sector sector, CancellationToken cancellationToken);
+    Task DeleteAsync(Sector sector, CancellationToken cancellationToken);
 }

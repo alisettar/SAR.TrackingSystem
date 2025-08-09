@@ -19,7 +19,11 @@ public static class VolunteerMockFactory
         "Erdoğan", "Ünal", "Keskin", "Başar", "Taş", "Polat", "Gül", "Karaca", "Güner", "Özer"
     ];
 
-    private static readonly string[] BloodTypes = { "A+", "A-", "B+", "B-", "AB+", "AB-", "0+", "0-" };
+    private static readonly string[] Roles = 
+    [
+        "Lider", "Lider Yardımcısı", "Medik", "Teknisyen", "İletişim", "Lojistik", 
+        "Kurtarma", "Arama", "K9", "Koordinatör", "Gözlemci"
+    ];
     
     private static readonly Random Random = new();
 
@@ -27,46 +31,47 @@ public static class VolunteerMockFactory
     {
         var volunteers = new List<Volunteer>();
         
-        for (int i = 0; i < 2000; i++)
+        for (int i = 0; i < 200; i++)
         {
             var team = teams[Random.Next(teams.Count)];
             var firstName = FirstNames[Random.Next(FirstNames.Length)];
             var lastName = LastNames[Random.Next(LastNames.Length)];
             var fullName = $"{firstName} {lastName}";
             
-            var tcKimlik = GenerateTcKimlik(i);
-            var bloodType = BloodTypes[Random.Next(BloodTypes.Length)];
-            var phone = GeneratePhone();
-            var emergencyName = $"Acil {firstName}";
-            var emergencyPhone = GeneratePhone();
-            var buddy1 = FirstNames[Random.Next(FirstNames.Length)];
-            var buddy2 = FirstNames[Random.Next(FirstNames.Length)];
+            var qrId = GenerateQRId(i);
+            var role = Roles[Random.Next(Roles.Length)]; // Her volunteer'ın role'ü olmalı
             
-            volunteers.Add(Volunteer.Create(tcKimlik, fullName, team.Id, bloodType, 
-                phone, emergencyName, emergencyPhone, buddy1, buddy2));
+            volunteers.Add(Volunteer.Create(
+                fullName: fullName,
+                teamId: team.Id,
+                qrId: qrId,
+                role: role));
         }
         
         return volunteers;
     }
     
-    private static long GenerateTcKimlik(int index)
+    private static string GenerateQRId(int index)
     {
-        // Generate realistic TC Kimlik numbers starting from 10000000000
-        return 10000000000L + index;
-    }
-    
-    private static string GeneratePhone()
-    {
-        return $"0555{Random.Next(1000000, 9999999)}";
+        // Generate QR ID like QR001, QR002, etc.
+        return $"QR{(index + 1):D3}";
     }
 
     public static Volunteer GetTestVolunteer(Guid teamId)
     {
-        return Volunteer.Create(11111111111, "Test Ekip Üyesi", teamId, "A+", "05551111111", "Emergency Test", "05559999999", "Buddy1", "Buddy2");
+        return Volunteer.Create(
+            fullName: "Test Ekip Üyesi",
+            teamId: teamId,
+            qrId: "QR999",
+            role: "Test Görevlisi");
     }
 
     public static Volunteer GetMedikalVolunteer(Guid medikalTeamId)
     {
-        return Volunteer.Create(99999999999, "Dr. Test Doktor", medikalTeamId, "0-", "05559999999", "Emergency Dr", "05559999998", "Hemşire1", "Hemşire2");
+        return Volunteer.Create(
+            fullName: "Dr. Test Doktor",
+            teamId: medikalTeamId,
+            qrId: "QR888",
+            role: "Doktor");
     }
 }

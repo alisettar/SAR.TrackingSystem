@@ -2,6 +2,7 @@ using Carter;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using SAR.TrackingSystem.Application.Data;
 using SAR.TrackingSystem.Application.Data.Teams.Commands;
 using SAR.TrackingSystem.Application.Data.Teams.Queries;
 
@@ -35,6 +36,15 @@ public class TeamsModule : ICarterModule
             {
                 operation.Summary = "Create new team";
                 operation.Description = "Creates a new team with the provided data.";
+                return operation;
+            });
+
+        app.MapGet("/teams/{id}/members", GetTeamMembers)
+            .WithName(nameof(GetTeamMembers))
+            .WithOpenApi(operation =>
+            {
+                operation.Summary = "Get team members (paginated)";
+                operation.Description = "Retrieves team members with pagination.";
                 return operation;
             });
     }
@@ -72,5 +82,18 @@ public class TeamsModule : ICarterModule
         var teamId = await sender.Send(command, context.RequestAborted);
 
         return TypedResults.Created($"/teams/{teamId}");
+    }
+
+    private static async Task<Ok<PaginationResponse<TeamMemberResponse>>> GetTeamMembers(
+        Guid id,
+        [FromQuery] PaginationRequest? paginationRequest,
+        [FromServices] ISender sender,
+        HttpContext context)
+    {
+        paginationRequest ??= new PaginationRequest();
+        var request = new GetTeamMembersQuery(id, paginationRequest);
+        var result = await sender.Send(request, context.RequestAborted);
+
+        return TypedResults.Ok(result);
     }
 }

@@ -11,6 +11,7 @@ public class MovementRepository(SarDbContext context) : IMovementRepository
     public async Task<Movement?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         => await context.Movements
             .Include(m => m.Volunteer)
+                .ThenInclude(v => v.Team)
             .Include(m => m.FromSector)
             .Include(m => m.ToSector)
             .FirstOrDefaultAsync(m => m.Id == id, cancellationToken);
@@ -18,6 +19,7 @@ public class MovementRepository(SarDbContext context) : IMovementRepository
     public async Task<List<Movement>> GetAllAsync(CancellationToken cancellationToken)
         => await context.Movements
             .Include(m => m.Volunteer)
+                .ThenInclude(v => v.Team)
             .Include(m => m.FromSector)
             .Include(m => m.ToSector)
             .OrderByDescending(m => m.MovementTime)
@@ -27,6 +29,7 @@ public class MovementRepository(SarDbContext context) : IMovementRepository
     {
         var query = context.Movements
             .Include(m => m.Volunteer)
+                .ThenInclude(v => v.Team)
             .Include(m => m.FromSector)
             .Include(m => m.ToSector)
             .AsQueryable();
@@ -64,4 +67,30 @@ public class MovementRepository(SarDbContext context) : IMovementRepository
 
     public async Task<bool> HasMovementsAsync(Guid volunteerId, CancellationToken cancellationToken)
         => await context.Movements.AnyAsync(m => m.VolunteerId == volunteerId, cancellationToken);
+        
+    public async Task<Movement?> GetLastMovementAsync(Guid volunteerId, CancellationToken cancellationToken)
+        => await context.Movements
+            .Include(m => m.FromSector)
+            .Include(m => m.ToSector)
+            .Where(m => m.VolunteerId == volunteerId)
+            .OrderByDescending(m => m.MovementTime)
+            .FirstOrDefaultAsync(cancellationToken);
+
+    public async Task<List<Movement>> GetByVolunteerIdAsync(Guid volunteerId, CancellationToken cancellationToken)
+        => await context.Movements
+            .Include(m => m.FromSector)
+            .Include(m => m.ToSector)
+            .Where(m => m.VolunteerId == volunteerId)
+            .OrderByDescending(m => m.MovementTime)
+            .ToListAsync(cancellationToken);
+
+    public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var movement = await context.Movements.FindAsync([id], cancellationToken);
+        if (movement == null) return false;
+        
+        context.Movements.Remove(movement);
+        await context.SaveChangesAsync(cancellationToken);
+        return true;
+    }
 }

@@ -32,6 +32,13 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>().AddProblemDetails
 
 var app = builder.Build();
 
+// Auto-migrate database on startup
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<SarDbContext>();
+    context.Database.Migrate();
+}
+
 // Initialize Database
 using (var scope = app.Services.CreateScope())
 {
@@ -45,6 +52,9 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
+// Add Exception Handler Middleware
+app.UseExceptionHandler();
 
 // Map Carter routes
 app.MapCarter();

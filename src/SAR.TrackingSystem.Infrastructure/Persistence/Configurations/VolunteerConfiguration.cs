@@ -10,30 +10,17 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
     {
         builder.HasKey(x => x.Id);
         
-        builder.Property(x => x.TcKimlik)
-            .IsRequired();
-            
         builder.Property(x => x.FullName)
             .IsRequired()
             .HasMaxLength(200);
             
-        builder.Property(x => x.BloodType)
-            .HasMaxLength(20);
-            
-        builder.Property(x => x.Phone)
+        builder.Property(x => x.QRId)
+            .IsRequired()
             .HasMaxLength(50);
             
-        builder.Property(x => x.EmergencyContactName)
-            .HasMaxLength(200);
-            
-        builder.Property(x => x.EmergencyContactPhone)
-            .HasMaxLength(50);
-            
-        builder.Property(x => x.Buddy1)
-            .HasMaxLength(200);
-            
-        builder.Property(x => x.Buddy2)
-            .HasMaxLength(200);
+        builder.Property(x => x.Role)
+            .IsRequired()
+            .HasMaxLength(100);
 
         builder.HasOne(x => x.Team)
             .WithMany(x => x.Volunteers)
@@ -43,6 +30,9 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
             .WithOne(x => x.Volunteer)
             .HasForeignKey(x => x.VolunteerId);
 
-        builder.HasIndex(x => x.TcKimlik).IsUnique();
+        // QRId unique index if provided
+        builder.HasIndex(x => x.QRId)
+            .IsUnique()
+            .HasFilter("[QRId] IS NOT NULL");
     }
 }

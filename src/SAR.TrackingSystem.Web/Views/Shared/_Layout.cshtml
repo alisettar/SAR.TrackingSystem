@@ -18,6 +18,213 @@
             --sar-danger: #dc2626;
         }
 
+        /* Dark theme overrides */
+        [data-theme="dark"] {
+            --sar-primary: #2d3748;
+            --sar-secondary: #4a5568;
+            --sar-accent: #e2e8f0;
+            --sar-success: #68d391;
+            --sar-warning: #f6e05e;
+            --sar-danger: #fc8181;
+        }
+
+        [data-theme="dark"] body {
+            background-color: #1a202c;
+            color: #e2e8f0;
+        }
+
+        [data-theme="dark"] .card {
+            background-color: #2d3748;
+            border-color: #4a5568;
+            color: #e2e8f0;
+        }
+
+        [data-theme="dark"] .table {
+            color: #e2e8f0;
+            --bs-table-bg: #2d3748;
+        }
+
+        [data-theme="dark"] .table-dark {
+            --bs-table-bg: #4a5568;
+            --bs-table-striped-bg: #2d3748;
+            color: #ffffff;
+        }
+
+        [data-theme="dark"] .table-dark th {
+            background-color: #4a5568 !important;
+            color: #ffffff !important;
+        }
+
+        [data-theme="dark"] .table tbody {
+            background-color: #2d3748;
+        }
+
+        [data-theme="dark"] .table tbody td {
+            color: #e2e8f0 !important;
+        }
+
+        [data-theme="dark"] .table-hover tbody tr:hover {
+            background-color: #4a5568 !important;
+        }
+
+        [data-theme="dark"] .table > :not(caption) > * > * {
+            border-bottom-color: #4a5568;
+        }
+
+        [data-theme="dark"] .alert {
+            background-color: #2d3748;
+            border-color: #4a5568;
+            color: #e2e8f0;
+        }
+
+        [data-theme="dark"] .form-control {
+            background-color: #2d3748;
+            border-color: #4a5568;
+            color: #e2e8f0;
+        }
+
+        [data-theme="dark"] .form-control:focus {
+            background-color: #2d3748;
+            border-color: #e2e8f0;
+            color: #e2e8f0;
+            box-shadow: 0 0 0 0.25rem rgba(226, 232, 240, 0.25);
+        }
+        
+        /* Dropdown and Select Elements */
+        [data-theme="dark"] .form-select {
+            background-color: #2d3748;
+            border-color: #4a5568;
+            color: #e2e8f0;
+        }
+        
+        [data-theme="dark"] .form-select:focus {
+            background-color: #2d3748;
+            border-color: #e2e8f0;
+            color: #e2e8f0;
+            box-shadow: 0 0 0 0.25rem rgba(226, 232, 240, 0.25);
+        }
+        
+        [data-theme="dark"] .form-select option {
+            background-color: #2d3748;
+            color: #e2e8f0;
+        }
+        
+        /* Navbar and Navigation */
+        [data-theme="dark"] .navbar-dark {
+            background-color: #2d3748;
+        }
+        
+        [data-theme="dark"] .nav-tabs .nav-link {
+            background-color: #2d3748;
+            border-color: #4a5568;
+            color: #e2e8f0;
+        }
+        
+        [data-theme="dark"] .nav-tabs .nav-link.active {
+            background-color: #4a5568;
+            border-color: #4a5568;
+            color: #ffffff;
+        }
+        
+        [data-theme="dark"] .nav-tabs .nav-link:hover {
+            background-color: #4a5568;
+            border-color: #4a5568;
+        }
+
+        /* Buttons & Badges */
+        [data-theme="dark"] .btn-primary {
+            background-color: #4a5568;
+            border-color: #4a5568;
+            color: #ffffff;
+        }
+
+        [data-theme="dark"] .btn-primary:hover {
+            background-color: #2d3748;
+            border-color: #2d3748;
+        }
+
+        [data-theme="dark"] .btn-outline-primary {
+            color: #e2e8f0;
+            border-color: #4a5568;
+        }
+
+        [data-theme="dark"] .btn-outline-primary:hover {
+            background-color: #4a5568;
+            border-color: #4a5568;
+            color: #ffffff;
+        }
+
+        [data-theme="dark"] .btn-secondary {
+            background-color: #4a5568;
+            border-color: #4a5568;
+        }
+
+        [data-theme="dark"] .btn-outline-secondary {
+            color: #e2e8f0;
+            border-color: #4a5568;
+        }
+
+        [data-theme="dark"] .badge {
+            color: #ffffff;
+        }
+
+        /* Pagination */
+        [data-theme="dark"] .pagination .page-link {
+            background-color: #2d3748;
+            border-color: #4a5568;
+            color: #e2e8f0;
+        }
+
+        [data-theme="dark"] .pagination .page-link:hover {
+            background-color: #4a5568;
+            border-color: #4a5568;
+            color: #ffffff;
+        }
+
+        [data-theme="dark"] .pagination .page-item.active .page-link {
+            background-color: #4a5568;
+            border-color: #4a5568;
+            color: #ffffff;
+        }
+
+        /* Search & Form inputs */
+        [data-theme="dark"] .form-control::placeholder {
+            color: #a0aec0;
+        }
+
+        /* Dashboard Stats Cards */
+        [data-theme="dark"] .stat-card .text-muted {
+            color: #a0aec0 !important;
+        }
+
+        [data-theme="dark"] .stat-card h3 {
+            color: #ffffff !important;
+        }
+
+        /* Badges - better contrast */
+        [data-theme="dark"] .badge.bg-secondary {
+            background-color: #718096 !important;
+            color: #ffffff !important;
+        }
+
+        [data-theme="dark"] .badge.bg-warning {
+            background-color: #d69e2e !important;
+            color: #1a202c !important;
+        }
+
+        [data-theme="dark"] .text-muted {
+            color: #a0aec0 !important;
+        }
+
+        /* Dashboard table headers */
+        [data-theme="dark"] .table thead th {
+            color: #e2e8f0 !important;
+        }
+
+        [data-theme="dark"] .table-sm th {
+            color: #e2e8f0 !important;
+        }
+
         .navbar-brand {
             font-weight: 700;
             color: white !important;
@@ -107,18 +314,28 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link text-warning" href="/movements/quickentry">
+                            <i class="bi bi-qr-code-scan me-1"></i>QR İşlemler
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="/sectors">
                             <i class="bi bi-building me-1"></i>Sektörler
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/teams">
-                            <i class="bi bi-people-fill me-1"></i>Takımlar
+                            <i class="bi bi-people-fill me-1"></i>Ekipler
                         </a>
                     </li>
                 </ul>
 
                 <ul class="navbar-nav">
+                    <li class="nav-item me-2">
+                        <button id="themeToggle" class="btn btn-outline-light btn-sm" title="Tema Değiştir">
+                            <i class="bi bi-moon" id="themeIcon"></i>
+                        </button>
+                    </li>
                     <li class="nav-item">
                         <span class="nav-link">
                             <i class="bi bi-clock me-1"></i>@DateTime.Now.ToString("HH:mm")
@@ -140,6 +357,32 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const html = document.documentElement;
+        
+        // Check saved theme or default to light
+        const currentTheme = sessionStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', currentTheme);
+        updateThemeIcon(currentTheme);
+        
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            html.setAttribute('data-theme', newTheme);
+            sessionStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+        
+        function updateThemeIcon(theme) {
+            themeIcon.className = theme === 'dark' ? 'bi bi-sun' : 'bi bi-moon';
+        }
+    </script>
+    
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

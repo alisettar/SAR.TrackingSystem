@@ -1,9 +1,9 @@
-@model MovementCreateViewModel
+@model TeamMovementCreateViewModel
 @{
-    ViewData["Title"] = "Hareket Kaydı";
+    ViewData["Title"] = "Ekip Hareket Kaydı";
 }
 
-<h2><i class="bi bi-arrow-left-right"></i> Hareket Kaydı</h2>
+<h2><i class="bi bi-people-fill"></i> Ekip Hareket Kaydı</h2>
 
 @if (ViewBag.Error != null)
 {
@@ -14,26 +14,28 @@
     <div class="card-body">
         <form method="post">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <div class="mb-3">
-                        <label class="form-label">Ekip Üyesi</label>
-                        <select asp-for="VolunteerId" class="form-select" required>
-                            <option value="">Ekip üyesi seçiniz...</option>
-                            @if (ViewBag.Volunteers != null)
+                        <label class="form-label">Ekip <span class="text-danger">*</span></label>
+                        <select asp-for="TeamId" class="form-select" required onchange="loadTeamMembers(this.value)">
+                            <option value="">Ekip seçiniz...</option>
+                            @if (ViewBag.Teams != null)
                             {
-                                @foreach (var volunteer in ((PaginatedResponse<VolunteerViewModel>)ViewBag.Volunteers).Items)
+                                @foreach (var team in (List<TeamViewModel>)ViewBag.Teams)
                                 {
-                                    <option value="@volunteer.Id">@volunteer.FullName (@volunteer.TcKimlik)</option>
+                                    <option value="@team.Id">@team.Name (@team.Code)</option>
                                 }
                             }
                         </select>
+                        <span asp-validation-for="TeamId" class="text-danger"></span>
                     </div>
                 </div>
-                <div class="col-md-6">
+                
+                <div class="col-md-4">
                     <div class="mb-3">
-                        <label class="form-label">Kaynak Sektör</label>
-                        <select asp-for="FromSectorId" class="form-select">
-                            <option value="">Seçiniz (ilk hareket için boş)</option>
+                        <label class="form-label">Kaynak Sektör <span class="text-danger">*</span></label>
+                        <select asp-for="FromSectorId" class="form-select" required>
+                            <option value="">Kaynak sektör seçiniz...</option>
                             @if (ViewBag.Sectors != null)
                             {
                                 @foreach (var sector in (List<SectorViewModel>)ViewBag.Sectors)
@@ -42,14 +44,13 @@
                                 }
                             }
                         </select>
+                        <span asp-validation-for="FromSectorId" class="text-danger"></span>
                     </div>
                 </div>
-            </div>
-
-            <div class="row">
+                
                 <div class="col-md-4">
                     <div class="mb-3">
-                        <label class="form-label">Hedef Sektör</label>
+                        <label class="form-label">Hedef Sektör <span class="text-danger">*</span></label>
                         <select asp-for="ToSectorId" class="form-select" required>
                             <option value="">Hedef sektör seçiniz...</option>
                             @if (ViewBag.Sectors != null)
@@ -60,59 +61,48 @@
                                 }
                             }
                         </select>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="mb-3">
-                        <label class="form-label">Hareket Tipi</label>
-                        <select asp-for="Type" class="form-select" required>
-                            <option value="0">İntikal (Entry)</option>
-                            <option value="1">Transfer</option>
-                            <option value="2">Çıkış (Exit)</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="mb-3">
-                        <label class="form-label">Hareket Tipi</label>
-                        <div class="form-check mt-2">
-                            <input asp-for="IsGroupMovement" class="form-check-input" type="checkbox" 
-                                   onchange="toggleGroupId(this)" />
-                            <label class="form-check-label">
-                                Grup Hareketi
-                            </label>
-                        </div>
+                        <span asp-validation-for="ToSectorId" class="text-danger"></span>
                     </div>
                 </div>
             </div>
 
-            <div class="row" id="groupIdRow" style="display: none;">
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label class="form-label">Grup ID</label>
-                        <input asp-for="GroupId" class="form-control" type="text" placeholder="Grup ID'si giriniz" />
-                    </div>
+            <!-- Team Members Preview -->
+            <div id="teamMembersSection" class="mb-3" style="display: none;">
+                <label class="form-label"><i class="bi bi-people"></i> Hareket Edilecek Ekip Üyeleri</label>
+                <div id="teamMembersList" class="border rounded p-3 bg-light">
+                    <!-- Team members will be loaded here -->
                 </div>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Notlar</label>
                 <textarea asp-for="Notes" class="form-control" rows="3" placeholder="İsteğe bağlı notlar..."></textarea>
+                <span asp-validation-for="Notes" class="text-danger"></span>
             </div>
 
             <div class="alert alert-info">
-                <strong><i class="bi bi-info-circle"></i> Hareket Kuralları:</strong>
+                <strong><i class="bi bi-info-circle"></i> Otomatik Ayarlar:</strong>
+                <ul class="mb-0">
+                    <li><strong>Grup Hareketi:</strong> Evet (Otomatik)</li>
+                    <li><strong>Grup ID:</strong> Otomatik oluşturulacak</li>
+                    <li><strong>Hareket Tipi:</strong> Hedef sektöre göre otomatik belirlenecek</li>
+                </ul>
+            </div>
+
+            <div class="alert alert-warning">
+                <strong><i class="bi bi-exclamation-triangle"></i> Hareket Kuralları:</strong>
                 <ul class="mb-0">
                     <li>İlk hareket mutlaka ALAN_DIŞI → BOO olmalıdır</li>
-                    <li>Sektör geçişleri BOO üzerinden yapılmalıdır</li>
                     <li>Çıkış sadece BOO'dan yapılabilir</li>
-                    <li>Grup hareketi seçildiğinde Grup ID zorunludur</li>
+                    <li><strong>Kaynak ve hedef sektör aynı olamaz</strong></li>
+                    <li>Seçilen ekipteki TÜM üyeler için hareket kaydı yapılacak</li>
+                    <li><em class="text-muted">Not: Sektör geçişleri geçici olarak serbest bırakıldı</em></li>
                 </ul>
             </div>
 
             <div class="d-flex gap-2">
                 <button type="submit" class="btn btn-success">
-                    <i class="bi bi-save"></i> Hareket Kaydı Yap
+                    <i class="bi bi-save"></i> Ekip Hareket Kaydı Yap
                 </button>
                 <a href="/movements" class="btn btn-secondary">
                     <i class="bi bi-arrow-left"></i> İptal
@@ -124,18 +114,100 @@
 
 @section Scripts {
     <script>
-        function toggleGroupId(checkbox) {
-            const groupIdRow = document.getElementById('groupIdRow');
-            const groupIdInput = document.querySelector('input[name="GroupId"]');
+        let teamMembers = [];
+        
+        async function loadTeamMembers(teamId) {
+            const section = document.getElementById('teamMembersSection');
+            const membersList = document.getElementById('teamMembersList');
             
-            if (checkbox.checked) {
-                groupIdRow.style.display = 'block';
-                groupIdInput.required = true;
-            } else {
-                groupIdRow.style.display = 'none';
-                groupIdInput.required = false;
-                groupIdInput.value = '';
+            if (!teamId) {
+                section.style.display = 'none';
+                return;
+            }
+            
+            try {
+                membersList.innerHTML = '<div class="text-center"><i class="bi bi-hourglass-split"></i> Yükleniyor...</div>';
+                section.style.display = 'block';
+                
+                const response = await fetch(`/api/teams/${teamId}/members`);
+                if (!response.ok) throw new Error('Network response was not ok');
+                
+                const members = await response.json();
+                teamMembers = members;
+                
+                if (members.length === 0) {
+                    membersList.innerHTML = '<div class="text-muted"><i class="bi bi-info-circle"></i> Bu ekipte kayıtlı üye bulunamadı.</div>';
+                } else {
+                    let membersHtml = '<div class="row">';
+                    members.forEach((member, index) => {
+                        membersHtml += `
+                            <div class="col-md-4 mb-2">
+                                <div class="badge bg-primary text-wrap">
+                                    <i class="bi bi-person"></i> ${member.fullName}
+                                    ${member.qrId ? `<br><small>(QR: ${member.qrId})</small>` : ''}
+                                    ${member.role ? `<br><small>${member.role}</small>` : ''}
+                                </div>
+                            </div>
+                        `;
+                    });
+                    membersHtml += '</div>';
+                    membersHtml += `<div class="mt-2"><small class="text-muted">Toplam ${members.length} üye için hareket kaydı yapılacak.</small></div>`;
+                    membersList.innerHTML = membersHtml;
+                }
+            } catch (error) {
+                membersList.innerHTML = '<div class="text-danger"><i class="bi bi-exclamation-circle"></i> Ekip üyeleri yüklenirken hata oluştu.</div>';
+                console.error('Error loading team members:', error);
             }
         }
+        
+        // Form submit validation
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const teamId = document.querySelector('[name="TeamId"]').value;
+            const fromSectorId = document.querySelector('[name="FromSectorId"]').value;
+            const toSectorId = document.querySelector('[name="ToSectorId"]').value;
+            
+            if (!teamId) {
+                e.preventDefault();
+                alert('Lütfen bir ekip seçiniz.');
+                return false;
+            }
+            
+            if (!fromSectorId) {
+                e.preventDefault();
+                alert('Lütfen kaynak sektör seçiniz.');
+                return false;
+            }
+            
+            if (!toSectorId) {
+                e.preventDefault();
+                alert('Lütfen hedef sektör seçiniz.');
+                return false;
+            }
+            
+            // Same sector validation
+            if (fromSectorId === toSectorId) {
+                e.preventDefault();
+                alert('Kaynak ve hedef sektör aynı olamaz.');
+                return false;
+            }
+            
+            if (teamMembers.length === 0) {
+                e.preventDefault();
+                alert('Seçilen ekipte üye bulunamadı. Lütfen başka bir ekip seçiniz.');
+                return false;
+            }
+            
+            // Confirmation
+            const teamName = document.querySelector('[name="TeamId"] option:checked').text;
+            const fromSectorName = document.querySelector('[name="FromSectorId"] option:checked').text;
+            const toSectorName = document.querySelector('[name="ToSectorId"] option:checked').text;
+            
+            if (!confirm(`${teamName} ekibindeki ${teamMembers.length} üye için ${fromSectorName} → ${toSectorName} hareket kaydı yapılsın mı?`)) {
+                e.preventDefault();
+                return false;
+            }
+        });
     </script>
+    
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

@@ -1,0 +1,278 @@
+@{
+    ViewData["Title"] = "QR İşlemler";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white text-center">
+                <h3 class="mb-0">
+                    <i class="bi bi-qr-code-scan"></i>
+                    QR İşlemler
+                </h3>
+            </div>
+            <div class="card-body">
+                <!-- Tab Navigation -->
+                <ul class="nav nav-tabs nav-fill mb-4" id="qrTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="entry-tab" data-bs-toggle="tab" data-bs-target="#entry-pane" 
+                                type="button" role="tab" aria-controls="entry-pane" aria-selected="true"
+                                data-operation="entry">
+                            <i class="bi bi-arrow-right-circle text-success"></i>
+                            <br><small>Giriş</small>
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="exit-tab" data-bs-toggle="tab" data-bs-target="#exit-pane" 
+                                type="button" role="tab" aria-controls="exit-pane" aria-selected="false"
+                                data-operation="exit">
+                            <i class="bi bi-arrow-left-circle text-danger"></i>
+                            <br><small>Çıkış</small>
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="sector-tab" data-bs-toggle="tab" data-bs-target="#sector-pane" 
+                                type="button" role="tab" aria-controls="sector-pane" aria-selected="false"
+                                data-operation="sector">
+                            <i class="bi bi-geo-alt text-warning"></i>
+                            <br><small>Sektöre</small>
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="hub-tab" data-bs-toggle="tab" data-bs-target="#hub-pane" 
+                                type="button" role="tab" aria-controls="hub-pane" aria-selected="false"
+                                data-operation="hub">
+                            <i class="bi bi-house-check text-info"></i>
+                            <br><small>BOO'ya</small>
+                        </button>
+                    </li>
+                </ul>
+
+                <div id="alert-container" class="mb-3"></div>
+
+                <!-- Tab Content -->
+                <div class="tab-content" id="qrTabsContent">
+                    <!-- Giriş Tab -->
+                    <div class="tab-pane fade show active" id="entry-pane" role="tabpanel" aria-labelledby="entry-tab">
+                        <div class="text-center mb-3">
+                            <h5><i class="bi bi-arrow-right-circle text-success"></i> Alana Giriş</h5>
+                            <p class="text-muted">ALAN_DIŞI → BOO</p>
+                        </div>
+                    </div>
+
+                    <!-- Çıkış Tab -->
+                    <div class="tab-pane fade" id="exit-pane" role="tabpanel" aria-labelledby="exit-tab">
+                        <div class="text-center mb-3">
+                            <h5><i class="bi bi-arrow-left-circle text-danger"></i> Alandan Çıkış</h5>
+                            <p class="text-muted">BOO → ÇIKIŞ</p>
+                        </div>
+                    </div>
+
+                    <!-- Sektöre Gönder Tab -->
+                    <div class="tab-pane fade" id="sector-pane" role="tabpanel" aria-labelledby="sector-tab">
+                        <div class="text-center mb-3">
+                            <h5><i class="bi bi-geo-alt text-warning"></i> Sektöre Gönder</h5>
+                            <p class="text-muted">BOO → Seçilen Sektör</p>
+                        </div>
+                        <div class="mb-3">
+                            <label for="targetSector" class="form-label">Hedef Sektör</label>
+                            <select class="form-select" id="targetSector" required>
+                                <option value="">Sektör seçiniz...</option>
+                                @foreach (var sector in ViewBag.Sectors as List<SAR.TrackingSystem.Web.Models.SectorViewModel>)
+                                {
+                                    @if (!sector.Code.Equals("ALAN_DIŞI") && !sector.Code.Equals("BOO") && !sector.Code.Equals("ÇIKIŞ"))
+                                    {
+                                        <option value="@sector.Id">@sector.Name (@sector.Code)</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- BOO'ya Dön Tab -->
+                    <div class="tab-pane fade" id="hub-pane" role="tabpanel" aria-labelledby="hub-tab">
+                        <div class="text-center mb-3">
+                            <h5><i class="bi bi-house-check text-info"></i> BOO'ya Dön</h5>
+                            <p class="text-muted">Son Sektör → BOO</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- QR Input (Common for all tabs) -->
+                <form id="qr-form" class="mt-4">
+                    <div class="mb-3">
+                        <label for="qrId" class="form-label">
+                            <i class="bi bi-qr-code"></i> QR ID
+                        </label>
+                        <input type="text" class="form-control form-control-lg text-center" 
+                               id="qrId" name="qrId" placeholder="QR kodu okutun veya yazın..." 
+                               autocomplete="off" autofocus>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary btn-lg" id="processBtn">
+                            <i class="bi bi-play-circle"></i> İşle
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="text-center mt-3">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i>
+                        QR kodu okutun veya yazıp <strong>Enter</strong> tuşuna basın
+                    </div>
+                </div>
+                
+                <div id="recent-entries" class="mt-4" style="display: none;">
+                    <h6><i class="bi bi-clock-history"></i> Son İşlemler</h6>
+                    <div id="entries-list" class="small"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    let recentEntries = [];
+    let activeOperation = 'entry';
+    
+    // Tab change handler
+    document.querySelectorAll('[data-bs-toggle="tab"]').forEach(tab => {
+        tab.addEventListener('shown.bs.tab', function(event) {
+            activeOperation = event.target.getAttribute('data-operation');
+            localStorage.setItem('qrActiveTab', activeOperation);
+            updateProcessButton();
+        });
+    });
+    
+    // Load saved tab on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        const savedTab = localStorage.getItem('qrActiveTab') || 'entry';
+        const tabButton = document.querySelector(`[data-operation="${savedTab}"]`);
+        if (tabButton) {
+            const tab = new bootstrap.Tab(tabButton);
+            tab.show();
+            activeOperation = savedTab;
+        }
+        updateProcessButton();
+    });
+    
+    // Form submission
+    document.getElementById('qr-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        await processQrOperation();
+    });
+    
+    // Enter key handler for QR input
+    document.getElementById('qrId').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            processQrOperation();
+        }
+    });
+    
+    async function processQrOperation() {
+        const qrInput = document.getElementById('qrId');
+        const qrId = qrInput.value.trim();
+        const targetSectorSelect = document.getElementById('targetSector');
+        
+        if (!qrId) {
+            showAlert('warning', 'QR ID giriniz');
+            return;
+        }
+        
+        if (activeOperation === 'sector' && !targetSectorSelect.value) {
+            showAlert('warning', 'Hedef sektör seçiniz');
+            targetSectorSelect.focus();
+            return;
+        }
+        
+        // Show loading
+        showAlert('info', 'İşleniyor...', false);
+        
+        const formData = new FormData();
+        formData.append('operationType', activeOperation);
+        formData.append('qrId', qrId);
+        
+        if (activeOperation === 'sector' && targetSectorSelect.value) {
+            formData.append('targetSectorId', targetSectorSelect.value);
+        }
+        
+        try {
+            const response = await fetch('/movements/quickentryoperation', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                showAlert('success', result.message);
+                addToRecentEntries(qrId, activeOperation);
+                qrInput.value = ''; // Clear input
+                qrInput.focus(); // Return focus for next scan
+            } else {
+                showAlert('danger', result.message);
+                qrInput.value = ''; // Clear input on error
+                qrInput.focus(); // Return focus for next scan
+            }
+        } catch (error) {
+            showAlert('danger', 'Bağlantı hatası: ' + error.message);
+            qrInput.value = ''; // Clear input on connection error
+            qrInput.focus(); // Return focus for next scan
+        }
+    }
+    
+    function updateProcessButton() {
+        const processBtn = document.getElementById('processBtn');
+        const operationNames = {
+            entry: 'Giriş Yap',
+            exit: 'Çıkış Yap', 
+            sector: 'Sektöre Gönder',
+            hub: "BOO'ya Gönder"
+        };
+        
+        processBtn.innerHTML = `<i class="bi bi-play-circle"></i> ${operationNames[activeOperation]}`;
+    }
+    
+    function showAlert(type, message, autoHide = true) {
+        const alertContainer = document.getElementById('alert-container');
+        const alertHtml = `
+            <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        `;
+        alertContainer.innerHTML = alertHtml;
+        
+        if (autoHide && type === 'success') {
+            setTimeout(() => {
+                alertContainer.innerHTML = '';
+            }, 3000);
+        }
+    }
+    
+    function addToRecentEntries(qrId, operation) {
+        const now = new Date().toLocaleTimeString();
+        const operationLabels = {
+            entry: '🟢 Giriş',
+            exit: '🔴 Çıkış',
+            sector: '🟡 Sektöre',
+            hub: '🔵 BOO\'ya'
+        };
+        
+        recentEntries.unshift(`${operationLabels[operation]} - ${qrId} - ${now}`);
+        
+        if (recentEntries.length > 5) {
+            recentEntries = recentEntries.slice(0, 5);
+        }
+        
+        const entriesList = document.getElementById('entries-list');
+        entriesList.innerHTML = recentEntries.map(entry => 
+            `<div class="badge bg-secondary me-1 mb-1">${entry}</div>`
+        ).join('');
+        
+        document.getElementById('recent-entries').style.display = 'block';
+    }
+</script>
+}

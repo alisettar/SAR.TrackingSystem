@@ -38,6 +38,15 @@ public class MovementsModule : ICarterModule
                 operation.Description = "Creates a new movement entry.";
                 return operation;
             });
+            
+        app.MapDelete("/movements/{id}", DeleteMovement)
+            .WithName(nameof(DeleteMovement))
+            .WithOpenApi(operation =>
+            {
+                operation.Summary = "Delete movement";
+                operation.Description = "Deletes a movement by ID.";
+                return operation;
+            });
     }
 
     private static async Task<Results<Ok<MovementResponse>, NotFound>> GetMovementById(
@@ -59,7 +68,7 @@ public class MovementsModule : ICarterModule
         HttpContext context)
     {
         var result = await sender.Send(
-            new GetMovementsQuery(paginationRequest),
+            new GetMovementsQuery(paginationRequest ?? new()),
             context.RequestAborted);
 
         return TypedResults.Ok(result);
@@ -74,5 +83,16 @@ public class MovementsModule : ICarterModule
         var movementId = await sender.Send(command, context.RequestAborted);
 
         return TypedResults.Created($"/movements/{movementId}");
+    }
+    
+    private static async Task<Results<Ok, NotFound>> DeleteMovement(
+        Guid id,
+        [FromServices] ISender sender,
+        HttpContext context)
+    {
+        var command = new DeleteMovementCommand(id);
+        var success = await sender.Send(command, context.RequestAborted);
+
+        return success ? TypedResults.Ok() : TypedResults.NotFound();
     }
 }

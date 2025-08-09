@@ -6,24 +6,34 @@ namespace SAR.TrackingSystem.Web.Controllers;
 
 public class VolunteersController : Controller
 {
-    private readonly ISarApiService _apiService;
+    private readonly IVolunteerService _volunteerService;
+    private readonly ITeamService _teamService;
 
-    public VolunteersController(ISarApiService apiService)
+    public VolunteersController(IVolunteerService volunteerService, ITeamService teamService)
     {
-        _apiService = apiService;
+        _volunteerService = volunteerService;
+        _teamService = teamService;
     }
 
     public async Task<IActionResult> Index(int page = 1, string search = "")
     {
         ViewBag.SearchTerm = search;
-        var volunteers = await _apiService.GetVolunteersAsync(page, 20, search);
+        var volunteers = await _volunteerService.GetVolunteersAsync(page, 20, search);
         return View(volunteers);
     }
 
-    public async Task<IActionResult> Create()
+    public async Task<IActionResult> Create(string? qrId = null)
     {
-        ViewBag.Teams = await _apiService.GetTeamsAsync();
-        return View();
+        ViewBag.Teams = await _teamService.GetTeamsAsync();
+        
+        var model = new VolunteerCreateViewModel();
+        if (!string.IsNullOrEmpty(qrId))
+        {
+            model.QRId = qrId;
+            ViewBag.PrefilledQRId = qrId;
+        }
+        
+        return View(model);
     }
 
     [HttpPost]
@@ -31,43 +41,38 @@ public class VolunteersController : Controller
     {
         if (!ModelState.IsValid)
         {
-            ViewBag.Teams = await _apiService.GetTeamsAsync();
+            ViewBag.Teams = await _teamService.GetTeamsAsync();
             return View(model);
         }
 
         try
         {
-            await _apiService.CreateVolunteerAsync(model);
+            await _volunteerService.CreateVolunteerAsync(model);
             TempData["Success"] = "Ekip üyesi başarıyla oluşturuldu.";
             return RedirectToAction(nameof(Index));
         }
         catch (Exception ex)
         {
             ViewBag.Error = $"Hata: {ex.Message}";
-            ViewBag.Teams = await _apiService.GetTeamsAsync();
+            ViewBag.Teams = await _teamService.GetTeamsAsync();
             return View(model);
         }
     }
 
     public async Task<IActionResult> Edit(Guid id)
     {
-        var volunteer = await _apiService.GetVolunteerByIdAsync(id);
+        var volunteer = await _volunteerService.GetVolunteerByIdAsync(id);
         if (volunteer == null)
             return NotFound();
 
-        ViewBag.Teams = await _apiService.GetTeamsAsync();
+        ViewBag.Teams = await _teamService.GetTeamsAsync();
         
         var model = new VolunteerUpdateViewModel
         {
-            TcKimlik = volunteer.TcKimlik,
             FullName = volunteer.FullName,
             TeamId = volunteer.TeamId,
-            BloodType = volunteer.BloodType,
-            Phone = volunteer.Phone,
-            EmergencyContactName = volunteer.EmergencyContactName,
-            EmergencyContactPhone = volunteer.EmergencyContactPhone,
-            Buddy1 = volunteer.Buddy1,
-            Buddy2 = volunteer.Buddy2
+            QRId = volunteer.QRId,
+            Role = volunteer.Role
         };
         
         return View(model);
@@ -78,13 +83,13 @@ public class VolunteersController : Controller
     {
         if (!ModelState.IsValid)
         {
-            ViewBag.Teams = await _apiService.GetTeamsAsync();
+            ViewBag.Teams = await _teamService.GetTeamsAsync();
             return View(model);
         }
 
         try
         {
-            var success = await _apiService.UpdateVolunteerAsync(id, model);
+            var success = await _volunteerService.UpdateVolunteerAsync(id, model);
             if (success)
             {
                 TempData["Success"] = "Ekip üyesi başarıyla güncellendi.";
@@ -100,7 +105,7 @@ public class VolunteersController : Controller
             ViewBag.Error = $"Hata: {ex.Message}";
         }
 
-        ViewBag.Teams = await _apiService.GetTeamsAsync();
+        ViewBag.Teams = await _teamService.GetTeamsAsync();
         return View(model);
     }
 
@@ -109,7 +114,7 @@ public class VolunteersController : Controller
     {
         try
         {
-            var success = await _apiService.DeleteVolunteerAsync(id);
+            var success = await _volunteerService.DeleteVolunteerAsync(id);
             if (success)
                 TempData["Success"] = "Ekip üyesi başarıyla silindi.";
             else

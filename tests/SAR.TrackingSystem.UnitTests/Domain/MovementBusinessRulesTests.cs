@@ -21,7 +21,7 @@ public class MovementBusinessRulesTests
     public void IsValidEntry_FirstMovement_ShouldReturnTrue()
     {
         // Act
-        var result = Movement.BusinessRules.IsValidEntry("ALAN_DIŞI", "BOO", false, _config);
+        var result = Movement.BusinessRules.IsValidEntry("ALAN_DIŞI", "BOO", false, null, null, _config);
 
         // Assert
         result.Should().BeTrue();
@@ -31,10 +31,30 @@ public class MovementBusinessRulesTests
     public void IsValidEntry_NotFirstMovement_ShouldReturnTrue()
     {
         // Act
-        var result = Movement.BusinessRules.IsValidEntry("BOO", "E-1", true, _config);
+        var result = Movement.BusinessRules.IsValidEntry("BOO", "E-1", true, null, null, _config);
 
         // Assert
         result.Should().BeTrue();
+    }
+    
+    [Fact]
+    public void IsValidEntry_ReentryAfterExit_ShouldReturnTrue()
+    {
+        // Act - Last movement was BOO → ÇIKIŞ
+        var result = Movement.BusinessRules.IsValidEntry("ALAN_DIŞI", "BOO", true, "BOO", "ÇIKIŞ", _config);
+
+        // Assert
+        result.Should().BeTrue();
+    }
+    
+    [Fact]
+    public void IsValidEntry_ReentryWithoutExit_ShouldReturnFalse()
+    {
+        // Act - Last movement was E-1 → BOO (not an exit)
+        var result = Movement.BusinessRules.IsValidEntry("ALAN_DIŞI", "BOO", true, "E-1", "BOO", _config);
+
+        // Assert
+        result.Should().BeFalse();
     }
 
     [Fact]

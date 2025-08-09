@@ -26,84 +26,51 @@ public class PaginatedResponse<T>
     public int TotalPages => (int)Math.Ceiling((double)TotalCount / PageSize);
 }
 
-// Volunteer ViewModels - FIXED TO MATCH API
+// Volunteer ViewModels - UPDATED TO NEW SCHEMA
 public class VolunteerViewModel
 {
     public Guid Id { get; set; }
-    public long TcKimlik { get; set; }
     public string FullName { get; set; } = null!;
     public Guid TeamId { get; set; }
     public string TeamName { get; set; } = null!;
-    public string BloodType { get; set; } = null!;
-    public string Phone { get; set; } = null!;
-    public string EmergencyContactName { get; set; } = null!;
-    public string EmergencyContactPhone { get; set; } = null!;
-    public string? Buddy1 { get; set; }
-    public string? Buddy2 { get; set; }
-    public bool IsActive { get; set; }
-    public DateTime CreatedAt { get; set; }
+    public string QRId { get; set; } = null!;
+    public string Role { get; set; } = null!;
 }
 
 public class VolunteerCreateViewModel
 {
-    [Required(ErrorMessage = "TC Kimlik zorunludur")]
-    [Range(10000000000, 99999999999, ErrorMessage = "TC Kimlik 11 haneli olmalıdır")]
-    public long TcKimlik { get; set; }
-    
     [Required(ErrorMessage = "Ad Soyad zorunludur")]
-    [StringLength(100, MinimumLength = 2, ErrorMessage = "Ad Soyad 2-100 karakter arası olmalıdır")]
+    [StringLength(200, MinimumLength = 2, ErrorMessage = "Ad Soyad 2-200 karakter arası olmalıdır")]
     public string FullName { get; set; } = null!;
     
-    [Required(ErrorMessage = "Tim seçimi zorunludur")]
+    [Required(ErrorMessage = "Ekip seçimi zorunludur")]
     public Guid TeamId { get; set; }
     
-    [Required(ErrorMessage = "Kan grubu zorunludur")]
-    public string BloodType { get; set; } = null!;
+    [Required(ErrorMessage = "Görev zorunludur")]
+    [StringLength(100, ErrorMessage = "Görev en fazla 100 karakter olmalıdır")]
+    public string Role { get; set; } = null!;
     
-    [Required(ErrorMessage = "Telefon zorunludur")]
-    [Phone(ErrorMessage = "Geçerli bir telefon numarası giriniz")]
-    public string Phone { get; set; } = null!;
-    
-    [Required(ErrorMessage = "Acil durum kişisi zorunludur")]
-    public string EmergencyContactName { get; set; } = null!;
-    
-    [Required(ErrorMessage = "Acil durum telefonu zorunludur")]
-    [Phone(ErrorMessage = "Geçerli bir telefon numarası giriniz")]
-    public string EmergencyContactPhone { get; set; } = null!;
-    
-    public string? Buddy1 { get; set; }
-    public string? Buddy2 { get; set; }
+    [Required(ErrorMessage = "QR ID zorunludur")]
+    [StringLength(50, ErrorMessage = "QR ID en fazla 50 karakter olmalıdır")]
+    public string QRId { get; set; } = null!;
 }
 
 public class VolunteerUpdateViewModel
 {
-    [Required(ErrorMessage = "TC Kimlik zorunludur")]
-    [Range(10000000000, 99999999999, ErrorMessage = "TC Kimlik 11 haneli olmalıdır")]
-    public long TcKimlik { get; set; }
-    
     [Required(ErrorMessage = "Ad Soyad zorunludur")]
-    [StringLength(100, MinimumLength = 2, ErrorMessage = "Ad Soyad 2-100 karakter arası olmalıdır")]
+    [StringLength(200, MinimumLength = 2, ErrorMessage = "Ad Soyad 2-200 karakter arası olmalıdır")]
     public string FullName { get; set; } = null!;
     
-    [Required(ErrorMessage = "Tim seçimi zorunludur")]
+    [Required(ErrorMessage = "Ekip seçimi zorunludur")]
     public Guid TeamId { get; set; }
     
-    [Required(ErrorMessage = "Kan grubu zorunludur")]
-    public string BloodType { get; set; } = null!;
+    [Required(ErrorMessage = "Görev zorunludur")]
+    [StringLength(100, ErrorMessage = "Görev en fazla 100 karakter olmalıdır")]
+    public string Role { get; set; } = null!;
     
-    [Required(ErrorMessage = "Telefon zorunludur")]
-    [Phone(ErrorMessage = "Geçerli bir telefon numarası giriniz")]
-    public string Phone { get; set; } = null!;
-    
-    [Required(ErrorMessage = "Acil durum kişisi zorunludur")]
-    public string EmergencyContactName { get; set; } = null!;
-    
-    [Required(ErrorMessage = "Acil durum telefonu zorunludur")]
-    [Phone(ErrorMessage = "Geçerli bir telefon numarası giriniz")]
-    public string EmergencyContactPhone { get; set; } = null!;
-    
-    public string? Buddy1 { get; set; }
-    public string? Buddy2 { get; set; }
+    [Required(ErrorMessage = "QR ID zorunludur")]
+    [StringLength(50, ErrorMessage = "QR ID en fazla 50 karakter olmalıdır")]
+    public string QRId { get; set; } = null!;
 }
 
 // Movement ViewModels - FIXED TO MATCH API
@@ -111,6 +78,8 @@ public class MovementViewModel
 {
     public Guid Id { get; set; }
     public string VolunteerName { get; set; } = null!;
+    public string TeamName { get; set; } = null!;
+    public string Role { get; set; } = null!;
     public string? FromSectorName { get; set; }
     public string ToSectorName { get; set; } = null!;
     public DateTime MovementTime { get; set; }
@@ -122,15 +91,12 @@ public class MovementViewModel
 
 public class MovementCreateViewModel
 {
-    [Required(ErrorMessage = "Gönüllü seçimi zorunludur")]
     public Guid VolunteerId { get; set; }
     
     public Guid? FromSectorId { get; set; }
     
-    [Required(ErrorMessage = "Hedef sektör seçimi zorunludur")]
     public Guid ToSectorId { get; set; }
     
-    [Required(ErrorMessage = "Hareket tipi zorunludur")]
     public int Type { get; set; } = 0; // 0=Entry, 1=Transfer, 2=Exit
     
     public bool IsGroupMovement { get; set; }
@@ -140,6 +106,32 @@ public class MovementCreateViewModel
     
     [StringLength(500, ErrorMessage = "Notlar en fazla 500 karakter olmalıdır")]
     public string? Notes { get; set; }
+    
+    // QR Operations properties
+    public string? QRId { get; set; }
+    public bool IsExit { get; set; }
+    public bool ReturnToHub { get; set; }
+}
+
+// Team Movement ViewModel for group operations
+public class TeamMovementCreateViewModel
+{
+    [Required(ErrorMessage = "Ekip seçimi zorunludur")]
+    public Guid TeamId { get; set; }
+    
+    [Required(ErrorMessage = "Kaynak sektör seçimi zorunludur")]
+    public Guid FromSectorId { get; set; }
+    
+    [Required(ErrorMessage = "Hedef sektör seçimi zorunludur")]
+    public Guid ToSectorId { get; set; }
+    
+    [StringLength(500, ErrorMessage = "Notlar en fazla 500 karakter olmalıdır")]
+    public string? Notes { get; set; }
+    
+    // Auto-generated properties
+    public int Type { get; set; }
+    public bool IsGroupMovement => true;
+    public Guid GroupId { get; set; } = Guid.NewGuid();
 }
 
 // Dropdown ViewModels - FIXED TO MATCH API
@@ -148,7 +140,24 @@ public class TeamViewModel
     public Guid Id { get; set; }
     public string Name { get; set; } = null!;
     public string Code { get; set; } = null!;
-    public int Capacity { get; set; }
+    public string? City { get; set; }
+}
+
+public class TeamDetailsViewModel
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; } = null!;
+    public string Code { get; set; } = null!;
+    public string? City { get; set; }
+    public List<TeamMemberViewModel> Members { get; set; } = new();
+}
+
+public class TeamMemberViewModel
+{
+    public Guid Id { get; set; }
+    public string FullName { get; set; } = null!;
+    public string? QRId { get; set; }
+    public string? Role { get; set; }
 }
 
 public class SectorViewModel

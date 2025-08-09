@@ -6,19 +6,21 @@ namespace SAR.TrackingSystem.Web.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly ISarApiService _apiService;
+    private readonly IDashboardService _dashboardService;
+    private readonly IMovementService _movementService;
 
-    public HomeController(ISarApiService apiService)
+    public HomeController(IDashboardService dashboardService, IMovementService movementService)
     {
-        _apiService = apiService;
+        _dashboardService = dashboardService;
+        _movementService = movementService;
     }
 
     public async Task<IActionResult> Index()
     {
         try
         {
-            var stats = await _apiService.GetDashboardStatsAsync();
-            var recentMovements = await _apiService.GetRecentMovementsAsync(5);
+            var stats = await _dashboardService.GetDashboardStatsAsync();
+            var recentMovements = await _movementService.GetRecentMovementsAsync(5);
             
             var dashboardViewModel = new DashboardViewModel
             {
@@ -40,8 +42,8 @@ public class HomeController : Controller
     {
         try
         {
-            var stats = await _apiService.GetDashboardStatsAsync();
-            var recentMovements = await _apiService.GetRecentMovementsAsync(5);
+            var stats = await _dashboardService.GetDashboardStatsAsync();
+            var recentMovements = await _movementService.GetRecentMovementsAsync(5);
             
             var dashboardViewModel = new DashboardViewModel
             {

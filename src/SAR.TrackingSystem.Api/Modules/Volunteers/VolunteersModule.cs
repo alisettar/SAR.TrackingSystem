@@ -73,12 +73,11 @@ public class VolunteersModule : ICarterModule
 
     private static async Task<Ok<PaginationResponse<VolunteerResponse>>> GetVolunteers(
         [FromQuery] PaginationRequest? paginationRequest,
-        [FromQuery] string? search,
         [FromServices] ISender sender,
         HttpContext context)
     {
         var result = await sender.Send(
-            new GetVolunteersQuery(paginationRequest, search),
+            new GetVolunteersQuery(paginationRequest),
             context.RequestAborted);
 
         return TypedResults.Ok(result);
@@ -103,8 +102,7 @@ public class VolunteersModule : ICarterModule
     {
         var requestWithId = request with { Id = id };
         var command = new UpdateVolunteerCommand(requestWithId);
-        
-        var volunteerId = await sender.Send(command, context.RequestAborted);
+        _ = await sender.Send(command, context.RequestAborted);
 
         return TypedResults.Ok();
     }

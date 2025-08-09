@@ -18,6 +18,9 @@ public class TeamConfiguration : IEntityTypeConfiguration<Team>
             .IsRequired()
             .HasMaxLength(20);
             
+        builder.Property(x => x.City)
+            .HasMaxLength(100);
+            
         builder.HasMany(x => x.Volunteers)
             .WithOne(x => x.Team)
             .HasForeignKey(x => x.TeamId);

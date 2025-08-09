@@ -12,17 +12,16 @@ public sealed class CreateVolunteerCommandHandler(IVolunteerRepository repositor
 {
     public async Task<Guid> Handle(CreateVolunteerCommand request, CancellationToken cancellationToken)
     {
+        // QR uniqueness validation
+        var qrExists = await repository.ExistsByQRIdAsync(request.Request.QRId, null, cancellationToken);
+        if (qrExists)
+            throw new ValidationException("Bu QR ID zaten kullanımda.");
+
         var volunteer = Volunteer.Create(
-            tcKimlik: request.Request.TcKimlik,
             fullName: request.Request.FullName,
             teamId: request.Request.TeamId,
-            bloodType: request.Request.BloodType,
-            phone: request.Request.Phone,
-            emergencyContactName: request.Request.EmergencyContactName,
-            emergencyContactPhone: request.Request.EmergencyContactPhone,
-            buddy1: request.Request.Buddy1,
-            buddy2: request.Request.Buddy2,
-            isActive: request.Request.IsActive);
+            qrId: request.Request.QRId,
+            role: request.Request.Role);
 
         await repository.AddAsync(volunteer, cancellationToken);
         return volunteer.Id;
@@ -33,10 +32,6 @@ public sealed class CreateVolunteerCommandValidator : AbstractValidator<CreateVo
 {
     public CreateVolunteerCommandValidator()
     {
-        RuleFor(x => x.Request.TcKimlik)
-            .NotEmpty()
-            .WithMessage("TC Kimlik cannot be empty.");
-        
         RuleFor(x => x.Request.FullName)
             .NotEmpty()
             .WithMessage("Full name cannot be empty.");
@@ -44,5 +39,13 @@ public sealed class CreateVolunteerCommandValidator : AbstractValidator<CreateVo
         RuleFor(x => x.Request.TeamId)
             .NotEmpty()
             .WithMessage("Team must be selected.");
+            
+        RuleFor(x => x.Request.QRId)
+            .NotEmpty()
+            .WithMessage("QR ID cannot be empty.");
+            
+        RuleFor(x => x.Request.Role)
+            .NotEmpty()
+            .WithMessage("Role cannot be empty.");
     }
 }

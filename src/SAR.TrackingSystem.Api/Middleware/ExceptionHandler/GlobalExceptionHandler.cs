@@ -22,16 +22,19 @@ public class GlobalExceptionHandler(
             Instance = httpContext.Request.Path
         };
 
-        // special handling for ValidationException
+        // Special handling for ValidationException
         if (exception is ValidationException validationException)
         {
-            var errors = validationException
-                .Errors
-                .Select(e => new { e.PropertyName, e.ErrorMessage, e.Severity });
-
-            problemDetails.Extensions.Add("Errors", errors);
             problemDetails.Status = StatusCodes.Status400BadRequest;
             problemDetails.Title = "Validation error";
+            problemDetails.Detail = validationException.Message;
+            
+            if (validationException.Errors?.Any() == true)
+            {
+                var errors = validationException.Errors
+                    .Select(e => new { e.PropertyName, e.ErrorMessage, e.Severity });
+                problemDetails.Extensions.Add("Errors", errors);
+            }
         }
 
         httpContext.Response.StatusCode = problemDetails.Status ?? StatusCodes.Status500InternalServerError;

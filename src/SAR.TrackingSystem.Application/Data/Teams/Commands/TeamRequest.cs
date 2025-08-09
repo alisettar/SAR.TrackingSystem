@@ -3,5 +3,5 @@
 public sealed record TeamRequest(
     string Code,
     string Name,
-    int Capacity,
+    string? City = null,
     bool IsActive = true);

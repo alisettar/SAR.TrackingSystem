@@ -13,6 +13,16 @@ public class VolunteerRepository(SarDbContext context) : IVolunteerRepository
             .Include(v => v.Team)
             .FirstOrDefaultAsync(v => v.Id == id, cancellationToken);
 
+    public async Task<bool> ExistsByQRIdAsync(string qrId, Guid? excludeVolunteerId = null, CancellationToken cancellationToken = default)
+    {
+        var query = context.Volunteers.Where(v => v.QRId == qrId);
+        
+        if (excludeVolunteerId.HasValue)
+            query = query.Where(v => v.Id != excludeVolunteerId.Value);
+            
+        return await query.AnyAsync(cancellationToken);
+    }
+
     public async Task<List<Volunteer>> GetAllAsync(CancellationToken cancellationToken)
         => await context.Volunteers
             .Include(v => v.Team)
@@ -33,7 +43,7 @@ public class VolunteerRepository(SarDbContext context) : IVolunteerRepository
         if (!string.IsNullOrEmpty(search))
         {
             query = query.Where(v => v.FullName.Contains(search) ||
-                                   v.TcKimlik.ToString().Contains(search) ||
+                                   (v.QRId != null && v.QRId.Contains(search)) ||
                                    v.Team.Name.Contains(search));
         }
 
@@ -44,7 +54,8 @@ public class VolunteerRepository(SarDbContext context) : IVolunteerRepository
         {
             "FullName" => request.OrderDescending ? query.OrderByDescending(v => v.FullName) : query.OrderBy(v => v.FullName),
             "TeamName" => request.OrderDescending ? query.OrderByDescending(v => v.Team.Name) : query.OrderBy(v => v.Team.Name),
-            _ => request.OrderDescending ? query.OrderByDescending(v => v.CreatedAt) : query.OrderBy(v => v.CreatedAt)
+            "QRId" => request.OrderDescending ? query.OrderByDescending(v => v.QRId) : query.OrderBy(v => v.QRId),
+            _ => request.OrderDescending ? query.OrderByDescending(v => v.FullName) : query.OrderBy(v => v.FullName)
         };
 
         var items = await query

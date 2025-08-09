@@ -6,22 +6,26 @@ namespace SAR.TrackingSystem.Web.Controllers;
 
 public class SectorsController : Controller
 {
-    private readonly ISarApiService _apiService;
+    private readonly ISectorService _sectorService;
 
-    public SectorsController(ISarApiService apiService)
+    public SectorsController(ISectorService sectorService)
     {
-        _apiService = apiService;
+        _sectorService = sectorService;
     }
 
     public async Task<IActionResult> Index()
     {
-        var sectors = await _apiService.GetSectorsAsync();
+        var sectors = await _sectorService.GetSectorsAsync();
+        
+        // Backdoor for delete functionality
+        ViewBag.EnableDelete = Request.Query.ContainsKey("admin") && Request.Query["admin"] == "true";
+        
         return View(sectors);
     }
 
     public async Task<IActionResult> Details(Guid id)
     {
-        var sector = await _apiService.GetSectorByIdAsync(id);
+        var sector = await _sectorService.GetSectorByIdAsync(id);
         if (sector == null)
         {
             return NotFound();
@@ -44,7 +48,7 @@ public class SectorsController : Controller
             return View(model);
         }
 
-        var result = await _apiService.CreateSectorAsync(model);
+        var result = await _sectorService.CreateSectorAsync(model);
         if (result)
         {
             return RedirectToAction(nameof(Index));
@@ -52,6 +56,61 @@ public class SectorsController : Controller
 
         ModelState.AddModelError(string.Empty, "Sektör oluşturulurken bir hata oluştu.");
         return View(model);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        var sector = await _sectorService.GetSectorByIdAsync(id);
+        if (sector == null)
+        {
+            return NotFound();
+        }
+
+        // Kritik sektörleri silme işlemini engelle
+        if (IsCriticalSector(sector.Code))
+        {
+            TempData["Error"] = "Bu sektör sistem için kritik olduğu için silinemez.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        return View(sector);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(Guid id)
+    {
+        var sector = await _sectorService.GetSectorByIdAsync(id);
+        if (sector == null)
+        {
+            return NotFound();
+        }
+
+        // Kritik sektörleri silme işlemini engelle
+        if (IsCriticalSector(sector.Code))
+        {
+            TempData["Error"] = "Bu sektör sistem için kritik olduğu için silinemez.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        var result = await _sectorService.DeleteSectorAsync(id);
+        if (result)
+        {
+            TempData["Success"] = "Sektör başarıyla silindi.";
+        }
+        else
+        {
+            TempData["Error"] = "Sektör silinirken bir hata oluştu.";
+        }
+
+        return RedirectToAction(nameof(Index));
+    }
+
+    private static bool IsCriticalSector(string code)
+    {
+        var criticalSectors = new[] { "ALAN_DIŞI", "BOO", "ÇIKIŞ" };
+        return criticalSectors.Contains(code, StringComparer.OrdinalIgnoreCase);
     }
 
 }

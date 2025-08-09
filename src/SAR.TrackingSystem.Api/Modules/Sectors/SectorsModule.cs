@@ -1,4 +1,5 @@
 using Carter;
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -37,6 +38,15 @@ public class SectorsModule : ICarterModule
                 operation.Description = "Creates a new sector with the provided data.";
                 return operation;
             });
+
+        app.MapDelete("/sectors/{id}", DeleteSector)
+            .WithName(nameof(DeleteSector))
+            .WithOpenApi(operation =>
+            {
+                operation.Summary = "Delete sector";
+                operation.Description = "Deletes a sector by ID. Critical sectors cannot be deleted.";
+                return operation;
+            });
     }
 
     private static async Task<Results<Ok<SectorResponse>, NotFound>> GetSectorById(
@@ -72,5 +82,26 @@ public class SectorsModule : ICarterModule
         var sectorId = await sender.Send(command, context.RequestAborted);
 
         return TypedResults.Created($"/sectors/{sectorId}");
+    }
+
+    private static async Task<Results<Ok, NotFound, ValidationProblem>> DeleteSector(
+        Guid id,
+        [FromServices] ISender sender,
+        HttpContext context)
+    {
+        try
+        {
+            var command = new DeleteSectorCommand(id);
+            var result = await sender.Send(command, context.RequestAborted);
+
+            return result ? TypedResults.Ok() : TypedResults.NotFound();
+        }
+        catch (ValidationException ex)
+        {
+            return TypedResults.ValidationProblem(new Dictionary<string, string[]>
+            {
+                ["error"] = [ex.Message]
+            });
+        }
     }
 }

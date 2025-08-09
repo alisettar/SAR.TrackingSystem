@@ -6,27 +6,39 @@ namespace SAR.TrackingSystem.Web.Controllers;
 
 public class TeamsController : Controller
 {
-    private readonly ISarApiService _apiService;
+    private readonly ITeamService _teamService;
 
-    public TeamsController(ISarApiService apiService)
+    public TeamsController(ITeamService teamService)
     {
-        _apiService = apiService;
+        _teamService = teamService;
     }
 
     public async Task<IActionResult> Index()
     {
-        var teams = await _apiService.GetTeamsAsync();
+        var teams = await _teamService.GetTeamsAsync();
         return View(teams);
     }
 
-    public async Task<IActionResult> Details(Guid id)
+    public async Task<IActionResult> Details(Guid id, int page = 1)
     {
-        var team = await _apiService.GetTeamByIdAsync(id);
+        var team = await _teamService.GetTeamByIdAsync(id);
         if (team == null)
         {
             return NotFound();
         }
-        return View(team);
+        
+        var members = await _teamService.GetTeamMembersAsync(id, page, 10);
+        
+        var model = new TeamDetailsViewModel
+        {
+            Id = team.Id,
+            Name = team.Name,
+            Code = team.Code,
+            Members = [.. members.Items]
+        };
+        
+        ViewBag.MembersPagination = members;
+        return View(model);
     }
 
     [HttpGet]
@@ -44,13 +56,13 @@ public class TeamsController : Controller
             return View(model);
         }
 
-        var result = await _apiService.CreateTeamAsync(model);
+        var result = await _teamService.CreateTeamAsync(model);
         if (result)
         {
             return RedirectToAction(nameof(Index));
         }
 
-        ModelState.AddModelError(string.Empty, "Tim oluşturulurken bir hata oluştu.");
+        ModelState.AddModelError(string.Empty, "Ekip oluşturulurken bir hata oluştu.");
         return View(model);
     }
 

@@ -29,13 +29,17 @@ public sealed class CreateMovementCommandHandler(
             throw new ValidationException("Invalid target sector.");
 
         var hasExistingMovements = await movementRepository.HasMovementsAsync(request.Request.VolunteerId, cancellationToken);
+        var lastMovement = await movementRepository.GetLastMovementAsync(request.Request.VolunteerId, cancellationToken);
 
         var validationError = Movement.BusinessRules.GetValidationError(
-            fromSector?.Code,
+            lastMovement?.ToSector?.Code, // Gerçek mevcut konum
             toSector.Code,
             hasExistingMovements,
+            lastMovement?.FromSector?.Code,
+            lastMovement?.ToSector?.Code,
             request.Request.IsGroupMovement,
             request.Request.GroupId,
+            await HasEntryMovementAsync(request.Request.VolunteerId, cancellationToken),
             _config);
 
         if (!string.IsNullOrEmpty(validationError))
@@ -53,6 +57,16 @@ public sealed class CreateMovementCommandHandler(
 
         await movementRepository.AddAsync(movement, cancellationToken);
         return movement.Id;
+    }
+
+    private async Task<bool> HasEntryMovementAsync(Guid volunteerId, CancellationToken cancellationToken)
+    {
+        // Check if volunteer has at least one entry movement (ALAN_DIŞI → BOO)
+        var movements = await movementRepository.GetByVolunteerIdAsync(volunteerId, cancellationToken);
+        
+        return movements.Any(m => 
+            m.FromSector?.Code == _config.EntryCode && 
+            m.ToSector?.Code == _config.HubCode);
     }
 }
 

@@ -10,6 +10,22 @@
     </a>
 </div>
 
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        <i class="bi bi-check-circle"></i> @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show">
+        <i class="bi bi-exclamation-triangle"></i> @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
 <div class="card">
     <div class="card-body">
         <div class="table-responsive">
@@ -42,6 +58,25 @@
                                 <a href="/sectors/details/@sector.Id" class="btn btn-sm btn-primary">
                                     <i class="bi bi-eye"></i> Detay
                                 </a>
+                                
+                                @if (ViewBag.EnableDelete == true)
+                                {
+                                    var criticalSectors = new[] { "ALAN_DIŞI", "BOO", "ÇIKIŞ" };
+                                    var isCritical = criticalSectors.Contains(sector.Code, StringComparer.OrdinalIgnoreCase);
+                                    
+                                    @if (isCritical)
+                                    {
+                                        <button class="btn btn-sm btn-outline-danger" disabled title="Bu sektör sistem için kritik olduğu için silinemez">
+                                            <i class="bi bi-shield-lock"></i> Korumalı
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <a href="/sectors/delete/@sector.Id" class="btn btn-sm btn-danger">
+                                            <i class="bi bi-trash"></i> Sil
+                                        </a>
+                                    }
+                                }
                             </td>
                         </tr>
                     }

@@ -9,6 +9,7 @@ public class Sector : Entity
     public bool IsEntryPoint { get; set; }                  // BOO = true
     public bool IsExitPoint { get; set; }                   // ÇIKIŞ = true
     public bool IsActive { get; set; } = true;
+    public bool IsCriticalForBusinessRules { get; set; }    // ALAN_DIŞI, BOO, ÇIKIŞ = true
 
     /// <summary>
     /// BUSİNESS CRİTİCAL: Bu sektörler SAR operasyon kuralları için kritiktir ve SİLİNMEMELİDİR:
@@ -37,5 +38,6 @@ public class Sector : Entity
         IsActive = isActive;
         IsEntryPoint = isEntryPoint;
         IsExitPoint = isExitPoint;
+        IsCriticalForBusinessRules = isCriticalForBusinessRules;
     }
 }

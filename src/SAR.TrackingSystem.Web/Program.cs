@@ -14,8 +14,12 @@ builder.Services.AddHttpClient("SarApi", client =>
     client.Timeout = TimeSpan.FromSeconds(30);
 });
 
-// Add API service
-builder.Services.AddScoped<ISarApiService, SarApiService>();
+// Add API services
+builder.Services.AddScoped<IVolunteerService, VolunteerService>();
+builder.Services.AddScoped<IMovementService, MovementService>();
+builder.Services.AddScoped<ISectorService, SectorService>();
+builder.Services.AddScoped<ITeamService, TeamService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 
 var app = builder.Build();
 
