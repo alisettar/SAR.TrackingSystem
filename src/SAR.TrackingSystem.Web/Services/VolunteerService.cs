@@ -22,12 +22,11 @@ public class VolunteerService : IVolunteerService
         };
     }
 
-    public async Task<PaginatedResponse<VolunteerViewModel>> GetVolunteersAsync(int page = 1, int pageSize = 10, string search = "")
+    public async Task<PaginatedResponse<VolunteerViewModel>> GetVolunteersAsync(PaginationRequest request)
     {
         try
         {
-            var paginationRequest = new PaginationRequest(page - 1, pageSize, search);
-            var queryParams = $"?Page={paginationRequest.Page}&PageSize={paginationRequest.PageSize}&SearchText={Uri.EscapeDataString(paginationRequest.SearchText ?? "")}";
+            var queryParams = $"?Page={request.Page}&PageSize={request.PageSize}&SearchText={Uri.EscapeDataString(request.SearchText ?? "")}";
             var response = await _httpClient.GetAsync($"/volunteers{queryParams}");
             
             if (response.StatusCode == HttpStatusCode.NotFound)
@@ -41,8 +40,8 @@ public class VolunteerService : IVolunteerService
             {
                 Items = apiResponse.Items,
                 TotalCount = apiResponse.TotalCount,
-                Page = page,
-                PageSize = pageSize
+                Page = request.Page + 1, // Convert from 0-based to 1-based
+                PageSize = request.PageSize
             };
         }
         catch (HttpRequestException ex)

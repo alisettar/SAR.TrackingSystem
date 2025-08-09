@@ -109,7 +109,7 @@ public class SectorsController : Controller
 
     private static bool IsCriticalSector(string code)
     {
-        var criticalSectors = new[] { "ALAN_DIŞI", "BOO", "ÇIKIŞ" };
+        var criticalSectors = new[] { "Entry", "BoO", "Exit" };
         return criticalSectors.Contains(code, StringComparer.OrdinalIgnoreCase);
     }
 

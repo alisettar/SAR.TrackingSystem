@@ -1,10 +1,11 @@
 using SAR.TrackingSystem.Web.Models;
+using SAR.TrackingSystem.Web.Models.Common;
 
 namespace SAR.TrackingSystem.Web.Services;
 
 public interface IVolunteerService
 {
-    Task<PaginatedResponse<VolunteerViewModel>> GetVolunteersAsync(int page = 1, int pageSize = 10, string search = "");
+    Task<PaginatedResponse<VolunteerViewModel>> GetVolunteersAsync(PaginationRequest request);
     Task<VolunteerViewModel?> GetVolunteerByIdAsync(Guid id);
     Task<Guid> CreateVolunteerAsync(VolunteerCreateViewModel model);
     Task<bool> UpdateVolunteerAsync(Guid id, VolunteerUpdateViewModel model);

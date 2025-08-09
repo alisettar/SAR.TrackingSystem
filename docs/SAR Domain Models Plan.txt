@@ -19,9 +19,9 @@
 - ✅ **Movements**: Create + Read (Create, GetAll paginated, GetById, HasMovementsAsync)
 
 **Business Rules Implementation ✅**:
-- ✅ Movement.BusinessRules.IsValidEntry() - İlk hareket ALAN_DIŞI → BOO
-- ✅ Movement.BusinessRules.IsValidTransfer() - Hub model (BOO üzerinden geçiş)
-- ✅ Movement.BusinessRules.IsValidExit() - Sadece BOO → ÇIKIŞ
+- ✅ Movement.BusinessRules.IsValidEntry() - İlk hareket ALAN_DIŞI → BoO
+- ✅ Movement.BusinessRules.IsValidTransfer() - Hub model (BoO üzerinden geçiş)
+- ✅ Movement.BusinessRules.IsValidExit() - Sadece BoO → ÇIKIŞ
 - ✅ Movement.BusinessRules.IsValidGroupMovement() - Grup hareket validation
 - ✅ Movement.BusinessRules.GetValidationError() - Comprehensive validation
 - ✅ XML documentation for all business rule methods
@@ -170,9 +170,9 @@ Error: 400 BadRequest with specific rule violation message
    POST   /movements         (WITH VALIDATION)
    
    Validation Responses:
-   400: "İlk hareket ALAN_DIŞI'ndan BOO'ya yapılmalıdır."
-   400: "Sektör geçişleri BOO üzerinden yapılmalıdır."  
-   400: "Çıkış sadece BOO'dan yapılabilir."
+   400: "İlk hareket ALAN_DIŞI'ndan BoO'ya yapılmalıdır."
+   400: "Sektör geçişleri BoO üzerinden yapılmalıdır."  
+   400: "Çıkış sadece BoO'dan yapılabilir."
    400: "Grup hareketi için GroupId zorunludur."
 ```
 
@@ -215,9 +215,9 @@ Error: 400 BadRequest with specific rule violation message
 // appsettings.json
 {
   "SectorSettings": {
-    "EntryCode": "ALAN_DIŞI",  // Configurable entry sector
-    "HubCode": "BOO",          // Configurable hub sector  
-    "ExitCode": "ÇIKIŞ"        // Configurable exit sector
+    "EntryCode": "Entry",  // Configurable entry sector
+    "HubCode": "BoO",          // Configurable hub sector  
+    "ExitCode": "Exit"        // Configurable exit sector
   }
 }
 ```
@@ -228,7 +228,7 @@ public class Sector : Entity
 {
     /// <summary>
     /// BUSİNESS CRİTİCAL: Bu sektörler SAR operasyon kuralları için kritiktir:
-    /// - ALAN_DIŞI, BOO, ÇIKIŞ sektörleri SİLİNMEMELİDİR
+    /// - Entry, BoO, Exit sektörleri SİLİNMEMELİDİR
     /// </summary>
     public bool IsCriticalForBusinessRules { get; set; }
 }

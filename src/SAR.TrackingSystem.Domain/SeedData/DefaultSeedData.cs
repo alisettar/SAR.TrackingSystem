@@ -6,13 +6,13 @@ public static class DefaultSeedData
 {
     public static List<Sector> Sectors =>
     [
-        new Sector { Id = new Guid("00000000-0000-0000-0000-000000000001"), Code = "ALAN_DIŞI", Name = "Alan Dışı", IsActive = false },
-        new Sector { Id = new Guid("00000000-0000-0000-0000-000000000002"), Code = "BOO", Name = "Base of Operations", IsEntryPoint = true, IsActive = true },
+        new Sector { Id = new Guid("00000000-0000-0000-0000-000000000001"), Code = "Entry", Name = "Giriş", IsActive = false },
+        new Sector { Id = new Guid("00000000-0000-0000-0000-000000000002"), Code = "BoO", Name = "Base of Operations", IsEntryPoint = true, IsActive = true },
         new Sector { Id = new Guid("00000000-0000-0000-0000-000000000003"), Code = "E-1", Name = "Sektör E-1", IsActive = true },
         new Sector { Id = new Guid("00000000-0000-0000-0000-000000000004"), Code = "E-2", Name = "Sektör E-2", IsActive = true },
         new Sector { Id = new Guid("00000000-0000-0000-0000-000000000005"), Code = "E2-A", Name = "Sektör E2-A", IsActive = true },
         new Sector { Id = new Guid("00000000-0000-0000-0000-000000000006"), Code = "E2-B", Name = "Sektör E2-B", IsActive = true },
-        new Sector { Id = new Guid("00000000-0000-0000-0000-000000000007"), Code = "ÇIKIŞ", Name = "Çıkış", IsExitPoint = true, IsActive = true }
+        new Sector { Id = new Guid("00000000-0000-0000-0000-000000000007"), Code = "Exit", Name = "Çıkış", IsExitPoint = true, IsActive = true }
     ];
 
     public static List<Team> Teams =>

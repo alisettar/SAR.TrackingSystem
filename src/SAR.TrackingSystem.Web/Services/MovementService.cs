@@ -27,12 +27,11 @@ public class MovementService : IMovementService
         };
     }
 
-    public async Task<PaginatedResponse<MovementViewModel>> GetMovementsAsync(int page = 1, int pageSize = 10, string? search = null)
+    public async Task<PaginatedResponse<MovementViewModel>> GetMovementsAsync(PaginationRequest request)
     {
         try
         {
-            var paginationRequest = new PaginationRequest(page - 1, pageSize, search);
-            var queryParams = $"?Page={paginationRequest.Page}&PageSize={paginationRequest.PageSize}&SearchText={Uri.EscapeDataString(paginationRequest.SearchText ?? "")}";
+            var queryParams = $"?Page={request.Page}&PageSize={request.PageSize}&SearchText={Uri.EscapeDataString(request.SearchText ?? "")}";
             var response = await _httpClient.GetAsync($"/movements{queryParams}");
             response.EnsureSuccessStatusCode();
             
@@ -43,8 +42,8 @@ public class MovementService : IMovementService
             {
                 Items = apiResponse.Items,
                 TotalCount = apiResponse.TotalCount,
-                Page = page,
-                PageSize = pageSize
+                Page = request.Page + 1, // Convert from 0-based to 1-based
+                PageSize = request.PageSize
             };
         }
         catch (Exception ex)
@@ -148,7 +147,7 @@ public class MovementService : IMovementService
     {
         try
         {
-            var volunteers = await _volunteerService.GetVolunteersAsync(1, 1000, qrId);
+            var volunteers = await _volunteerService.GetVolunteersAsync(new PaginationRequest(0, 1000, qrId));
             var volunteer = volunteers.Items.FirstOrDefault(v => v.QRId == qrId);
             
             if (volunteer == null)
@@ -156,7 +155,7 @@ public class MovementService : IMovementService
                 
             var sectors = await _sectorService.GetSectorsAsync();
             var entrySector = sectors.FirstOrDefault(s => s.Code == "ALAN_DIŞI");
-            var hubSector = sectors.FirstOrDefault(s => s.Code == "BOO");
+            var hubSector = sectors.FirstOrDefault(s => s.Code == "BoO");
             
             if (entrySector == null || hubSector == null)
                 return false;

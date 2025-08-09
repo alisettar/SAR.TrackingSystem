@@ -2,6 +2,7 @@ using Carter;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using SAR.TrackingSystem.Application.Data;
 using SAR.TrackingSystem.Application.Data.Volunteers.Commands;
 using SAR.TrackingSystem.Application.Data.Volunteers.Queries;
@@ -73,11 +74,15 @@ public class VolunteersModule : ICarterModule
 
     private static async Task<Ok<PaginationResponse<VolunteerResponse>>> GetVolunteers(
         [FromQuery] PaginationRequest? paginationRequest,
+        [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] PaginationRequest? bodyPaginationRequest,
         [FromServices] ISender sender,
         HttpContext context)
     {
+        // Priority: Body > Query > Default
+        paginationRequest = bodyPaginationRequest ?? paginationRequest;
+
         var result = await sender.Send(
-            new GetVolunteersQuery(paginationRequest),
+            new GetVolunteersQuery(paginationRequest ?? new()),
             context.RequestAborted);
 
         return TypedResults.Ok(result);

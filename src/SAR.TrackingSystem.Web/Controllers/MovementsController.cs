@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SAR.TrackingSystem.Web.Models;
+using SAR.TrackingSystem.Web.Models.Common;
 using SAR.TrackingSystem.Web.Services;
 
 namespace SAR.TrackingSystem.Web.Controllers;
@@ -24,7 +25,8 @@ public class MovementsController : Controller
 
     public async Task<IActionResult> Index(int page = 1, string? search = null)
     {
-        var movements = await _movementService.GetMovementsAsync(page, 20, search);
+        var request = new PaginationRequest(page - 1, 20, search); // Convert to 0-based
+        var movements = await _movementService.GetMovementsAsync(request);
         ViewBag.SearchTerm = search;
         return View(movements);
     }
@@ -150,15 +152,16 @@ public class MovementsController : Controller
         try
         {
             // Find volunteer by QR ID
-            var volunteers = await _volunteerService.GetVolunteersAsync(1, 1000, qrId);
+            var request = new PaginationRequest(0, 1000, qrId);
+            var volunteers = await _volunteerService.GetVolunteersAsync(request);
             var volunteer = volunteers.Items.FirstOrDefault(v => v.QRId == qrId);
             
             if (volunteer == null)
                 return (false, $"❌ {qrId} - QR ID bulunamadı");
                 
-            // Get sectors for exit (BOO → ÇIKIŞ)
+            // Get sectors for exit (BoO → ÇIKIŞ)
             var sectors = await _sectorService.GetSectorsAsync();
-            var hubSector = sectors.FirstOrDefault(s => s.Code == "BOO");
+            var hubSector = sectors.FirstOrDefault(s => s.Code == "BoO");
             var exitSector = sectors.FirstOrDefault(s => s.Code == "ÇIKIŞ");
             
             if (hubSector == null || exitSector == null)
@@ -178,7 +181,7 @@ public class MovementsController : Controller
         }
         catch (HttpRequestException ex) when (ex.Message.Contains("400"))
         {
-            return (false, $"❌ {qrId} - Çıkış kurallarına uymuyor (BOO'da değil)");
+            return (false, $"❌ {qrId} - Çıkış kurallarına uymuyor (BoO'da değil)");
         }
     }
     
@@ -190,7 +193,8 @@ public class MovementsController : Controller
         try
         {
             // Find volunteer by QR ID
-            var volunteers = await _volunteerService.GetVolunteersAsync(1, 1000, qrId);
+            var request = new PaginationRequest(0, 1000, qrId);
+            var volunteers = await _volunteerService.GetVolunteersAsync(request);
             var volunteer = volunteers.Items.FirstOrDefault(v => v.QRId == qrId);
             
             if (volunteer == null)
@@ -198,7 +202,7 @@ public class MovementsController : Controller
                 
             // Get sectors
             var sectors = await _sectorService.GetSectorsAsync();
-            var hubSector = sectors.FirstOrDefault(s => s.Code == "BOO");
+            var hubSector = sectors.FirstOrDefault(s => s.Code == "BoO");
             var targetSector = sectors.FirstOrDefault(s => s.Id == targetSectorId.Value);
             
             if (hubSector == null || targetSector == null)
@@ -218,7 +222,7 @@ public class MovementsController : Controller
         }
         catch (HttpRequestException ex) when (ex.Message.Contains("400"))
         {
-            return (false, $"❌ {qrId} - Sektöre gönderme kurallarına uymuyor (BOO'da değil)");
+            return (false, $"❌ {qrId} - Sektöre gönderme kurallarına uymuyor (BoO'da değil)");
         }
     }
     
@@ -227,14 +231,16 @@ public class MovementsController : Controller
         try
         {
             // Find volunteer by QR ID
-            var volunteers = await _volunteerService.GetVolunteersAsync(1, 1000, qrId);
+            var volunteerRequest = new PaginationRequest(0, 1000, qrId);
+            var volunteers = await _volunteerService.GetVolunteersAsync(volunteerRequest);
             var volunteer = volunteers.Items.FirstOrDefault(v => v.QRId == qrId);
             
             if (volunteer == null)
                 return (false, $"❌ {qrId} - QR ID bulunamadı");
                 
             // Get last movement to determine source sector
-            var movements = await _movementService.GetMovementsAsync(1, 50);
+            var movementRequest = new PaginationRequest(0, 50);
+            var movements = await _movementService.GetMovementsAsync(movementRequest);
             var lastMovement = movements.Items
                 .Where(m => m.VolunteerName.Contains(volunteer.FullName))
                 .OrderByDescending(m => m.MovementTime)
@@ -245,11 +251,11 @@ public class MovementsController : Controller
                 
             // Get sectors
             var sectors = await _sectorService.GetSectorsAsync();
-            var hubSector = sectors.FirstOrDefault(s => s.Code == "BOO");
+            var hubSector = sectors.FirstOrDefault(s => s.Code == "BoO");
             var fromSector = sectors.FirstOrDefault(s => s.Name == lastMovement.ToSectorName);
             
-            if (hubSector == null || fromSector == null || fromSector.Code == "BOO")
-                return (false, $"❌ {qrId} - BOO'ya dönüş için bir sektörde olmalısınız");
+            if (hubSector == null || fromSector == null || fromSector.Code == "BoO")
+                return (false, $"❌ {qrId} - BoO'ya dönüş için bir sektörde olmalısınız");
             
             var model = new MovementCreateViewModel
             {
@@ -257,15 +263,15 @@ public class MovementsController : Controller
                 FromSectorId = fromSector.Id,
                 ToSectorId = hubSector.Id,
                 Type = 1, // Transfer
-                Notes = $"QR BOO'ya Dönüş: {qrId} ← {fromSector.Name}"
+                Notes = $"QR BoO'ya Dönüş: {qrId} ← {fromSector.Name}"
             };
             
             await _movementService.CreateMovementAsync(model);
-            return (true, $"✅ {qrId} - BOO'ya dönüş kaydedildi");
+            return (true, $"✅ {qrId} - BoO'ya dönüş kaydedildi");
         }
         catch (HttpRequestException ex) when (ex.Message.Contains("400"))
         {
-            return (false, $"❌ {qrId} - BOO'ya dönüş kurallarına uymuyor (sektörde değil)");
+            return (false, $"❌ {qrId} - BoO'ya dönüş kurallarına uymuyor (sektörde değil)");
         }
     }
 }

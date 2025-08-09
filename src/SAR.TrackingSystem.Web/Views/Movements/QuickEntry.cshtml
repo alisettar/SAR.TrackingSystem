@@ -43,7 +43,7 @@
                                 type="button" role="tab" aria-controls="hub-pane" aria-selected="false"
                                 data-operation="hub">
                             <i class="bi bi-house-check text-info"></i>
-                            <br><small>BOO'ya</small>
+                            <br><small>BoO'ya</small>
                         </button>
                     </li>
                 </ul>
@@ -56,7 +56,7 @@
                     <div class="tab-pane fade show active" id="entry-pane" role="tabpanel" aria-labelledby="entry-tab">
                         <div class="text-center mb-3">
                             <h5><i class="bi bi-arrow-right-circle text-success"></i> Alana Giriş</h5>
-                            <p class="text-muted">ALAN_DIŞI → BOO</p>
+                            <p class="text-muted">Giriş → BoO</p>
                         </div>
                     </div>
 
@@ -64,7 +64,7 @@
                     <div class="tab-pane fade" id="exit-pane" role="tabpanel" aria-labelledby="exit-tab">
                         <div class="text-center mb-3">
                             <h5><i class="bi bi-arrow-left-circle text-danger"></i> Alandan Çıkış</h5>
-                            <p class="text-muted">BOO → ÇIKIŞ</p>
+                            <p class="text-muted">BoO → Çıkış</p>
                         </div>
                     </div>
 
@@ -72,7 +72,7 @@
                     <div class="tab-pane fade" id="sector-pane" role="tabpanel" aria-labelledby="sector-tab">
                         <div class="text-center mb-3">
                             <h5><i class="bi bi-geo-alt text-warning"></i> Sektöre Gönder</h5>
-                            <p class="text-muted">BOO → Seçilen Sektör</p>
+                            <p class="text-muted">BoO → Seçilen Sektör</p>
                         </div>
                         <div class="mb-3">
                             <label for="targetSector" class="form-label">Hedef Sektör</label>
@@ -80,7 +80,7 @@
                                 <option value="">Sektör seçiniz...</option>
                                 @foreach (var sector in ViewBag.Sectors as List<SAR.TrackingSystem.Web.Models.SectorViewModel>)
                                 {
-                                    @if (!sector.Code.Equals("ALAN_DIŞI") && !sector.Code.Equals("BOO") && !sector.Code.Equals("ÇIKIŞ"))
+                                    @if (!sector.Code.Equals("Entry") && !sector.Code.Equals("BoO") && !sector.Code.Equals("Exit"))
                                     {
                                         <option value="@sector.Id">@sector.Name (@sector.Code)</option>
                                     }
@@ -89,11 +89,11 @@
                         </div>
                     </div>
 
-                    <!-- BOO'ya Dön Tab -->
+                    <!-- BoO'ya Dön Tab -->
                     <div class="tab-pane fade" id="hub-pane" role="tabpanel" aria-labelledby="hub-tab">
                         <div class="text-center mb-3">
-                            <h5><i class="bi bi-house-check text-info"></i> BOO'ya Dön</h5>
-                            <p class="text-muted">Son Sektör → BOO</p>
+                            <h5><i class="bi bi-house-check text-info"></i> BoO'ya Dön</h5>
+                            <p class="text-muted">Son Sektör → BoO</p>
                         </div>
                     </div>
                 </div>
@@ -229,7 +229,7 @@
             entry: 'Giriş Yap',
             exit: 'Çıkış Yap', 
             sector: 'Sektöre Gönder',
-            hub: "BOO'ya Gönder"
+            hub: "BoO'ya Gönder"
         };
         
         processBtn.innerHTML = `<i class="bi bi-play-circle"></i> ${operationNames[activeOperation]}`;
@@ -258,7 +258,7 @@
             entry: '🟢 Giriş',
             exit: '🔴 Çıkış',
             sector: '🟡 Sektöre',
-            hub: '🔵 BOO\'ya'
+            hub: '🔵 BoO\'ya'
         };
         
         recentEntries.unshift(`${operationLabels[operation]} - ${qrId} - ${now}`);

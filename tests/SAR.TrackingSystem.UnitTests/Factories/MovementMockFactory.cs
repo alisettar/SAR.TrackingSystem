@@ -11,10 +11,10 @@ public static class MovementMockFactory
     {
         var movements = new List<Movement>();
         
-        var alanDisi = sectors.First(s => s.Code == "ALAN_DIŞI");
-        var boo = sectors.First(s => s.Code == "BOO");
-        var cikis = sectors.First(s => s.Code == "ÇIKIŞ");
-        var operationalSectors = sectors.Where(s => s.Code != "ALAN_DIŞI" && s.Code != "BOO" && s.Code != "ÇIKIŞ").ToList();
+        var alanDisi = sectors.First(s => s.Code == "Entry");
+        var boo = sectors.First(s => s.Code == "BoO");
+        var cikis = sectors.First(s => s.Code == "Exit");
+        var operationalSectors = sectors.Where(s => s.Code != "Entry" && s.Code != "BoO" && s.Code != "Exit").ToList();
         
         // Generate movements for random volunteers
         var selectedVolunteers = volunteers.OrderBy(x => Random.Next()).Take(800).ToList();
@@ -47,11 +47,11 @@ public static class MovementMockFactory
         var movements = new List<Movement>();
         var currentTime = startTime.AddMinutes(Random.Next(0, 1440)); // Random time within the day
         
-        // 1. İntikal: ALAN_DIŞI → BOO (mandatory first movement)
+        // 1. İntikal: Entry → BoO (mandatory first movement)
         movements.Add(Movement.Create(volunteerId, entry.Id, hub.Id, MovementType.Entry, false, null));
         currentTime = currentTime.AddMinutes(Random.Next(30, 180));
         
-        // 2. Random transfers between operational sectors (through BOO)
+        // 2. Random transfers between operational sectors (through BoO)
         var transferCount = Random.Next(3, 12); // 3-12 transfers per volunteer
         var currentLocation = hub.Id;
         
@@ -62,7 +62,7 @@ public static class MovementMockFactory
             
             if (currentLocation == hub.Id)
             {
-                // From BOO to operational sector
+                // From BoO to operational sector
                 var targetSector = operationalSectors[Random.Next(operationalSectors.Count)];
                 movements.Add(Movement.Create(volunteerId, currentLocation, targetSector.Id, MovementType.Transfer, 
                     isGroupMovement, groupId));
@@ -70,7 +70,7 @@ public static class MovementMockFactory
             }
             else
             {
-                // From operational sector back to BOO
+                // From operational sector back to BoO
                 movements.Add(Movement.Create(volunteerId, currentLocation, hub.Id, MovementType.Transfer, 
                     isGroupMovement, groupId));
                 currentLocation = hub.Id;
@@ -79,7 +79,7 @@ public static class MovementMockFactory
             currentTime = currentTime.AddMinutes(Random.Next(45, 240));
         }
         
-        // 3. Ensure volunteer is at BOO for potential exit
+        // 3. Ensure volunteer is at BoO for potential exit
         if (currentLocation != hub.Id)
         {
             movements.Add(Movement.Create(volunteerId, currentLocation, hub.Id, MovementType.Transfer, 

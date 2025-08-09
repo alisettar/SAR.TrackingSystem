@@ -61,7 +61,7 @@
                                 
                                 @if (ViewBag.EnableDelete == true)
                                 {
-                                    var criticalSectors = new[] { "ALAN_DIŞI", "BOO", "ÇIKIŞ" };
+                                    var criticalSectors = new[] { "Entry", "BoO", "Exit" };
                                     var isCritical = criticalSectors.Contains(sector.Code, StringComparer.OrdinalIgnoreCase);
                                     
                                     @if (isCritical)

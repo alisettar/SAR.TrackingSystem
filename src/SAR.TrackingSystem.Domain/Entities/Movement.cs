@@ -53,10 +53,10 @@ public class Movement : Entity
     {
         /// <summary>
         /// Rule 1: İntikal (Entry) Validation
-        /// Validates entry movements from ALAN_DIŞI to BOO.
+        /// Validates entry movements from ALAN_DIŞI to BoO.
         /// Entry is allowed only if:
         /// 1. Volunteer has no previous movements (first time entry), OR
-        /// 2. Last movement was BOO → ÇIKIŞ (re-entry after exit)
+        /// 2. Last movement was BoO → ÇIKIŞ (re-entry after exit)
         /// </summary>
         /// <param name="fromSectorCode">Source sector code</param>
         /// <param name="toSectorCode">Destination sector code</param>
@@ -73,7 +73,7 @@ public class Movement : Entity
             string? lastMovementToCode,
             SectorConfiguration config)
         {
-            // Only validate ALAN_DIŞI → BOO movements
+            // Only validate ALAN_DIŞI → BoO movements
             if (fromSectorCode == config.EntryCode && toSectorCode == config.HubCode)
             {
                 if (!hasExistingMovements)
@@ -83,7 +83,7 @@ public class Movement : Entity
                 }
                 else
                 {
-                    // Yeniden giriş - sadece son hareket BOO → ÇIKIŞ ise
+                    // Yeniden giriş - sadece son hareket BoO → ÇIKIŞ ise
                     return lastMovementFromCode == config.HubCode && lastMovementToCode == config.ExitCode;
                 }
             }
@@ -104,7 +104,7 @@ public class Movement : Entity
         /// Rule 2: Transfer Validation (Hub Model)
         /// Validates that all sector-to-sector movements must go through the Hub sector.
         /// Direct sector-to-sector transfers are prohibited for operational control.
-        /// Example: E-1 → E-2 is invalid, must be E-1 → BOO → E-2
+        /// Example: E-1 → E-2 is invalid, must be E-1 → BoO → E-2
         /// </summary>
         /// <param name="fromSectorCode">Source sector code</param>
         /// <param name="toSectorCode">Destination sector code</param>
@@ -177,8 +177,8 @@ public class Movement : Entity
         }
 
         /// <summary>
-        /// Rule 6: Sector Transfer Validation (BOO → Sector)
-        /// Validates that volunteers can only go to sectors from BOO hub.
+        /// Rule 6: Sector Transfer Validation (BoO → Sector)
+        /// Validates that volunteers can only go to sectors from BoO hub.
         /// </summary>
         public static bool IsValidSectorTransfer(
             string fromSectorCode,
@@ -186,21 +186,21 @@ public class Movement : Entity
             string? lastMovementToCode,
             SectorConfiguration config)
         {
-            // Sadece BOO'dan sektöre geçiş kontrolü
+            // Sadece BoO'dan sektöre geçiş kontrolü
             if (fromSectorCode == config.HubCode && 
                 toSectorCode != config.HubCode && 
                 toSectorCode != config.ExitCode && 
                 toSectorCode != config.EntryCode)
             {
-                // Gönüllü şu anda BOO'da olmalı
+                // Gönüllü şu anda BoO'da olmalı
                 return lastMovementToCode == config.HubCode;
             }
             return true;
         }
 
         /// <summary>
-        /// Rule 7: Return to Hub Validation (Sector → BOO)
-        /// Validates that volunteers can return to BOO from any sector.
+        /// Rule 7: Return to Hub Validation (Sector → BoO)
+        /// Validates that volunteers can return to BoO from any sector.
         /// </summary>
         public static bool IsValidReturnToHub(
             string fromSectorCode,
@@ -208,13 +208,13 @@ public class Movement : Entity
             string? lastMovementToCode,
             SectorConfiguration config)
         {
-            // Sektörden BOO'ya dönüş kontrolü
+            // Sektörden BoO'ya dönüş kontrolü
             if (toSectorCode == config.HubCode && 
                 fromSectorCode != config.HubCode &&
                 fromSectorCode != config.ExitCode &&
                 fromSectorCode != config.EntryCode)
             {
-                // Gönüllü şu anda bir sektörde olmalı (BOO'da değil)
+                // Gönüllü şu anda bir sektörde olmalı (BoO'da değil)
                 return lastMovementToCode != config.HubCode;
             }
             return true;

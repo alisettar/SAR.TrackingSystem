@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SAR.TrackingSystem.Web.Models;
+using SAR.TrackingSystem.Web.Models.Common;
 using SAR.TrackingSystem.Web.Services;
 
 namespace SAR.TrackingSystem.Web.Controllers;
@@ -27,7 +28,8 @@ public class TeamsController : Controller
             return NotFound();
         }
         
-        var members = await _teamService.GetTeamMembersAsync(id, page, 10);
+        var request = new PaginationRequest(page - 1, 10); // Convert to 0-based
+        var members = await _teamService.GetTeamMembersAsync(id, request);
         
         var model = new TeamDetailsViewModel
         {

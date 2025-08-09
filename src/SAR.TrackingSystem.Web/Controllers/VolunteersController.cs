@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SAR.TrackingSystem.Web.Models;
+using SAR.TrackingSystem.Web.Models.Common;
 using SAR.TrackingSystem.Web.Services;
 
 namespace SAR.TrackingSystem.Web.Controllers;
@@ -18,7 +19,8 @@ public class VolunteersController : Controller
     public async Task<IActionResult> Index(int page = 1, string search = "")
     {
         ViewBag.SearchTerm = search;
-        var volunteers = await _volunteerService.GetVolunteersAsync(page, 20, search);
+        var request = new PaginationRequest(page - 1, 20, search); // Convert to 0-based
+        var volunteers = await _volunteerService.GetVolunteersAsync(request);
         return View(volunteers);
     }
 

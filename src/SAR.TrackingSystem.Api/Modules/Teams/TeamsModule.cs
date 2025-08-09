@@ -2,6 +2,7 @@ using Carter;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using SAR.TrackingSystem.Application.Data;
 using SAR.TrackingSystem.Application.Data.Teams.Commands;
 using SAR.TrackingSystem.Application.Data.Teams.Queries;
@@ -87,11 +88,14 @@ public class TeamsModule : ICarterModule
     private static async Task<Ok<PaginationResponse<TeamMemberResponse>>> GetTeamMembers(
         Guid id,
         [FromQuery] PaginationRequest? paginationRequest,
+        [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] PaginationRequest? bodyPaginationRequest,
         [FromServices] ISender sender,
         HttpContext context)
     {
-        paginationRequest ??= new PaginationRequest();
-        var request = new GetTeamMembersQuery(id, paginationRequest);
+        // Priority: Body > Query > Default
+        paginationRequest = bodyPaginationRequest ?? paginationRequest;
+
+        var request = new GetTeamMembersQuery(id, paginationRequest ?? new());
         var result = await sender.Send(request, context.RequestAborted);
 
         return TypedResults.Ok(result);

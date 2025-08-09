@@ -1,4 +1,5 @@
 using SAR.TrackingSystem.Web.Models;
+using SAR.TrackingSystem.Web.Models.Common;
 using System.Net;
 using System.Text.Json;
 
@@ -52,9 +53,9 @@ public class TeamService : ITeamService
         return JsonSerializer.Deserialize<TeamDetailsViewModel>(json, _jsonOptions);
     }
 
-    public async Task<PaginatedResponse<TeamMemberViewModel>> GetTeamMembersAsync(Guid teamId, int page = 1, int pageSize = 10)
+    public async Task<PaginatedResponse<TeamMemberViewModel>> GetTeamMembersAsync(Guid teamId, PaginationRequest request)
     {
-        var response = await _httpClient.GetAsync($"/teams/{teamId}/members?page={page}&pageSize={pageSize}");
+        var response = await _httpClient.GetAsync($"/teams/{teamId}/members?page={request.Page}&pageSize={request.PageSize}");
         response.EnsureSuccessStatusCode();
         
         var json = await response.Content.ReadAsStringAsync();
@@ -64,8 +65,8 @@ public class TeamService : ITeamService
         {
             Items = apiResponse.Items,
             TotalCount = apiResponse.TotalCount,
-            Page = page,
-            PageSize = pageSize
+            Page = request.Page + 1, // Convert from 0-based to 1-based
+            PageSize = request.PageSize
         };
     }
 

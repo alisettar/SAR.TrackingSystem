@@ -28,21 +28,21 @@ SAR.TrackingSystem/
 ### Core Entities
 - **Volunteer**: TcKimlik, FullName, TeamId, BloodType, Phone, Buddy1/2 (Ekip Üyesi)
 - **Team**: A-D Timleri, Medikal, Lojistik, Yönetim (9 tim) - Constructor pattern
-- **Sector**: BOO, E-1, E-2, E2-A, E2-B, DIŞ, ALAN_DIŞI, ÇIKIŞ (7 sektör) - Constructor pattern + `IsCriticalForBusinessRules`
+- **Sector**: BoO, E-1, E-2, E2-A, E2-B, DIŞ, ALAN_DIŞI, ÇIKIŞ (7 sektör) - Constructor pattern + `IsCriticalForBusinessRules`
 - **Movement**: Hareket kaydı (From→To, DateTime, IsGroupMovement) - Static factory
 
 ### Business Rules (IMPLEMENTED ✅)
-- **Rule 1 - İntikal**: ALAN_DIŞI → BOO (ilk giriş zorunlu)
-- **Rule 2 - Hub Transfer**: Tüm sektör geçişleri BOO üzerinden (E-1→E-2 yasak, E-1→BOO→E-2 ✅)
-- **Rule 3 - Çıkış**: Sadece BOO → ÇIKIŞ (sektörden direkt çıkış yasak)
+- **Rule 1 - İntikal**: ALAN_DIŞI → BoO (ilk giriş zorunlu)
+- **Rule 2 - Hub Transfer**: Tüm sektör geçişleri BoO üzerinden (E-1→E-2 yasak, E-1→BoO→E-2 ✅)
+- **Rule 3 - Çıkış**: Sadece BoO → ÇIKIŞ (sektörden direkt çıkış yasak)
 - **Rule 4 - Grup**: IsGroupMovement=true + GroupId zorunlu
 
 ### Configuration-Based Approach ✅
 ```json
 "SectorSettings": {
-  "EntryCode": "ALAN_DIŞI",
-  "HubCode": "BOO", 
-  "ExitCode": "ÇIKIŞ"
+  "EntryCode": "Entry",
+  "HubCode": "BoO", 
+  "ExitCode": "Exit"
 }
 ```
 
@@ -90,9 +90,9 @@ SAR.TrackingSystem/
 ### Domain Protection ✅
 ```csharp
 /// BUSİNESS CRİTİCAL: Bu sektörler SAR operasyon kuralları için kritiktir:
-/// - ALAN_DIŞI: İlk giriş noktası (Entry rule)
-/// - BOO: Hub sektör (Transfer rule) 
-/// - ÇIKIŞ: Çıkış noktası (Exit rule)
+/// - Entry: İlk giriş noktası (Entry rule)
+/// - BoO: Hub sektör (Transfer rule) 
+/// - Exit: Çıkış noktası (Exit rule)
 public bool IsCriticalForBusinessRules { get; set; }
 ```
 
@@ -172,9 +172,9 @@ POST /movements
 }
 
 // Validation Responses:
-400: "İlk hareket ALAN_DIŞI'ndan BOO'ya yapılmalıdır."
-400: "Sektör geçişleri BOO üzerinden yapılmalıdır."
-400: "Çıkış sadece BOO'dan yapılabilir."
+400: "İlk hareket ALAN_DIŞI'ndan BoO'ya yapılmalıdır."
+400: "Sektör geçişleri BoO üzerinden yapılmalıdır."
+400: "Çıkış sadece BoO'dan yapılabilir."
 ```
 
 ## 🗄️ Enhanced Database Schema
@@ -220,9 +220,9 @@ GroupId (GUID), Notes (NVARCHAR)
 ```json
 {
   "SectorSettings": {
-    "EntryCode": "ALAN_DIŞI",
-    "HubCode": "BOO",
-    "ExitCode": "ÇIKIŞ"
+    "EntryCode": "Entry",
+    "HubCode": "BoO",
+    "ExitCode": "Exit"
   },
   "ConnectionStrings": {
     "DefaultConnection": "Data Source=SarTrackingDb.db"

@@ -61,7 +61,7 @@ public sealed class CreateMovementCommandHandler(
 
     private async Task<bool> HasEntryMovementAsync(Guid volunteerId, CancellationToken cancellationToken)
     {
-        // Check if volunteer has at least one entry movement (ALAN_DIŞI → BOO)
+        // Check if volunteer has at least one entry movement (ALAN_DIŞI → BoO)
         var movements = await movementRepository.GetByVolunteerIdAsync(volunteerId, cancellationToken);
         
         return movements.Any(m => 

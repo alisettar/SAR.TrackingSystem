@@ -1,4 +1,5 @@
 using SAR.TrackingSystem.Web.Models;
+using SAR.TrackingSystem.Web.Models.Common;
 
 namespace SAR.TrackingSystem.Web.Services;
 
@@ -7,23 +8,14 @@ public interface IDashboardService
     Task<DashboardStats> GetDashboardStatsAsync();
 }
 
-public class DashboardService : IDashboardService
+public class DashboardService(
+    IVolunteerService volunteerService) : IDashboardService
 {
-    private readonly IVolunteerService _volunteerService;
-    private readonly IMovementService _movementService;
-
-    public DashboardService(IVolunteerService volunteerService, IMovementService movementService)
-    {
-        _volunteerService = volunteerService;
-        _movementService = movementService;
-    }
-
     public async Task<DashboardStats> GetDashboardStatsAsync()
     {
         try
         {
-            var volunteers = await _volunteerService.GetVolunteersAsync(1, 1000);
-            var movements = await _movementService.GetMovementsAsync(1, 100);
+            var volunteers = await volunteerService.GetVolunteersAsync(new PaginationRequest(0, 1000));
             
             return new DashboardStats
             {

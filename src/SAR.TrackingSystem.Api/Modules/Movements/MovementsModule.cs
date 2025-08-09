@@ -2,6 +2,7 @@ using Carter;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using SAR.TrackingSystem.Application.Data;
 using SAR.TrackingSystem.Application.Data.Movements.Commands;
 using SAR.TrackingSystem.Application.Data.Movements.Queries;
@@ -64,9 +65,13 @@ public class MovementsModule : ICarterModule
 
     private static async Task<Ok<PaginationResponse<MovementResponse>>> GetMovements(
         [FromQuery] PaginationRequest? paginationRequest,
+        [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] PaginationRequest? bodyPaginationRequest,
         [FromServices] ISender sender,
         HttpContext context)
     {
+        // Priority: Body > Query > Default
+        paginationRequest = bodyPaginationRequest ?? paginationRequest;
+
         var result = await sender.Send(
             new GetMovementsQuery(paginationRequest ?? new()),
             context.RequestAborted);

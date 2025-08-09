@@ -1,10 +1,11 @@
 using SAR.TrackingSystem.Web.Models;
+using SAR.TrackingSystem.Web.Models.Common;
 
 namespace SAR.TrackingSystem.Web.Services;
 
 public interface IMovementService
 {
-    Task<PaginatedResponse<MovementViewModel>> GetMovementsAsync(int page = 1, int pageSize = 10, string? search = null);
+    Task<PaginatedResponse<MovementViewModel>> GetMovementsAsync(PaginationRequest request);
     Task<Guid> CreateMovementAsync(MovementCreateViewModel model);
     Task<Guid> CreateTeamMovementAsync(TeamMovementCreateViewModel model);
     Task<bool> DeleteMovementAsync(Guid id);
