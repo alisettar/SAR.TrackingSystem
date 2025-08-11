@@ -8,10 +8,10 @@ public static class TeamMockFactory
     {
         return
         [
-            new Team("A", "A Tipi", null, true),
-            new Team("B", "B Tipi", null, true),
-            new Team("C", "C Tipi", null, true),
-            new Team("D", "D Tipi", null, true),
+            new Team("A", "A Timi", null, true),
+            new Team("B", "B Timi", null, true),
+            new Team("C", "C Timi", null, true),
+            new Team("D", "D Timi", null, true),
             new Team("MEDIKAL", "Medikal Tim", null, true),
             new Team("LOJISTIK", "Lojistik Tim", null, true),
             new Team("YONETIM", "Yönetim", null, true)
@@ -25,6 +25,6 @@ public static class TeamMockFactory
 
     public static Team GetATeam()
     {
-        return new Team("A", "A Tipi", null, true);
+        return new Team("A", "A Timi", null, true);
     }
 }
