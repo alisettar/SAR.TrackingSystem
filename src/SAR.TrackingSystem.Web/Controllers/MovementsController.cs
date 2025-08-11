@@ -159,19 +159,19 @@ public class MovementsController : Controller
             if (volunteer == null)
                 return (false, $"❌ {qrId} - QR ID bulunamadı");
                 
-            // Get sectors for exit (BoO → ÇIKIŞ)
+            // Get Hub sector for exit validation (InHub → Exited)
             var sectors = await _sectorService.GetSectorsAsync();
             var hubSector = sectors.FirstOrDefault(s => s.Code == "BoO");
-            var exitSector = sectors.FirstOrDefault(s => s.Code == "ÇIKIŞ");
             
-            if (hubSector == null || exitSector == null)
-                return (false, $"❌ {qrId} - Sistem hatası: Gerekli sektörler bulunamadı");
+            if (hubSector == null)
+                return (false, $"❌ {qrId} - Sistem hatası: Hub sektörü bulunamadı");
             
+            // STATE MACHINE: InHub → Exited (BoO → null)
             var model = new MovementCreateViewModel
             {
                 VolunteerId = volunteer.Id,
                 FromSectorId = hubSector.Id,
-                ToSectorId = exitSector.Id,
+                ToSectorId = null, // Exited state - no target sector
                 Type = 2, // Exit
                 Notes = $"QR Çıkış: {qrId}"
             };

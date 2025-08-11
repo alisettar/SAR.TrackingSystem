@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using SAR.TrackingSystem.Web.Services;
 
 namespace SAR.TrackingSystem.Web.Models;
 
@@ -9,12 +10,17 @@ public class DashboardStats
     public int InSectorCount { get; set; }
     public int EntryCount { get; set; }
     public int ExitCount { get; set; }
+    public int NonArrivedCount { get; set; }
 }
 
 public class DashboardViewModel
 {
     public DashboardStats Stats { get; set; } = new();
     public List<MovementViewModel> RecentMovements { get; set; } = new();
+    public List<VolunteerViewModel> NonArrivedVolunteers { get; set; } = new();
+    public SectorDistributionData SectorDistribution { get; set; } = new();
+    public CityDistributionData CityDistribution { get; set; } = new();
+    public TeamDistributionData TeamDistribution { get; set; } = new();
 }
 
 public class PaginatedResponse<T>
@@ -35,6 +41,26 @@ public class VolunteerViewModel
     public string TeamName { get; set; } = null!;
     public string QRId { get; set; } = null!;
     public string Role { get; set; } = null!;
+    public int CurrentState { get; set; }
+    
+    // Display property for CurrentState
+    public string StateDisplay => CurrentState switch
+    {
+        0 => "Gelmedi",
+        1 => "BoO'da", 
+        2 => "Sektörde",
+        3 => "Çıkış Yaptı",
+        _ => "Bilinmiyor"
+    };
+    
+    public string StateBadgeClass => CurrentState switch
+    {
+        0 => "bg-secondary",
+        1 => "bg-success",
+        2 => "bg-warning", 
+        3 => "bg-info",
+        _ => "bg-dark"
+    };
 }
 
 public class VolunteerCreateViewModel
@@ -87,6 +113,10 @@ public class MovementViewModel
     public bool IsGroupMovement { get; set; }
     public Guid? GroupId { get; set; }
     public string? Notes { get; set; }
+    
+    // Display properties for null sectors (State Machine)
+    public string FromSectorDisplay => string.IsNullOrEmpty(FromSectorName) ? "Alan Dışı" : FromSectorName;
+    public string ToSectorDisplay => string.IsNullOrEmpty(ToSectorName) ? "Alan Dışı" : ToSectorName;
 }
 
 public class MovementCreateViewModel
@@ -95,7 +125,7 @@ public class MovementCreateViewModel
     
     public Guid? FromSectorId { get; set; }
     
-    public Guid ToSectorId { get; set; }
+    public Guid? ToSectorId { get; set; }
     
     public int Type { get; set; } = 0; // 0=Entry, 1=Transfer, 2=Exit
     
@@ -119,11 +149,10 @@ public class TeamMovementCreateViewModel
     [Required(ErrorMessage = "Ekip seçimi zorunludur")]
     public Guid TeamId { get; set; }
     
-    [Required(ErrorMessage = "Kaynak sektör seçimi zorunludur")]
-    public Guid FromSectorId { get; set; }
+    // State Machine: Nullable sectors
+    public Guid? FromSectorId { get; set; }
     
-    [Required(ErrorMessage = "Hedef sektör seçimi zorunludur")]
-    public Guid ToSectorId { get; set; }
+    public Guid? ToSectorId { get; set; }
     
     [StringLength(500, ErrorMessage = "Notlar en fazla 500 karakter olmalıdır")]
     public string? Notes { get; set; }

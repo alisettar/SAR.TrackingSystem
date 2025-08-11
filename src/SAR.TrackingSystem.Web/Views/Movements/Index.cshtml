@@ -20,9 +20,12 @@
                 </a>
             }
         </form>
-        <a href="/movements/create" class="btn btn-success">
-            <i class="bi bi-plus-circle"></i> Ekip Hareket Kaydı
-        </a>
+        @if (Context.Request.Query.ContainsKey("admin") && Context.Request.Query["admin"] == "true")
+        {
+            <a href="/movements/create" class="btn btn-success">
+                <i class="bi bi-plus-circle"></i> Ekip Hareket Kaydı
+            </a>
+        }
     </div>
 </div>
 
@@ -63,16 +66,9 @@
                                 </div>
                             </td>
                             <td>
-                                @if (movement.FromSectorName != null)
-                                {
-                                    <span class="badge bg-secondary">@movement.FromSectorName</span>
-                                }
-                                else
-                                {
-                                    <span class="text-muted">-</span>
-                                }
+                                <span class="badge bg-secondary">@movement.FromSectorDisplay</span>
                             </td>
-                            <td><span class="badge bg-primary">@movement.ToSectorName</span></td>
+                            <td><span class="badge bg-primary">@movement.ToSectorDisplay</span></td>
                             <td>@movement.MovementTime.ToString("dd.MM HH:mm")</td>
                             <td>
                                 @if (movement.IsGroupMovement)

@@ -1,9 +1,11 @@
-using MediatR;
-using SAR.TrackingSystem.Application.Repositories;
-using SAR.TrackingSystem.Domain.Entities;
-using SAR.TrackingSystem.Domain.Configuration;
 using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.Options;
+using SAR.TrackingSystem.Application.Repositories;
+using SAR.TrackingSystem.Domain.Configuration;
+using SAR.TrackingSystem.Domain.Entities;
+using SAR.TrackingSystem.Domain.Enums;
+using SAR.TrackingSystem.Domain.StateMachine;
 
 namespace SAR.TrackingSystem.Application.Data.Movements.Commands;
 
@@ -12,43 +14,54 @@ public sealed record CreateMovementCommand(MovementRequest Request) : IRequest<G
 public sealed class CreateMovementCommandHandler(
     IMovementRepository movementRepository,
     ISectorRepository sectorRepository,
+    IVolunteerRepository volunteerRepository,
     IOptions<SectorConfiguration> config) : IRequestHandler<CreateMovementCommand, Guid>
 {
     private readonly SectorConfiguration _config = config.Value;
 
     public async Task<Guid> Handle(CreateMovementCommand request, CancellationToken cancellationToken)
     {
-        // Business Rules Validation in Handler
-        var fromSector = request.Request.FromSectorId.HasValue 
-            ? await sectorRepository.GetByIdAsync(request.Request.FromSectorId.Value, cancellationToken)
-            : null;
-        
-        var toSector = await sectorRepository.GetByIdAsync(request.Request.ToSectorId, cancellationToken);
-        
-        if (toSector == null)
-            throw new ValidationException("Invalid target sector.");
+        // Get volunteer and validate existence
+        var volunteer = await volunteerRepository.GetByIdAsync(request.Request.VolunteerId, cancellationToken) 
+            ?? throw new ValidationException("Volunteer not found.");
 
-        var hasExistingMovements = await movementRepository.HasMovementsAsync(request.Request.VolunteerId, cancellationToken);
-        var lastMovement = await movementRepository.GetLastMovementAsync(request.Request.VolunteerId, cancellationToken);
+        // Get target sector info
+        string? targetSectorCode = null;
+        if (request.Request.ToSectorId.HasValue)
+        {
+            var toSector = await sectorRepository.GetByIdAsync(request.Request.ToSectorId.Value, cancellationToken);
+            if (toSector == null)
+                throw new ValidationException("Invalid target sector.");
+            targetSectorCode = toSector.Code;
+        }
 
-        var validationError = Movement.BusinessRules.GetValidationError(
-            lastMovement?.ToSector?.Code, // Gerçek mevcut konum
-            toSector.Code,
-            hasExistingMovements,
-            lastMovement?.FromSector?.Code,
-            lastMovement?.ToSector?.Code,
-            request.Request.IsGroupMovement,
-            request.Request.GroupId,
-            await HasEntryMovementAsync(request.Request.VolunteerId, cancellationToken),
-            _config);
+        // STATE MACHINE VALIDATION - Use volunteer.CurrentState, ignore FromSectorId
+        var targetState = targetSectorCode == null 
+            ? VolunteerState.Exited
+            : StateTransitions.GetStateFromSector(targetSectorCode, _config);
+            
+        if (!StateTransitions.IsValidTransition(volunteer.CurrentState, targetState))
+        {
+            var error = StateTransitions.GetTransitionError(volunteer.CurrentState, targetState);
+            throw new ValidationException(error);
+        }
 
-        if (!string.IsNullOrEmpty(validationError))
-            throw new ValidationException(validationError);
+        // Group movement validation
+        if (request.Request.IsGroupMovement && !request.Request.GroupId.HasValue)
+            throw new ValidationException("Grup hareketi için GroupId zorunludur.");
 
-        // Create Movement
+        // Determine correct FromSectorId based on current state
+        Guid? correctFromSectorId = null;
+        if (volunteer.CurrentState != VolunteerState.NotEntered)
+        {
+            var lastMovement = await movementRepository.GetLastMovementAsync(request.Request.VolunteerId, cancellationToken);
+            correctFromSectorId = lastMovement?.ToSectorId;
+        }
+
+        // Create Movement with corrected FromSectorId
         var movement = Movement.Create(
             volunteerId: request.Request.VolunteerId,
-            fromSectorId: request.Request.FromSectorId,
+            fromSectorId: correctFromSectorId, // Use calculated, not web input
             toSectorId: request.Request.ToSectorId,
             type: request.Request.Type,
             isGroupMovement: request.Request.IsGroupMovement,
@@ -56,21 +69,16 @@ public sealed class CreateMovementCommandHandler(
             notes: request.Request.Notes);
 
         await movementRepository.AddAsync(movement, cancellationToken);
-        return movement.Id;
-    }
-
-    private async Task<bool> HasEntryMovementAsync(Guid volunteerId, CancellationToken cancellationToken)
-    {
-        // Check if volunteer has at least one entry movement (ALAN_DIŞI → BoO)
-        var movements = await movementRepository.GetByVolunteerIdAsync(volunteerId, cancellationToken);
         
-        return movements.Any(m => 
-            m.FromSector?.Code == _config.EntryCode && 
-            m.ToSector?.Code == _config.HubCode);
+        // Update volunteer state
+        volunteer.UpdateState(targetState);
+        await volunteerRepository.UpdateAsync(volunteer, cancellationToken);
+        
+        return movement.Id;
     }
 }
 
-// Simplified Validator (no Repository dependencies)
+// State Machine Validator
 public sealed class CreateMovementCommandValidator : AbstractValidator<CreateMovementCommand>
 {
     public CreateMovementCommandValidator()
@@ -78,10 +86,6 @@ public sealed class CreateMovementCommandValidator : AbstractValidator<CreateMov
         RuleFor(x => x.Request.VolunteerId)
             .NotEmpty()
             .WithMessage("Volunteer must be selected.");
-        
-        RuleFor(x => x.Request.ToSectorId)
-            .NotEmpty()
-            .WithMessage("Target sector must be selected.");
         
         RuleFor(x => x.Request.GroupId)
             .NotEmpty()

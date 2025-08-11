@@ -6,13 +6,13 @@
 - [ ] Tüm datatable sayfalarında arama özelliği olacak.
 - [ ] Tüm datatable sayfalarında sayfa numaralarının çok fazla olmasından kaynaklı oluşacak hatalar giderilecek.
 - [x] Dark/Light tema toggle eklendi
-- [ ] Dark theme dropdown uyumluluğu eklendi
+- [x] Dark theme dropdown uyumluluğu eklendi
 
 ### Dashboard sayfası için yapılacaklar
 
-- [ ] Sektörlere göre Ekip üyesi sayısı dağılımı - Pie Chart veya Bar Chart
-- [ ] Gelmeyenlerin raporu
-- [ ] Şehirlere göre ekip üyesi sayısının gösterilmesi (Sadece gelenler)
+- [x] Sektörlere göre Ekip üyesi sayısı dağılımı - Pie Chart veya Bar Chart
+- [x] Gelmeyenlerin raporu
+- [x] Şehirlere göre ekip üyesi sayısının gösterilmesi (Sadece gelenler)
 - [ ] Takım sayısının gösterimi
 - [ ] Takımlardaki ekip üyesi sayısının gösterilmesi (Sadece gelenler)
 
@@ -33,7 +33,7 @@
 - [x] Hareket kaydı için kaynak sektör girmeye gerek yok. Mevcut kurallar üzerinden kaynak otomatik olarak belirlenecek
 - [x] Ekip üyesi arama QRId ile veya arama ile yapılacak. Yanına Ekip Üyesi ekle butonu gelecek
 - [x] İlk giriş (Alana giriş işlemi) QR üzerinden yapılacağından bunu kolaylaştıran bir arayüz de lazım
-- [ ] Ekibin toplu hareketi için Ekip seçilerek intikal bölgesi girilecek ve sonra tüm ekip üyelerine hareket tanımlanacak. Böyle bir sürece ihtiyacımız var
+- [x] Ekibin toplu hareketi için Ekip seçilerek intikal bölgesi girilecek ve sonra tüm ekip üyelerine hareket tanımlanacak. Böyle bir sürece ihtiyacımız var
 - [x] Hareket silme opsiyonu eklenecek
 
 ### Sektör sayfası için yapılacaklar

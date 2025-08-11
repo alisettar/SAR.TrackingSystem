@@ -14,13 +14,13 @@
 ### Entities
 - **Volunteer**: TC, Ad-Soyad, Ekip, Kan Grubu, Telefon
 - **Team**: A-D Timleri, Medikal, Lojistik, Yönetim vs.
-- **Sector**: BoO, E-1, E-2, E2-A, E2-B, DIŞ, ALAN_DIŞI, ÇIKIŞ
+- **Sector**: BoO, E-1, E-2, E2-A, E2-B, DIŞ, Entry, Exit
 - **Movement**: Gönüllü, Kaynak, Hedef, Zaman, IsGroupMovement, GroupId
 
 ### Business Rules
-- **İntikal**: ALAN_DIŞI → BoO (ilk giriş)
+- **İntikal**: Entry → BoO (ilk giriş)
 - **Transfer**: Sektörler arası hareket
-- **Çıkış**: Herhangi sektör → ÇIKIŞ
+- **Çıkış**: Herhangi sektör → Exit
 - **Grup Hareket**: IsGroupMovement=true, aynı GroupId
 
 ---
@@ -60,7 +60,7 @@
 
 5. **Movement Agent** (4 saat)
    - Hareket formu: Bireysel/Grup seçimi
-   - İntikal (ALAN_DIŞI→BoO), Transfer, Çıkış (→ÇIKIŞ)
+   - İntikal (Entry→BoO), Transfer, Çıkış (→Exit)
    - IsGroupMovement flag + GroupId logic
 
 **Çıktı**: Çalışan CRUD sayfaları + hareket kayıt
@@ -118,8 +118,8 @@
 Movement {
   Id (PK)
   VolunteerId (FK) → Volunteer.Id
-  SourceSectorId (FK) → Sector.Id (ALAN_DIŞI for intikal)  
-  TargetSectorId (FK) → Sector.Id (ÇIKIŞ for exit)
+  SourceSectorId (FK) → Sector.Id (Entry for intikal)  
+  TargetSectorId (FK) → Sector.Id (Exit for exit)
   MovementTime
   IsGroupMovement (bool)
   GroupId (nullable)

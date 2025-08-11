@@ -1,4 +1,5 @@
 using SAR.TrackingSystem.Domain.BaseClasses;
+using SAR.TrackingSystem.Domain.Enums;
 
 namespace SAR.TrackingSystem.Domain.Entities;
 
@@ -8,6 +9,7 @@ public class Volunteer : Entity
     public string QRId { get; set; } = string.Empty;
     public Guid TeamId { get; set; }
     public string Role { get; set; } = string.Empty;
+    public VolunteerState CurrentState { get; private set; } = VolunteerState.NotEntered;
     
     // Navigation
     public Team Team { get; set; } = null!;
@@ -59,5 +61,13 @@ public class Volunteer : Entity
         currentVolunteer.Role = role.Trim();
 
         return currentVolunteer;
+    }
+
+    /// <summary>
+    /// Updates volunteer state during movement operations
+    /// </summary>
+    public void UpdateState(VolunteerState newState)
+    {
+        CurrentState = newState;
     }
 }

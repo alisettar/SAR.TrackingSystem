@@ -1,0 +1,93 @@
+<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="600" fill="#f8f9fa"/>
+  
+  <!-- Title -->
+  <text x="400" y="30" text-anchor="middle" font-size="24" font-weight="bold" fill="#2c3e50">
+    SAR Volunteer State Machine
+  </text>
+  
+  <!-- States -->
+  <!-- NotEntered State -->
+  <circle cx="150" cy="150" r="50" fill="#e74c3c" stroke="#c0392b" stroke-width="3"/>
+  <text x="150" y="145" text-anchor="middle" font-size="12" font-weight="bold" fill="white">NOT</text>
+  <text x="150" y="158" text-anchor="middle" font-size="12" font-weight="bold" fill="white">ENTERED</text>
+  
+  <!-- InHub State -->
+  <circle cx="400" cy="150" r="50" fill="#3498db" stroke="#2980b9" stroke-width="3"/>
+  <text x="400" y="145" text-anchor="middle" font-size="14" font-weight="bold" fill="white">IN HUB</text>
+  <text x="400" y="158" text-anchor="middle" font-size="10" fill="white">(BoO)</text>
+  
+  <!-- InSector State -->
+  <circle cx="650" cy="300" r="50" fill="#f39c12" stroke="#d68910" stroke-width="3"/>
+  <text x="650" y="295" text-anchor="middle" font-size="12" font-weight="bold" fill="white">IN SECTOR</text>
+  <text x="650" y="308" text-anchor="middle" font-size="10" fill="white">(E-1,E-2...)</text>
+  
+  <!-- Exited State -->
+  <circle cx="400" cy="450" r="50" fill="#27ae60" stroke="#229954" stroke-width="3"/>
+  <text x="400" y="455" text-anchor="middle" font-size="14" font-weight="bold" fill="white">EXITED</text>
+  
+  <!-- Transitions -->
+  <!-- NotEntered → InHub -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#34495e"/>
+    </marker>
+  </defs>
+  
+  <!-- Entry transition -->
+  <line x1="200" y1="150" x2="350" y2="150" stroke="#34495e" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="275" y="140" text-anchor="middle" font-size="11" font-weight="bold" fill="#c0392b">İNTİKAL</text>
+  <text x="275" y="152" text-anchor="middle" font-size="9" fill="#7f8c8d">Entry → BoO</text>
+  
+  <!-- Hub → Sector transition -->
+  <line x1="440" y1="180" x2="610" y2="270" stroke="#34495e" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="525" y="215" text-anchor="middle" font-size="11" font-weight="bold" fill="#2980b9">SEKTÖRE</text>
+  <text x="525" y="227" text-anchor="middle" font-size="9" fill="#7f8c8d">BoO → Sector</text>
+  
+  <!-- Sector → Hub return -->
+  <line x1="610" y1="330" x2="440" y2="200" stroke="#34495e" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="525" y="275" text-anchor="middle" font-size="11" font-weight="bold" fill="#d68910">DÖNÜŞ</text>
+  <text x="525" y="287" text-anchor="middle" font-size="9" fill="#7f8c8d">Sector → BoO</text>
+  
+  <!-- Hub → Exit transition -->
+  <line x1="400" y1="200" x2="400" y2="400" stroke="#34495e" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="420" y="300" font-size="11" font-weight="bold" fill="#3498db">ÇIKIŞ</text>
+  <text x="420" y="312" font-size="9" fill="#7f8c8d">BoO → Exit</text>
+  
+  <!-- Exit → Hub return -->
+  <line x1="350" y1="450" x2="350" y2="200" stroke="#27ae60" stroke-width="2" marker-end="url(#arrowhead)" stroke-dasharray="5,5"/>
+  <text x="330" y="325" font-size="11" font-weight="bold" fill="#27ae60" transform="rotate(-90, 330, 325)">YENİDEN GİRİŞ</text>
+  
+  <!-- Business Rules Box -->
+  <rect x="50" y="350" width="280" height="200" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="2" rx="10"/>
+  <text x="190" y="375" text-anchor="middle" font-size="14" font-weight="bold" fill="#2c3e50">Business Rules</text>
+  
+  <text x="60" y="395" font-size="12" font-weight="bold" fill="#c0392b">Rule 1:</text>
+  <text x="110" y="395" font-size="11" fill="#2c3e50">İlk hareket Entry → BoO</text>
+  
+  <text x="60" y="415" font-size="12" font-weight="bold" fill="#2980b9">Rule 2:</text>
+  <text x="110" y="415" font-size="11" fill="#2c3e50">Sektör geçişi BoO üzerinden</text>
+  
+  <text x="60" y="435" font-size="12" font-weight="bold" fill="#27ae60">Rule 3:</text>
+  <text x="110" y="435" font-size="11" fill="#2c3e50">Çıkış sadece BoO'dan</text>
+  
+  <text x="60" y="455" font-size="12" font-weight="bold" fill="#8e44ad">Rule 4:</text>
+  <text x="110" y="455" font-size="11" fill="#2c3e50">NotEntered tek kullanımlık</text>
+  
+  <text x="60" y="475" font-size="12" font-weight="bold" fill="#c0392b">Rule 5:</text>
+  <text x="110" y="475" font-size="11" fill="#2c3e50">Yeniden giriş sadece BoO'ya</text>
+  
+  <text x="60" y="485" font-size="12" font-weight="bold" fill="#d68910">Avantaj:</text>
+  <text x="60" y="500" font-size="10" fill="#2c3e50">• Invalid transitions impossible</text>
+  <text x="60" y="515" font-size="10" fill="#2c3e50">• State enum + transition table</text>
+  <text x="60" y="530" font-size="10" fill="#2c3e50">• Self-documenting business logic</text>
+  
+  <!-- Additional Transitions -->
+  <!-- Sector to Sector (Direct) -->
+  <path d="M 630 250 Q 700 200 680 280" fill="none" stroke="#f39c12" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="680" y="235" text-anchor="middle" font-size="10" font-weight="bold" fill="#d68910">SEKTÖR↔SEKTÖR</text>
+  
+
+  
+</svg>

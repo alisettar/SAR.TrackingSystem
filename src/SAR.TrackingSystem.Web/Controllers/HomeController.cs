@@ -21,11 +21,19 @@ public class HomeController : Controller
         {
             var stats = await _dashboardService.GetDashboardStatsAsync();
             var recentMovements = await _movementService.GetRecentMovementsAsync(5);
+            var nonArrivedVolunteers = await _dashboardService.GetNonArrivedVolunteersAsync();
+            var sectorDistribution = await _dashboardService.GetSectorDistributionAsync();
+            var cityDistribution = await _dashboardService.GetCityDistributionAsync();
+            var teamDistribution = await _dashboardService.GetTeamDistributionAsync();
             
             var dashboardViewModel = new DashboardViewModel
             {
                 Stats = stats,
-                RecentMovements = recentMovements
+                RecentMovements = recentMovements,
+                NonArrivedVolunteers = nonArrivedVolunteers,
+                SectorDistribution = sectorDistribution,
+                CityDistribution = cityDistribution,
+                TeamDistribution = teamDistribution
             };
             
             return View(dashboardViewModel);
@@ -44,11 +52,19 @@ public class HomeController : Controller
         {
             var stats = await _dashboardService.GetDashboardStatsAsync();
             var recentMovements = await _movementService.GetRecentMovementsAsync(5);
+            var nonArrivedVolunteers = await _dashboardService.GetNonArrivedVolunteersAsync();
+            var sectorDistribution = await _dashboardService.GetSectorDistributionAsync();
+            var cityDistribution = await _dashboardService.GetCityDistributionAsync();
+            var teamDistribution = await _dashboardService.GetTeamDistributionAsync();
             
             var dashboardViewModel = new DashboardViewModel
             {
                 Stats = stats,
-                RecentMovements = recentMovements
+                RecentMovements = recentMovements,
+                NonArrivedVolunteers = nonArrivedVolunteers,
+                SectorDistribution = sectorDistribution,
+                CityDistribution = cityDistribution,
+                TeamDistribution = teamDistribution
             };
             
             return PartialView("_DashboardContent", dashboardViewModel);

@@ -125,8 +125,85 @@ public class MovementService : IMovementService
 
     public async Task<Guid> CreateTeamMovementAsync(TeamMovementCreateViewModel model)
     {
-        // Team movement logic - needs ITeamService
-        throw new NotImplementedException("Needs ITeamService dependency");
+        try
+        {
+            // Get team members
+            var teamMembers = await GetTeamMembersAsync(model.TeamId);
+            _logger.LogInformation("Found {Count} team members for team {TeamId}", teamMembers.Count, model.TeamId);
+            
+            if (teamMembers.Count == 0)
+                throw new ApplicationException("Seçilen ekipte üye bulunamadı.");
+
+            var groupId = Guid.NewGuid(); // Single group ID for all movements
+            var successCount = 0;
+            var errors = new List<string>();
+
+            // Create movement for each team member
+            foreach (var member in teamMembers)
+            {
+                try
+                {
+                    _logger.LogInformation("Creating movement for member {MemberName} ({MemberId})", member.FullName, member.Id);
+                    
+                    var movementModel = new MovementCreateViewModel
+                    {
+                        VolunteerId = member.Id,
+                        FromSectorId = model.FromSectorId,
+                        ToSectorId = model.ToSectorId,
+                        Type = 1, // Transfer
+                        IsGroupMovement = true,
+                        GroupId = groupId,
+                        Notes = $"Ekip Hareketi: {model.Notes}"
+                    };
+
+                    await CreateMovementAsync(movementModel);
+                    successCount++;
+                    _logger.LogInformation("Successfully created movement for {MemberName}", member.FullName);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Team movement failed for member {MemberName} ({MemberId}): {Error}", member.FullName, member.Id, ex.Message);
+                    errors.Add($"{member.FullName}: {ex.Message}");
+                }
+            }
+
+            _logger.LogInformation("Team movement completed: {Success}/{Total} successful", successCount, teamMembers.Count);
+            
+            if (successCount == 0)
+                throw new ApplicationException($"Hiçbir üye için hareket kaydı yapılamadı. Hatalar: {string.Join(", ", errors)}");
+
+            if (errors.Any())
+                _logger.LogWarning("Partial team movement success: {Success}/{Total}. Errors: {Errors}", 
+                    successCount, teamMembers.Count, string.Join(", ", errors));
+
+            return groupId;
+        }
+        catch (Exception ex) when (ex is not ApplicationException)
+        {
+            _logger.LogError(ex, "Error creating team movement");
+            throw new ApplicationException("Ekip hareket kaydı yapılırken hata oluştu.");
+        }
+    }
+
+    private async Task<List<VolunteerViewModel>> GetTeamMembersAsync(Guid teamId)
+    {
+        try
+        {
+            // Use large pagination to get ALL volunteers, then filter by TeamId
+            var request = new PaginationRequest(0, 10000); // Increased limit
+            var volunteers = await _volunteerService.GetVolunteersAsync(request);
+            var teamMembers = volunteers.Items.Where(v => v.TeamId == teamId).ToList();
+            
+            _logger.LogInformation("GetTeamMembersAsync: Found {TeamMemberCount} members for team {TeamId} out of {TotalVolunteers} total volunteers", 
+                teamMembers.Count, teamId, volunteers.Items.Count());
+                
+            return teamMembers;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting team members for {TeamId}", teamId);
+            return new List<VolunteerViewModel>();
+        }
     }
 
     public async Task<bool> DeleteMovementAsync(Guid id)
@@ -154,16 +231,16 @@ public class MovementService : IMovementService
                 return false;
                 
             var sectors = await _sectorService.GetSectorsAsync();
-            var entrySector = sectors.FirstOrDefault(s => s.Code == "ALAN_DIŞI");
             var hubSector = sectors.FirstOrDefault(s => s.Code == "BoO");
             
-            if (entrySector == null || hubSector == null)
+            if (hubSector == null)
                 return false;
                 
+            // STATE MACHINE: NotEntered → InHub (null → BoO)
             var movementModel = new MovementCreateViewModel
             {
                 VolunteerId = volunteer.Id,
-                FromSectorId = entrySector.Id,
+                FromSectorId = null, // NotEntered state - no source sector
                 ToSectorId = hubSector.Id,
                 Type = 0, // Entry
                 IsGroupMovement = false,

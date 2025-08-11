@@ -38,4 +38,8 @@
     <ProjectReference Include="..\..\src\SAR.TrackingSystem.Infrastructure\SAR.TrackingSystem.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Domain\" />
+  </ItemGroup>
+
 </Project>

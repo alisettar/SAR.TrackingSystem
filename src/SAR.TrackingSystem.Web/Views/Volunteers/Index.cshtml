@@ -50,6 +50,7 @@
                     <tr>
                         <th>Ad Soyad</th>
                         <th>Ekip</th>
+                        <th>Durum</th>
                         <th>QR ID</th>
                         <th>Görev</th>
                         <th>İşlemler</th>
@@ -61,6 +62,7 @@
                         <tr>
                             <td><strong>@volunteer.FullName</strong></td>
                             <td><span class="badge bg-info">@volunteer.TeamName</span></td>
+                            <td><span class="badge @volunteer.StateBadgeClass">@volunteer.StateDisplay</span></td>
                             <td>
                                 @if (!string.IsNullOrEmpty(volunteer.QRId))
                                 {

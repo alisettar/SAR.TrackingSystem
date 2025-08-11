@@ -1,15 +1,17 @@
 # SAR Tracking System - GÜNCEL DURUM
 
-**Tarih:** 09 Ağustos 2025  
-**Durum:** %100 COMPLETE - Production-Ready SAR Tracking System
+**Tarih:** 11 Ağustos 2025  
+**Durum:** Production-Ready + Devam Eden Geliştirmeler
 
-## ✅ TAMAMLANAN (%100 BİTTİ)
+## ✅ TAMAMLANAN (%100 BİTTİ) + STATE MACHINE
 
 **Infrastructure + Domain ✅**:
 - ✅ Domain entities (Volunteer/Ekip Üyesi, Team, Sector, Movement) + Constructor patterns
+- ✅ **STATE MACHINE**: VolunteerState enum (NotEntered, InHub, InSector, Exited)
+- ✅ **SIMPLIFIED SECTORS**: Entry/Exit sektörleri kaldırıldı - sadece operasyonel sektörler
 - ✅ EF Core DbContext + SQLite database
-- ✅ Seed data (7 Sector + 9 Team + 126 Volunteer)
-- ✅ SectorConfiguration for business rules
+- ✅ Seed data (5 Sector + 9 Team + 126 Volunteer) - Entry/Exit removed
+- ✅ SectorConfiguration simplified (sadece HubCode)
 - ✅ Critical sector protection (IsCriticalForBusinessRules)
 
 **Complete CQRS + Repository Pattern ✅**:
@@ -19,35 +21,35 @@
 - ✅ **Movements**: Create + Read (Create, GetAll paginated, GetById, HasMovementsAsync)
 
 **Business Rules Implementation ✅**:
-- ✅ Movement.BusinessRules.IsValidEntry() - İlk hareket ALAN_DIŞI → BoO
-- ✅ Movement.BusinessRules.IsValidTransfer() - Hub model (BoO üzerinden geçiş)
-- ✅ Movement.BusinessRules.IsValidExit() - Sadece BoO → ÇIKIŞ
-- ✅ Movement.BusinessRules.IsValidGroupMovement() - Grup hareket validation
-- ✅ Movement.BusinessRules.GetValidationError() - Comprehensive validation
-- ✅ XML documentation for all business rule methods
+- ✅ **STATE MACHINE BASED**: Movement.BusinessRules.ValidateStateTransition()
+- ✅ **CLEANED UP**: Eski 8 business rule kaldırıldı
+- ✅ StateTransitions class with transition validation
+- ✅ Entry: null → BoO, Exit: BoO → null
+- ✅ Movement validation: Current state + target state transition
+- ✅ XML documentation for state machine methods
 
 **Validation Layer ✅**:
-- ✅ CreateMovementCommandValidator with async business rule validation
-- ✅ Config-based validation messages
+- ✅ CreateMovementCommandValidator with state machine validation
+- ✅ Config-based validation messages (simplified)
 - ✅ FluentValidation integration with MediatR
 
 **Domain Factory Methods ✅**:
 - ✅ Team(constructor), Sector(constructor) - Constructor pattern
-- ✅ Volunteer.Create(), Volunteer.Update() - Static factory methods
-- ✅ Movement.Create() - Static factory method
-- ✅ Response mapping: FromDomain(), FromDomainList()
+- ✅ Volunteer.Create(), Volunteer.Update() + **UpdateState()**
+- ✅ Movement.Create() - Static factory (nullable ToSectorId)
+- ✅ Response mapping: FromDomain(), FromDomainList() (nullable fields)
 
 **API Endpoints (Carter) ✅**:
 - ✅ `/volunteers` - Full CRUD (GET, POST, PUT, DELETE)
-- ✅ `/teams` - Read-only (GET, GET/{id})
-- ✅ `/sectors` - Read-only (GET, GET/{id})
-- ✅ `/movements` - Create + Read (GET, POST, GET/{id}) + Business Rule Validation
+- ✅ `/teams` - Read-only (GET, GET/{id})  
+- ✅ `/sectors` - Read-only (GET, GET/{id}) - **Simplified (5 sectors)**
+- ✅ `/movements` - Create + Read (GET, POST, GET/{id}) + **State Machine Validation**
 
 **Configuration Management ✅**:
-- ✅ SectorConfiguration class in Domain layer
+- ✅ SectorConfiguration class in Domain layer (**Simplified - sadece HubCode**)
 - ✅ appsettings.json SectorSettings section
 - ✅ IOptions<SectorConfiguration> DI injection
-- ✅ Config-based error messages
+- ✅ State machine based error messages
 
 **Testing Infrastructure ✅**:
 - ✅ xUnit + Moq + FluentAssertions + InMemory EF
@@ -64,6 +66,10 @@
 - ✅ **Terminology Update**: "Gönüllü" → "Ekip Üyesi" throughout UI
 - ✅ **Quick Actions**: Dashboard shortcuts for Team/Sector creation
 - ✅ **API Integration**: HttpClient services with error handling
+- ✅ **QR Code Support**: QRId field for volunteer identification
+- ✅ **Movement Delete**: Hareket silme functionality added
+- ✅ **Team City**: City property added to Team entity
+- ✅ **Dark/Light Theme**: Theme toggle with dropdown compatibility
 
 **Technical Stack Complete ✅**:
 - ✅ MediatR + FluentValidation + Carter
@@ -75,7 +81,28 @@
 
 ---
 
-## ✅ PROJE TAMAMLANDI
+## ✅ STATE MACHINE ARCHITECTURE (YENİ)
+
+### 🎯 State Machine Implementation
+- ✅ **VolunteerState Enum**: NotEntered, InHub, InSector, Exited
+- ✅ **StateTransitions Class**: Allowed transition validation
+- ✅ **Movement Flow**: NotEntered → InHub ↔ InSector → Exited → InHub
+- ✅ **Simplified Validation**: Single ValidateStateTransition method
+- ✅ **Nullable Movements**: Entry (null→BoO), Exit (BoO→null)
+- ✅ **MovementType Enum**: Entry, Transfer, Exit, ReEntry
+
+### 🗑️ Removed Complexity
+- ❌ Entry/Exit artificial sectors eliminated
+- ❌ 8 complex business rule methods removed
+- ❌ EntryCode/ExitCode configuration removed
+- ❌ Complex sector code validations removed
+
+### ✅ Clean Benefits
+- 📈 **Intuitive Data Model**: null = outside operations
+- 🔒 **Impossible Invalid States**: State machine enforced
+- 🎯 **Self-Documenting Logic**: State transitions clear
+- ⚡ **Performance**: Single validation method
+- 🧪 **Testable**: State transitions unit testable
 
 ### 🎆 Production-Ready SAR Tracking System 🎆
 - ✅ Backend API + Business Rules + Database
@@ -170,10 +197,11 @@ Error: 400 BadRequest with specific rule violation message
    POST   /movements         (WITH VALIDATION)
    
    Validation Responses:
-   400: "İlk hareket ALAN_DIŞI'ndan BoO'ya yapılmalıdır."
-   400: "Sektör geçişleri BoO üzerinden yapılmalıdır."  
-   400: "Çıkış sadece BoO'dan yapılabilir."
+   400: "İlk hareket BoO'ya yapılmalıdır."
+   400: "Çıkış sadece BoO'dan yapılabilir."  
    400: "Grup hareketi için GroupId zorunludur."
+   400: "NotEntered durumuna geri dönüş yapılamaz."
+   400: "Yeniden giriş sadece BoO'ya yapılabilir."
 ```
 
 ---
@@ -234,7 +262,28 @@ public class Sector : Entity
 }
 ```
 
-**GÜNCEL DURUM**: %100 COMPLETE - Production-Ready SAR Tracking System  
-**KALAN**: Hiçbir şey ✅
+## 🚧 KALAN GÖREVLER (TODO)
 
-**SON DURUM**: SAR Tracking System tamamen tamamlandı ve production kullanıma hazır.
+### Genel Geliştirmeler
+- [ ] Tüm arayüz uyarıları türkçe olacak şekilde ayarlanacak
+- [ ] Tüm datatable sayfalarında arama özelliği olacak
+- [ ] Tüm datatable sayfalarında sayfa numaralarının çok fazla olmasından kaynaklı oluşacak hatalar giderilecek
+
+### Dashboard Geliştirmeleri
+- [ ] Takım sayısının gösterimi
+- [ ] Takımlardaki ekip üyesi sayısının gösterilmesi (Sadece gelenler)
+
+### Tamamlanan Yeni Özellikler ✅
+- ✅ Dark/Light tema toggle eklendi
+- ✅ Dark theme dropdown uyumluluğu eklendi
+- ✅ Sektörlere göre Ekip üyesi sayısı dağılımı - Pie Chart/Bar Chart
+- ✅ Gelmeyenlerin raporu
+- ✅ Şehirlere göre ekip üyesi sayısının gösterilmesi
+- ✅ QRId property eklenecek (zorunlu değil)
+- ✅ Hareket silme opsiyonu eklendi
+- ✅ Takım domaini'ne şehir bilgisi eklendi
+
+**GÜNCEL DURUM**: Production-Ready + Active Development  
+**KALAN**: Küçük UI geliştirmeleri ve raporlama
+
+**SON DURUM**: SAR Tracking System core functionality tamamlandı, ek özellikler geliştiriliyor.

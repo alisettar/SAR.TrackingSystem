@@ -19,7 +19,13 @@ builder.Services.AddScoped<IVolunteerService, VolunteerService>();
 builder.Services.AddScoped<IMovementService, MovementService>();
 builder.Services.AddScoped<ISectorService, SectorService>();
 builder.Services.AddScoped<ITeamService, TeamService>();
-builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<IDashboardService>(provider =>
+{
+    var httpClientFactory = provider.GetRequiredService<IHttpClientFactory>();
+    var httpClient = httpClientFactory.CreateClient("SarApi");
+    var volunteerService = provider.GetRequiredService<IVolunteerService>();
+    return new DashboardService(httpClient, volunteerService);
+});
 
 var app = builder.Build();
 

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SAR.TrackingSystem.Application.Data;
+using SAR.TrackingSystem.Application.Data.Dashboard.Queries;
 using SAR.TrackingSystem.Application.Repositories;
 using SAR.TrackingSystem.Domain.Entities;
 using SAR.TrackingSystem.Infrastructure.Persistence;
@@ -64,6 +65,77 @@ public class VolunteerRepository(SarDbContext context) : IVolunteerRepository
             .ToListAsync(cancellationToken);
 
         return (items, totalCount);
+    }
+
+    public async Task<VolunteerStateCounts> GetVolunteerStateCountsAsync(CancellationToken cancellationToken)
+    {
+        var totalCount = await context.Volunteers.LongCountAsync(cancellationToken);
+        
+        var stateCounts = await context.Volunteers
+            .GroupBy(v => v.CurrentState)
+            .Select(g => new { State = g.Key, Count = g.Count() })
+            .ToListAsync(cancellationToken);
+        
+        var nonArrivedCount = stateCounts.FirstOrDefault(x => x.State == Domain.Enums.VolunteerState.NotEntered)?.Count ?? 0;
+        var inHubCount = stateCounts.FirstOrDefault(x => x.State == Domain.Enums.VolunteerState.InHub)?.Count ?? 0;
+        var inSectorCount = stateCounts.FirstOrDefault(x => x.State == Domain.Enums.VolunteerState.InSector)?.Count ?? 0;
+        var exitCount = stateCounts.FirstOrDefault(x => x.State == Domain.Enums.VolunteerState.Exited)?.Count ?? 0;
+        
+        return new VolunteerStateCounts(
+            TotalVolunteers: totalCount,
+            NonArrivedCount: nonArrivedCount,
+            InHubCount: inHubCount,
+            InSectorCount: inSectorCount,
+            ExitCount: exitCount);
+    }
+
+    public async Task<List<SectorDistributionItem>> GetVolunteerSectorDistributionAsync(CancellationToken cancellationToken)
+    {
+        // Her volunteer'in son movement'ından ToSectorId'yi al
+        var lastMovements = await (
+            from v in context.Volunteers
+            join m in (
+                from movement in context.Movements
+                group movement by movement.VolunteerId into g
+                select new { VolunteerId = g.Key, LastMovementTime = g.Max(x => x.MovementTime) }
+            ) on v.Id equals m.VolunteerId
+            join lastM in context.Movements on new { m.VolunteerId, m.LastMovementTime } equals new { lastM.VolunteerId, LastMovementTime = lastM.MovementTime }
+            where lastM.ToSectorId != null // null (Exit) olanları ignore et
+            join s in context.Sectors on lastM.ToSectorId equals s.Id
+            group s by new { s.Code, s.Name } into g
+            select new SectorDistributionItem(g.Key.Code, g.Key.Name, g.Count())
+        ).ToListAsync(cancellationToken);
+
+        return lastMovements.Where(d => d.Count > 0).OrderByDescending(d => d.Count).ToList();
+    }
+
+    public async Task<List<CityDistributionItem>> GetVolunteerCityDistributionAsync(CancellationToken cancellationToken)
+    {
+        var cityDistribution = await (
+            from v in context.Volunteers
+            where v.CurrentState != Domain.Enums.VolunteerState.NotEntered // Sadece gelenler
+            join t in context.Teams on v.TeamId equals t.Id
+            where !string.IsNullOrEmpty(t.City)
+            group t by t.City into g
+            select new CityDistributionItem(g.Key, g.Count())
+        ).ToListAsync(cancellationToken);
+
+        return cityDistribution.OrderByDescending(d => d.Count).ToList();
+    }
+
+    public async Task<List<TeamVolunteerCount>> GetTeamVolunteerCountsAsync(CancellationToken cancellationToken)
+    {
+        var teamCounts = await (
+            from t in context.Teams
+            select new TeamVolunteerCount(
+                t.Name,
+                t.City,
+                context.Volunteers.Count(v => v.TeamId == t.Id && v.CurrentState != Domain.Enums.VolunteerState.NotEntered),
+                context.Volunteers.Count(v => v.TeamId == t.Id)
+            )
+        ).ToListAsync(cancellationToken);
+
+        return teamCounts.OrderBy(tc => tc.TeamName).ToList();
     }
 
     public async Task AddAsync(Volunteer volunteer, CancellationToken cancellationToken)

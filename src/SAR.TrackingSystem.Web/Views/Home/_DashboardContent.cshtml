@@ -1,6 +1,6 @@
 @model SAR.TrackingSystem.Web.Models.DashboardViewModel
 
-<div class="row g-3 mb-4">
+<div class="row g-2 mb-4">
     <div class="col-md-3">
         <div class="card stat-card h-100">
             <div class="card-body text-center">
@@ -10,6 +10,20 @@
                         <p class="text-muted mb-0">Toplam Ekip Üyesi</p>
                     </div>
                     <i class="bi bi-people-fill text-primary fs-2"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card stat-card h-100">
+            <div class="card-body text-center">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="text-danger fw-bold mb-0">@Model.Stats.NonArrivedCount</h3>
+                        <p class="text-muted mb-0">Katılmayan</p>
+                    </div>
+                    <i class="bi bi-person-x-fill text-danger fs-2"></i>
                 </div>
             </div>
         </div>
@@ -42,24 +56,129 @@
             </div>
         </div>
     </div>
+</div>
 
-    <div class="col-md-3">
-        <div class="card stat-card h-100">
-            <div class="card-body text-center">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h3 class="text-info fw-bold mb-0">@Model.Stats.EntryCount</h3>
-                        <p class="text-muted mb-0">İntikal</p>
+<!-- Ekip Dağılımı -->
+<div class="row g-2 mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-people-fill"></i>
+                    Ekip Dağılımı
+                </h5>
+            </div>
+            <div class="card-body">
+                @if (Model.TeamDistribution.Teams.Any())
+                {
+                    <div class="row g-2">
+                        @foreach (var team in Model.TeamDistribution.Teams)
+                        {
+                            <div class="col-md-3 col-sm-6">
+                                <div class="card border-primary">
+                                    <div class="card-body p-3">
+                                        <h6 class="card-title d-flex justify-content-between align-items-center">
+                                            @team.Name
+                                            <small class="badge bg-primary">@team.Percentage%</small>
+                                        </h6>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <small class="text-muted">Gelen: <strong>@team.ArrivedCount</strong></small>
+                                            <small class="text-muted">Toplam: <strong>@team.TotalCount</strong></small>
+                                        </div>
+                                        <div class="progress" style="height: 6px;">
+                                            <div class="progress-bar" role="progressbar" style="width: @team.Percentage%"></div>
+                                        </div>
+                                        @if (!string.IsNullOrWhiteSpace(team.City) && team.City != "Belirtilmemiş")
+                                        {
+                                            <small class="text-muted mt-1 d-block">
+                                                <i class="bi bi-geo-alt"></i> @team.City
+                                            </small>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
                     </div>
-                    <i class="bi bi-arrow-right-circle-fill text-info fs-2"></i>
-                </div>
+                }
+                else
+                {
+                    <div class="alert alert-secondary">
+                        <i class="bi bi-info-circle"></i> Ekip verisi bulunamadı.
+                    </div>
+                }
             </div>
         </div>
     </div>
 </div>
 
-<div class="row">
-    <div class="col-md-6">
+<div class="row g-2 mb-4">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-pie-chart"></i>
+                        Sektör Dağılımı
+                    </h5>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button type="button" class="btn btn-outline-primary active" id="pieBtn" onclick="switchChart('sector', 'pie')">
+                            <i class="bi bi-pie-chart"></i>
+                        </button>
+                        <button type="button" class="btn btn-outline-primary" id="barBtn" onclick="switchChart('sector', 'bar')">
+                            <i class="bi bi-bar-chart"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                @if (Model.SectorDistribution.Data.Any())
+                {
+                    <canvas id="sectorChart" width="300" height="300"></canvas>
+                }
+                else
+                {
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> Henüz sektör dağılımı yok.
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-geo-alt"></i>
+                        Şehir Dağılımı
+                    </h5>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button type="button" class="btn btn-outline-info active" id="cityPieBtn" onclick="switchChart('city', 'pie')">
+                            <i class="bi bi-pie-chart"></i>
+                        </button>
+                        <button type="button" class="btn btn-outline-info" id="cityBarBtn" onclick="switchChart('city', 'bar')">
+                            <i class="bi bi-bar-chart"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                @if (Model.CityDistribution.Data.Any())
+                {
+                    <canvas id="cityChart" width="300" height="300"></canvas>
+                }
+                else
+                {
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> Henüz şehir dağılımı yok.
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
         <div class="card">
             <div class="card-header">
                 <h5 class="mb-0">
@@ -97,8 +216,10 @@
             </div>
         </div>
     </div>
+</div>
 
-    <div class="col-md-6">
+<div class="row g-2 mb-4">
+    <div class="col-md-12">
         <div class="card">
             <div class="card-header">
                 <h5 class="mb-0">
@@ -110,7 +231,7 @@
                 <div class="alert alert-info">
                     <strong>Operasyon Aktif:</strong> Sistem çalışır durumda
                 </div>
-                
+
                 @if (Model.RecentMovements.Any())
                 {
                     <h6 class="mb-2">
@@ -138,12 +259,9 @@
                                         </td>
                                         <td>
                                             <small>
-                                                @if (!string.IsNullOrEmpty(movement.FromSectorName))
-                                                {
-                                                    <span class="text-muted">@movement.FromSectorName</span>
-                                                    <i class="bi bi-arrow-right mx-1"></i>
-                                                }
-                                                <span class="text-primary">@movement.ToSectorName</span>
+                                                <span class="text-muted">@movement.FromSectorDisplay</span>
+                                                <i class="bi bi-arrow-right mx-1"></i>
+                                                <span class="text-primary">@movement.ToSectorDisplay</span>
                                             </small>
                                         </td>
                                         <td><small class="text-muted">@movement.MovementTime.ToString("HH:mm")</small></td>
@@ -164,7 +282,7 @@
                         <i class="bi bi-info-circle"></i> Henüz hareket kaydı yok.
                     </div>
                 }
-                
+
                 <hr>
                 <small class="text-muted">
                     Son Güncelleme: @DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss")

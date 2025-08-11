@@ -28,17 +28,136 @@
     <script>
         let refreshInterval;
         
+        let currentChart = null;
+        let chartData = null;
+        let currentCityChart = null;
+        let cityChartData = null;
+        
         function refreshDashboard() {
             fetch('/Home/GetDashboardData')
                 .then(response => response.text())
                 .then(html => {
                     document.getElementById('dashboard-content').innerHTML = html;
                     console.log('Dashboard updated:', new Date().toLocaleTimeString());
+                    initializeCharts();
                 })
                 .catch(error => {
                     console.error('Dashboard refresh failed:', error);
                 });
         }
+        
+        function initializeCharts() {
+            initializeSectorChart();
+            initializeCityChart();
+        }
+        
+        function initializeSectorChart() {
+            const chartCanvas = document.getElementById('sectorChart');
+            const rawData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.SectorDistribution.Data));
+            
+            if (chartCanvas && rawData && rawData.length > 0) {
+                chartData = {
+                    labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.SectorDistribution.Labels)),
+                    data: rawData,
+                    colors: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.SectorDistribution.BackgroundColors))
+                };
+                createChart('sector', 'pie');
+            }
+        }
+        
+        function initializeCityChart() {
+            const chartCanvas = document.getElementById('cityChart');
+            const rawData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.CityDistribution.Data));
+            
+            if (chartCanvas && rawData && rawData.length > 0) {
+                cityChartData = {
+                    labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.CityDistribution.Labels)),
+                    data: rawData,
+                    colors: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.CityDistribution.BackgroundColors))
+                };
+                createChart('city', 'pie');
+            }
+        }
+        
+        function createChart(chartType, type) {
+            const isCity = chartType === 'city';
+            const chartCanvas = document.getElementById(isCity ? 'cityChart' : 'sectorChart');
+            const data = isCity ? cityChartData : chartData;
+            let chart = isCity ? currentCityChart : currentChart;
+            
+            if (!chartCanvas || !data) return;
+            
+            if (chart) {
+                chart.destroy();
+            }
+            
+            const ctx = chartCanvas.getContext('2d');
+            let labels = data.labels;
+            let dataValues = data.data;  // Renamed to avoid conflict
+            let colors = data.colors;
+            
+            if (type === 'bar') {
+                const combined = labels.map((label, i) => ({ label, data: dataValues[i], color: colors[i] }));
+                combined.sort((a, b) => b.data - a.data);
+                
+                labels = combined.map(item => item.label);
+                dataValues = combined.map(item => item.data);
+                colors = combined.map(item => item.color);
+            }
+            
+            const newChart = new Chart(ctx, {
+                type: type,
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: dataValues,
+                        backgroundColor: colors,
+                        borderColor: colors.map(color => color + '80'),
+                        borderWidth: type === 'bar' ? 1 : 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { 
+                            position: type === 'pie' ? 'bottom' : 'top',
+                            display: type === 'pie'
+                        }
+                    },
+                    scales: type === 'bar' ? {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1 }
+                        }
+                    } : {}
+                }
+            });
+            
+            if (isCity) {
+                currentCityChart = newChart;
+            } else {
+                currentChart = newChart;
+            }
+        }
+        
+        function switchChart(chartType, type) {
+            const isCity = chartType === 'city';
+            const prefix = isCity ? 'city' : '';
+            
+            const pieBtn = document.getElementById(prefix + 'pieBtn');
+            const barBtn = document.getElementById(prefix + 'barBtn');
+            const targetBtn = document.getElementById(prefix + type + 'Btn');
+            
+            if (pieBtn) pieBtn.classList.remove('active');
+            if (barBtn) barBtn.classList.remove('active');
+            if (targetBtn) targetBtn.classList.add('active');
+            
+            createChart(chartType, type);
+        }
+        
+        // Initialize chart on page load
+        document.addEventListener('DOMContentLoaded', initializeCharts);
         
         // Start auto-refresh every 30 seconds
         refreshInterval = setInterval(refreshDashboard, 30000);

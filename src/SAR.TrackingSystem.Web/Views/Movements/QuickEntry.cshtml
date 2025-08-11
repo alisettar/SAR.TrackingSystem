@@ -80,7 +80,7 @@
                                 <option value="">Sektör seçiniz...</option>
                                 @foreach (var sector in ViewBag.Sectors as List<SAR.TrackingSystem.Web.Models.SectorViewModel>)
                                 {
-                                    @if (!sector.Code.Equals("Entry") && !sector.Code.Equals("BoO") && !sector.Code.Equals("Exit"))
+                                    @if (!sector.Code.Equals("BoO"))
                                     {
                                         <option value="@sector.Id">@sector.Name (@sector.Code)</option>
                                     }
