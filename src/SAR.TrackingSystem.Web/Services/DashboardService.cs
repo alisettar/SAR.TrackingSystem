@@ -18,7 +18,8 @@ public class DashboardService(
     {
         try
         {
-            var response = await httpClient.GetAsync("/dashboard/stats");
+            var cacheBuster = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            var response = await httpClient.GetAsync($"/dashboard/stats?_t={cacheBuster}");
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
@@ -57,7 +58,8 @@ public class DashboardService(
     {
         try
         {
-            var response = await httpClient.GetAsync("/dashboard/team-distribution");
+            var cacheBuster = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            var response = await httpClient.GetAsync($"/dashboard/team-distribution?_t={cacheBuster}");
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
@@ -85,7 +87,8 @@ public class DashboardService(
     {
         try
         {
-            var response = await httpClient.GetAsync("/dashboard/sector-distribution");
+            var cacheBuster = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            var response = await httpClient.GetAsync($"/dashboard/sector-distribution?_t={cacheBuster}");
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
@@ -108,7 +111,8 @@ public class DashboardService(
     {
         try
         {
-            var response = await httpClient.GetAsync("/dashboard/city-distribution");
+            var cacheBuster = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            var response = await httpClient.GetAsync($"/dashboard/city-distribution?_t={cacheBuster}");
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();

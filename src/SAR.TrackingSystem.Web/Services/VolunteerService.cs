@@ -22,7 +22,8 @@ public class VolunteerService(
     {
         try
         {
-            var queryParams = $"?paginationRequest={{\"SearchText\":\"{Uri.EscapeDataString(request.SearchText ?? "")}\",\"Page\":{request.Page},\"PageSize\":{request.PageSize}}}";
+            var cacheBuster = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            var queryParams = $"?paginationRequest={{\"SearchText\":\"{Uri.EscapeDataString(request.SearchText ?? "")}\",\"Page\":{request.Page},\"PageSize\":{request.PageSize}}}&_t={cacheBuster}";
             var response = await _httpClient.GetAsync($"/volunteers{queryParams}");
 
             if (response.StatusCode == HttpStatusCode.NotFound)

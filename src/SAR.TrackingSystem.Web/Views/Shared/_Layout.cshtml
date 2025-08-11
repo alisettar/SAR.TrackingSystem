@@ -386,6 +386,15 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <script>
+        // Cache Storage temizliği
+        if ('caches' in window) {
+            caches.keys().then(function(names) {
+                names.forEach(function(name) {
+                    caches.delete(name);
+                });
+            });
+        }
+        
         // HTML5 Validation Messages in Turkish
         document.addEventListener('DOMContentLoaded', function() {
             const requiredInputs = document.querySelectorAll('[required]');
