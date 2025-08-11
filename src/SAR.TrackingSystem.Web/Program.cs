@@ -1,4 +1,4 @@
-using SAR.TrackingSystem.Web.Services;
+﻿using SAR.TrackingSystem.Web.Services;
 using SAR.TrackingSystem.Web.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,6 +35,8 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
 }
+
+app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
