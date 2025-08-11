@@ -143,6 +143,8 @@
             activeOperation = event.target.getAttribute('data-operation');
             localStorage.setItem('qrActiveTab', activeOperation);
             updateProcessButton();
+            // Focus QR input after tab change
+            document.getElementById('qrId').focus();
         });
     });
     

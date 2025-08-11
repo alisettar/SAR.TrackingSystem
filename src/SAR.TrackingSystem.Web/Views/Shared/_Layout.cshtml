@@ -386,6 +386,50 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <script>
+        // HTML5 Validation Messages in Turkish
+        document.addEventListener('DOMContentLoaded', function() {
+            const requiredInputs = document.querySelectorAll('[required]');
+            
+            requiredInputs.forEach(input => {
+                input.addEventListener('invalid', function(e) {
+                    e.target.setCustomValidity('');
+                    
+                    if (!e.target.validity.valid) {
+                        if (e.target.validity.valueMissing) {
+                            const label = e.target.labels && e.target.labels.length > 0 ? 
+                                e.target.labels[0].textContent : 
+                                e.target.getAttribute('placeholder') || 'Bu alan';
+                            e.target.setCustomValidity(label + ' doldurulması zorunludur.');
+                        } else if (e.target.validity.typeMismatch) {
+                            if (e.target.type === 'email') {
+                                e.target.setCustomValidity('Lütfen geçerli bir e-posta adresi giriniz.');
+                            } else if (e.target.type === 'url') {
+                                e.target.setCustomValidity('Lütfen geçerli bir web adresi giriniz.');
+                            } else {
+                                e.target.setCustomValidity('Lütfen geçerli bir değer giriniz.');
+                            }
+                        } else if (e.target.validity.patternMismatch) {
+                            e.target.setCustomValidity('Lütfen istenen formatta giriniz.');
+                        } else if (e.target.validity.tooShort) {
+                            e.target.setCustomValidity('En az ' + e.target.minLength + ' karakter giriniz.');
+                        } else if (e.target.validity.tooLong) {
+                            e.target.setCustomValidity('En fazla ' + e.target.maxLength + ' karakter giriniz.');
+                        } else if (e.target.validity.rangeUnderflow) {
+                            e.target.setCustomValidity('Minimum değer ' + e.target.min + ' olmalıdır.');
+                        } else if (e.target.validity.rangeOverflow) {
+                            e.target.setCustomValidity('Maksimum değer ' + e.target.max + ' olmalıdır.');
+                        }
+                    }
+                });
+                
+                input.addEventListener('input', function(e) {
+                    e.target.setCustomValidity('');
+                });
+            });
+        });
+    </script>
+    
+    <script>
         // Theme Toggle Functionality
         const themeToggle = document.getElementById('themeToggle');
         const themeIcon = document.getElementById('themeIcon');
