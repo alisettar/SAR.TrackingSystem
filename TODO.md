@@ -3,7 +3,7 @@
 ### Genel
 
 - [ ] Tüm arayüz uyarıları türkçe olacak şekilde ayarlanacak
-- [ ] Tüm datatable sayfalarında arama özelliği olacak.
+- [ ] Ekip Üyelieri sayfasında datatable arama özelliği olacak.
 - [x] Tüm datatable sayfalarında sayfa numaralarının çok fazla olmasından kaynaklı oluşacak hatalar giderilecek.
 - [x] Dark/Light tema toggle eklendi
 - [x] Dark theme dropdown uyumluluğu eklendi
@@ -13,8 +13,8 @@
 - [x] Sektörlere göre Ekip üyesi sayısı dağılımı - Pie Chart veya Bar Chart
 - [x] Gelmeyenlerin raporu
 - [x] Şehirlere göre ekip üyesi sayısının gösterilmesi (Sadece gelenler)
-- [ ] Takım sayısının gösterimi
-- [ ] Takımlardaki ekip üyesi sayısının gösterilmesi (Sadece gelenler)
+- [x] Takım sayısının gösterimi
+- [x] Takımlardaki ekip üyesi sayısının gösterilmesi (Sadece gelenler)
 
 ### Ekip Üyesi sayfası için yapılacaklar
 
@@ -54,3 +54,7 @@
 - [x] Migration hazır (SimplifyVolunteerSchema)
 - [x] Team domain'ine City property eklendi
 - [x] Team migration hazır (AddCityToTeam)
+
+### DataInitializer
+
+- [ ] Excel dosyasından Ekip Üyeleri otomatik girilecek

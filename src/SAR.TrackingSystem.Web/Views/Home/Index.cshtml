@@ -143,15 +143,27 @@
         
         function switchChart(chartType, type) {
             const isCity = chartType === 'city';
-            const prefix = isCity ? 'city' : '';
             
-            const pieBtn = document.getElementById(prefix + 'pieBtn');
-            const barBtn = document.getElementById(prefix + 'barBtn');
-            const targetBtn = document.getElementById(prefix + type + 'Btn');
+            let pieBtn, barBtn;
             
+            if (isCity) {
+                pieBtn = document.getElementById('cityPieBtn');
+                barBtn = document.getElementById('cityBarBtn');
+            } else {
+                pieBtn = document.getElementById('pieBtn');
+                barBtn = document.getElementById('barBtn');
+            }
+            
+            // Remove active class from both buttons
             if (pieBtn) pieBtn.classList.remove('active');
             if (barBtn) barBtn.classList.remove('active');
-            if (targetBtn) targetBtn.classList.add('active');
+            
+            // Add active class to the clicked button
+            if (type === 'pie' && pieBtn) {
+                pieBtn.classList.add('active');
+            } else if (type === 'bar' && barBtn) {
+                barBtn.classList.add('active');
+            }
             
             createChart(chartType, type);
         }

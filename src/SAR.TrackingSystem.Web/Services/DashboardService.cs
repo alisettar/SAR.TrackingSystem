@@ -40,6 +40,19 @@ public class DashboardService(
         }
     }
 
+    public async Task<int> GetTotalTeamCountAsync()
+    {
+        try
+        {
+            var teamDistribution = await GetTeamDistributionAsync();
+            return teamDistribution.Teams.Count;
+        }
+        catch (Exception)
+        {
+            return 0;
+        }
+    }
+
     public async Task<TeamDistributionData> GetTeamDistributionAsync()
     {
         try

@@ -26,6 +26,7 @@ public class HomeController : Controller
             var sectorDistribution = await _dashboardService.GetSectorDistributionAsync();
             var cityDistribution = await _dashboardService.GetCityDistributionAsync();
             var teamDistribution = await _dashboardService.GetTeamDistributionAsync();
+            var totalTeamCount = await _dashboardService.GetTotalTeamCountAsync();
             
             var dashboardViewModel = new DashboardViewModel
             {
@@ -34,7 +35,8 @@ public class HomeController : Controller
                 NonArrivedVolunteers = nonArrivedVolunteers,
                 SectorDistribution = sectorDistribution,
                 CityDistribution = cityDistribution,
-                TeamDistribution = teamDistribution
+                TeamDistribution = teamDistribution,
+                TotalTeamCount = totalTeamCount
             };
             
             return View(dashboardViewModel);
@@ -57,6 +59,7 @@ public class HomeController : Controller
             var sectorDistribution = await _dashboardService.GetSectorDistributionAsync();
             var cityDistribution = await _dashboardService.GetCityDistributionAsync();
             var teamDistribution = await _dashboardService.GetTeamDistributionAsync();
+            var totalTeamCount = await _dashboardService.GetTotalTeamCountAsync();
             
             var dashboardViewModel = new DashboardViewModel
             {
@@ -65,7 +68,8 @@ public class HomeController : Controller
                 NonArrivedVolunteers = nonArrivedVolunteers,
                 SectorDistribution = sectorDistribution,
                 CityDistribution = cityDistribution,
-                TeamDistribution = teamDistribution
+                TeamDistribution = teamDistribution,
+                TotalTeamCount = totalTeamCount
             };
             
             return PartialView("_DashboardContent", dashboardViewModel);

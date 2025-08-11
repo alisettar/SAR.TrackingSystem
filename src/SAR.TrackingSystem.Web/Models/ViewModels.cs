@@ -21,6 +21,7 @@ public class DashboardViewModel
     public SectorDistributionData SectorDistribution { get; set; } = new();
     public CityDistributionData CityDistribution { get; set; } = new();
     public TeamDistributionData TeamDistribution { get; set; } = new();
+    public int TotalTeamCount { get; set; }
 }
 
 public class PaginatedResponse<T>

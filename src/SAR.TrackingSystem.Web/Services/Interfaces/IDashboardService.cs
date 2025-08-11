@@ -9,4 +9,5 @@ public interface IDashboardService
     Task<SectorDistributionData> GetSectorDistributionAsync();
     Task<CityDistributionData> GetCityDistributionAsync();
     Task<TeamDistributionData> GetTeamDistributionAsync();
+    Task<int> GetTotalTeamCountAsync();
 }
