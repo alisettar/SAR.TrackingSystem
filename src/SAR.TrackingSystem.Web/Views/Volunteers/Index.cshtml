@@ -203,6 +203,14 @@
             const offcanvas = new bootstrap.Offcanvas(document.getElementById('timelineOffcanvas'));
             offcanvas.show();
             
+            // Dark theme fix
+            const isDark = document.documentElement.getAttribute('data-bs-theme') === 'dark';
+            const offcanvasEl = document.getElementById('timelineOffcanvas');
+            if (isDark) {
+                offcanvasEl.style.setProperty('--bs-offcanvas-bg', '#212529');
+                offcanvasEl.style.setProperty('--bs-offcanvas-color', '#f8f9fa');
+            }
+            
             try {
                 const response = await fetch(`/volunteers/timeline/${volunteerId}`);
                 const movements = await response.json();

@@ -1,6 +1,5 @@
 using MediatR;
 using SAR.TrackingSystem.Application.Repositories;
-using SAR.TrackingSystem.Application.Data.Volunteers.Queries;
 
 namespace SAR.TrackingSystem.Application.Data.Volunteers.Queries;
 
@@ -12,10 +11,9 @@ public sealed class GetVolunteerMovementHistoryQueryHandler(IMovementRepository 
     public async Task<List<MovementHistoryResponse>> Handle(GetVolunteerMovementHistoryQuery request, CancellationToken cancellationToken)
     {
         var movements = await repository.GetByVolunteerIdAsync(request.VolunteerId, cancellationToken);
-        return movements
+        return [.. movements
             .Select(MovementHistoryResponse.FromDomain)
-            .OrderByDescending(m => m.MovementTime)
-            .ToList();
+            .OrderBy(m => m.MovementTime)];
     }
 }
 
@@ -35,7 +33,7 @@ public sealed record MovementHistoryResponse
         {
             Id = movement.Id,
             MovementTime = movement.MovementTime,
-            FromSector = movement.FromSector?.Code ?? "ALAN_DIŞI",
+            FromSector = movement.FromSector?.Code ?? "Alan Dışı",
             ToSector = movement.ToSector?.Code ?? "Çıkış",
             MovementType = GetMovementTypeDescription(movement),
             IsGroupMovement = movement.IsGroupMovement,
