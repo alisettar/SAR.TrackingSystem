@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using SAR.TrackingSystem.Application.Data;
 using SAR.TrackingSystem.Application.Data.Volunteers.Commands;
 using SAR.TrackingSystem.Application.Data.Volunteers.Queries;
+using SAR.TrackingSystem.Domain.Enums;
 
 namespace SAR.TrackingSystem.Api.Modules.Volunteers;
 
@@ -74,6 +75,7 @@ public class VolunteersModule : ICarterModule
 
     private static async Task<Ok<PaginationResponse<VolunteerResponse>>> GetVolunteers(
         [FromQuery] PaginationRequest? paginationRequest,
+        [FromQuery] string? filter,
         [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] PaginationRequest? bodyPaginationRequest,
         [FromServices] ISender sender,
         HttpContext context)
@@ -81,8 +83,18 @@ public class VolunteersModule : ICarterModule
         // Priority: Body > Query > Default
         paginationRequest = bodyPaginationRequest ?? paginationRequest;
 
+        // Parse filter parameter
+        VolunteerState? stateFilter = filter switch
+        {
+            "inHub" => VolunteerState.InHub,
+            "inSector" => VolunteerState.InSector,
+            "exited" => VolunteerState.Exited,
+            "notEntered" => VolunteerState.NotEntered,
+            _ => null
+        };
+
         var result = await sender.Send(
-            new GetVolunteersQuery(paginationRequest ?? new()),
+            new GetVolunteersQuery(paginationRequest ?? new(), stateFilter),
             context.RequestAborted);
 
         return TypedResults.Ok(result);

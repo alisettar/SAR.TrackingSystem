@@ -11,10 +11,10 @@ public class GetTeamDistributionQueryHandler(IVolunteerRepository volunteerRepos
     public async Task<TeamDistributionResponse> Handle(GetTeamDistributionQuery request, CancellationToken cancellationToken)
     {
         var teamCounts = await volunteerRepository.GetTeamVolunteerCountsAsync(cancellationToken);
-        
+
         var items = teamCounts.Select(tc => new TeamDistributionItem(
             tc.TeamName,
-            tc.City ?? "Belirtilmemiş", 
+            tc.City ?? "Belirtilmemiş",
             tc.ArrivedCount,
             tc.TotalCount))
             .OrderBy(x => x.TeamName)

@@ -2,73 +2,83 @@
 
 <div class="row g-3 mb-4">
     <div class="col">
-        <div class="card stat-card h-100">
-            <div class="card-body text-center">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h3 class="text-success fw-bold mb-0">@Model.Stats.InHubCount</h3>
-                        <p class="text-muted mb-0">BoO'da</p>
+        <a href="/volunteers?filter=inHub" class="text-decoration-none">
+            <div class="card stat-card h-100 clickable-card">
+                <div class="card-body text-center">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="text-success fw-bold mb-0">@Model.Stats.InHubCount</h3>
+                            <p class="text-muted mb-0">BoO'da</p>
+                        </div>
+                        <i class="bi bi-house-check-fill text-success fs-2"></i>
                     </div>
-                    <i class="bi bi-house-check-fill text-success fs-2"></i>
                 </div>
             </div>
-        </div>
+        </a>
     </div>
 
     <div class="col">
-        <div class="card stat-card h-100">
-            <div class="card-body text-center">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h3 class="text-warning fw-bold mb-0">@Model.Stats.InSectorCount</h3>
-                        <p class="text-muted mb-0">Sektörde</p>
+        <a href="/volunteers?filter=inSector" class="text-decoration-none">
+            <div class="card stat-card h-100 clickable-card">
+                <div class="card-body text-center">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="text-warning fw-bold mb-0">@Model.Stats.InSectorCount</h3>
+                            <p class="text-muted mb-0">Sektörde</p>
+                        </div>
+                        <i class="bi bi-geo-alt-fill text-warning fs-2"></i>
                     </div>
-                    <i class="bi bi-geo-alt-fill text-warning fs-2"></i>
                 </div>
             </div>
-        </div>
+        </a>
     </div>
 
     <div class="col">
-        <div class="card stat-card h-100">
-            <div class="card-body text-center">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h3 class="text-info fw-bold mb-0">@Model.Stats.ExitCount</h3>
-                        <p class="text-muted mb-0">Çıkış Yapan</p>
+        <a href="/volunteers?filter=exited" class="text-decoration-none">
+            <div class="card stat-card h-100 clickable-card">
+                <div class="card-body text-center">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="text-info fw-bold mb-0">@Model.Stats.ExitCount</h3>
+                            <p class="text-muted mb-0">Çıkış Yapan</p>
+                        </div>
+                        <i class="bi bi-door-open-fill text-info fs-2"></i>
                     </div>
-                    <i class="bi bi-door-open-fill text-info fs-2"></i>
                 </div>
             </div>
-        </div>
+        </a>
     </div>
 
     <div class="col">
-        <div class="card stat-card h-100">
-            <div class="card-body text-center">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h3 class="text-danger fw-bold mb-0">@Model.Stats.NonArrivedCount</h3>
-                        <p class="text-muted mb-0">Katılmayan</p>
+        <a href="/volunteers?filter=notEntered" class="text-decoration-none">
+            <div class="card stat-card h-100 clickable-card">
+                <div class="card-body text-center">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="text-danger fw-bold mb-0">@Model.Stats.NonArrivedCount</h3>
+                            <p class="text-muted mb-0">Katılmayan</p>
+                        </div>
+                        <i class="bi bi-person-x-fill text-danger fs-2"></i>
                     </div>
-                    <i class="bi bi-person-x-fill text-danger fs-2"></i>
                 </div>
             </div>
-        </div>
+        </a>
     </div>
 
     <div class="col">
-        <div class="card stat-card h-100">
-            <div class="card-body text-center">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h3 class="text-primary fw-bold mb-0">@Model.Stats.TotalVolunteers</h3>
-                        <p class="text-muted mb-0">Toplam Ekip Üyesi</p>
+        <a href="/volunteers" class="text-decoration-none">
+            <div class="card stat-card h-100 clickable-card">
+                <div class="card-body text-center">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="text-primary fw-bold mb-0">@Model.Stats.TotalVolunteers</h3>
+                            <p class="text-muted mb-0">Toplam Ekip Üyesi</p>
+                        </div>
+                        <i class="bi bi-people-fill text-primary fs-2"></i>
                     </div>
-                    <i class="bi bi-people-fill text-primary fs-2"></i>
                 </div>
             </div>
-        </div>
+        </a>
     </div>
 </div>
 

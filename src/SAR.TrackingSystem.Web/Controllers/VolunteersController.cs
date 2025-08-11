@@ -9,11 +9,23 @@ public class VolunteersController(
     IVolunteerService volunteerService,
     ITeamService teamService) : Controller
 {
-    public async Task<IActionResult> Index(int page = 1, string search = "")
+    public async Task<IActionResult> Index(int page = 1, string search = "", string? filter = null)
     {
         ViewBag.SearchTerm = search;
+        ViewBag.Filter = filter;
+        
+        // Filter title for display
+        ViewBag.FilterTitle = filter switch
+        {
+            "inHub" => "BoO'da Bulunan Ekip Üyeleri",
+            "inSector" => "Sektörde Bulunan Ekip Üyeleri", 
+            "exited" => "Çıkış Yapan Ekip Üyeleri",
+            "notEntered" => "Katılmayan Ekip Üyeleri",
+            _ => "Tüm Ekip Üyeleri"
+        };
+        
         var request = new PaginationRequest(page - 1, 10, search); // Convert to 0-based
-        var volunteers = await volunteerService.GetVolunteersAsync(request);
+        var volunteers = await volunteerService.GetVolunteersAsync(request, filter);
         return View(volunteers);
     }
 

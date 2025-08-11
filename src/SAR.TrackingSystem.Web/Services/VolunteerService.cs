@@ -18,12 +18,12 @@ public class VolunteerService(
         Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() }
     };
 
-    public async Task<PaginatedResponse<VolunteerViewModel>> GetVolunteersAsync(PaginationRequest request)
+    public async Task<PaginatedResponse<VolunteerViewModel>> GetVolunteersAsync(PaginationRequest request, string? filter = null)
     {
         try
         {
-            var cacheBuster = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-            var queryParams = $"?paginationRequest={{\"SearchText\":\"{Uri.EscapeDataString(request.SearchText ?? "")}\",\"Page\":{request.Page},\"PageSize\":{request.PageSize}}}&_t={cacheBuster}";
+            var filterParam = !string.IsNullOrEmpty(filter) ? $"&filter={Uri.EscapeDataString(filter)}" : "";
+            var queryParams = $"?paginationRequest={{\"SearchText\":\"{Uri.EscapeDataString(request.SearchText ?? "")}\",\"Page\":{request.Page},\"PageSize\":{request.PageSize}}}{filterParam}";
             var response = await _httpClient.GetAsync($"/volunteers{queryParams}");
 
             if (response.StatusCode == HttpStatusCode.NotFound)

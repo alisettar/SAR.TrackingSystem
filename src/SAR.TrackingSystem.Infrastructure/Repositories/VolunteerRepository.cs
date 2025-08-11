@@ -3,6 +3,7 @@ using SAR.TrackingSystem.Application.Data;
 using SAR.TrackingSystem.Application.Data.Dashboard.Queries;
 using SAR.TrackingSystem.Application.Repositories;
 using SAR.TrackingSystem.Domain.Entities;
+using SAR.TrackingSystem.Domain.Enums;
 using SAR.TrackingSystem.Infrastructure.Persistence;
 
 namespace SAR.TrackingSystem.Infrastructure.Repositories;
@@ -32,7 +33,7 @@ public class VolunteerRepository(SarDbContext context) : IVolunteerRepository
 
     public async Task<(List<Volunteer> items, long totalCount)> GetByTeamIdAsync(Guid teamId, PaginationRequest request, CancellationToken cancellationToken = default)
     {
-        var query = context.Volunteers.Include(v => v.Team).AsQueryable();
+        var query = context.Volunteers.AsNoTracking().Include(v => v.Team).AsQueryable();
 
         // Filter by team ID
         query = query.Where(v => v.TeamId == teamId);
@@ -66,9 +67,15 @@ public class VolunteerRepository(SarDbContext context) : IVolunteerRepository
         return (items, totalCount);
     }
 
-    public async Task<(List<Volunteer> items, long totalCount)> GetPaginatedAsync(PaginationRequest request, CancellationToken cancellationToken = default)
+    public async Task<(List<Volunteer> items, long totalCount)> GetPaginatedAsync(PaginationRequest request, VolunteerState? stateFilter = null, CancellationToken cancellationToken = default)
     {
-        var query = context.Volunteers.Include(v => v.Team).AsQueryable();
+        var query = context.Volunteers.AsNoTracking().Include(v => v.Team).AsQueryable();
+
+        // Apply state filter
+        if (stateFilter.HasValue)
+        {
+            query = query.Where(v => v.CurrentState == stateFilter.Value);
+        }
 
         // Apply search filter
         if (!string.IsNullOrEmpty(request.SearchText))
@@ -101,9 +108,10 @@ public class VolunteerRepository(SarDbContext context) : IVolunteerRepository
 
     public async Task<VolunteerStateCounts> GetVolunteerStateCountsAsync(CancellationToken cancellationToken)
     {
-        var totalCount = await context.Volunteers.LongCountAsync(cancellationToken);
+        var totalCount = await context.Volunteers.AsNoTracking().LongCountAsync(cancellationToken);
 
         var stateCounts = await context.Volunteers
+            .AsNoTracking()
             .GroupBy(v => v.CurrentState)
             .Select(g => new { State = g.Key, Count = g.Count() })
             .ToListAsync(cancellationToken);
@@ -125,15 +133,15 @@ public class VolunteerRepository(SarDbContext context) : IVolunteerRepository
     {
         // Her volunteer'in son movement'ından ToSectorId'yi al
         var lastMovements = await (
-            from v in context.Volunteers
+            from v in context.Volunteers.AsNoTracking()
             join m in (
-                from movement in context.Movements
+                from movement in context.Movements.AsNoTracking()
                 group movement by movement.VolunteerId into g
                 select new { VolunteerId = g.Key, LastMovementTime = g.Max(x => x.MovementTime) }
             ) on v.Id equals m.VolunteerId
-            join lastM in context.Movements on new { m.VolunteerId, m.LastMovementTime } equals new { lastM.VolunteerId, LastMovementTime = lastM.MovementTime }
+            join lastM in context.Movements.AsNoTracking() on new { m.VolunteerId, m.LastMovementTime } equals new { lastM.VolunteerId, LastMovementTime = lastM.MovementTime }
             where lastM.ToSectorId != null // null (Exit) olanları ignore et
-            join s in context.Sectors on lastM.ToSectorId equals s.Id
+            join s in context.Sectors.AsNoTracking() on lastM.ToSectorId equals s.Id
             group s by new { s.Code, s.Name } into g
             select new SectorDistributionItem(g.Key.Code, g.Key.Name, g.Count())
         ).ToListAsync(cancellationToken);
@@ -144,9 +152,9 @@ public class VolunteerRepository(SarDbContext context) : IVolunteerRepository
     public async Task<List<CityDistributionItem>> GetVolunteerCityDistributionAsync(CancellationToken cancellationToken)
     {
         var cityDistribution = await (
-            from v in context.Volunteers
+            from v in context.Volunteers.AsNoTracking()
             where v.CurrentState != Domain.Enums.VolunteerState.NotEntered // Sadece gelenler
-            join t in context.Teams on v.TeamId equals t.Id
+            join t in context.Teams.AsNoTracking() on v.TeamId equals t.Id
             where !string.IsNullOrEmpty(t.City)
             group t by t.City into g
             select new CityDistributionItem(g.Key, g.Count())
@@ -158,12 +166,12 @@ public class VolunteerRepository(SarDbContext context) : IVolunteerRepository
     public async Task<List<TeamVolunteerCount>> GetTeamVolunteerCountsAsync(CancellationToken cancellationToken)
     {
         var teamCounts = await (
-            from t in context.Teams
+            from t in context.Teams.AsNoTracking()
             select new TeamVolunteerCount(
                 t.Name,
                 t.City,
-                context.Volunteers.Count(v => v.TeamId == t.Id && v.CurrentState != Domain.Enums.VolunteerState.NotEntered),
-                context.Volunteers.Count(v => v.TeamId == t.Id)
+                context.Volunteers.AsNoTracking().Count(v => v.TeamId == t.Id && v.CurrentState != Domain.Enums.VolunteerState.NotEntered),
+                context.Volunteers.AsNoTracking().Count(v => v.TeamId == t.Id)
             )
         ).ToListAsync(cancellationToken);
 

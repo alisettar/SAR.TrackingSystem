@@ -6,8 +6,7 @@ namespace SAR.TrackingSystem.Application.Data.Dashboard.Queries;
 public sealed record GetSectorDistributionQuery() : IRequest<SectorDistributionResponse>;
 
 public sealed class GetSectorDistributionQueryHandler(
-    IVolunteerRepository volunteerRepository, 
-    IMovementRepository movementRepository) 
+    IVolunteerRepository volunteerRepository) 
     : IRequestHandler<GetSectorDistributionQuery, SectorDistributionResponse>
 {
     public async Task<SectorDistributionResponse> Handle(GetSectorDistributionQuery request, CancellationToken cancellationToken)
