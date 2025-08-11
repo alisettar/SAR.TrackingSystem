@@ -17,10 +17,10 @@ public class VolunteerRepository(SarDbContext context) : IVolunteerRepository
     public async Task<bool> ExistsByQRIdAsync(string qrId, Guid? excludeVolunteerId = null, CancellationToken cancellationToken = default)
     {
         var query = context.Volunteers.Where(v => v.QRId == qrId);
-        
+
         if (excludeVolunteerId.HasValue)
             query = query.Where(v => v.Id != excludeVolunteerId.Value);
-            
+
         return await query.AnyAsync(cancellationToken);
     }
 
@@ -30,22 +30,54 @@ public class VolunteerRepository(SarDbContext context) : IVolunteerRepository
             .OrderBy(v => v.FullName)
             .ToListAsync(cancellationToken);
 
-    public async Task<List<Volunteer>> GetByTeamIdAsync(Guid teamId, CancellationToken cancellationToken)
-        => await context.Volunteers
-            .Include(v => v.Team)
-            .Where(v => v.TeamId == teamId)
+    public async Task<(List<Volunteer> items, long totalCount)> GetByTeamIdAsync(Guid teamId, PaginationRequest request, CancellationToken cancellationToken = default)
+    {
+        var query = context.Volunteers.Include(v => v.Team).AsQueryable();
+
+        // Filter by team ID
+        query = query.Where(v => v.TeamId == teamId);
+
+        // Apply search filter
+        if (!string.IsNullOrEmpty(request.SearchText))
+        {
+            // TODO: Türkçe karakter küçük büyük harf aramalarında sorun var. Düzeltilecek.
+            query = query.Where(v => v.FullName.Contains(request.SearchText) ||
+                                   (v.QRId != null && v.QRId.Contains(request.SearchText)) ||
+                                   v.Team.Name.Contains(request.SearchText) ||
+                                   v.Role.Contains(request.SearchText));
+        }
+
+        var totalCount = await query.LongCountAsync(cancellationToken);
+
+        // Apply ordering
+        query = request.OrderBy switch
+        {
+            "FullName" => request.OrderDescending ? query.OrderByDescending(v => v.FullName) : query.OrderBy(v => v.FullName),
+            "TeamName" => request.OrderDescending ? query.OrderByDescending(v => v.Team.Name) : query.OrderBy(v => v.Team.Name),
+            "QRId" => request.OrderDescending ? query.OrderByDescending(v => v.QRId) : query.OrderBy(v => v.QRId),
+            _ => request.OrderDescending ? query.OrderByDescending(v => v.FullName) : query.OrderBy(v => v.FullName)
+        };
+
+        var items = await query
+            .Skip(request.Page * request.PageSize)
+            .Take(request.PageSize)
             .ToListAsync(cancellationToken);
 
-    public async Task<(List<Volunteer> items, long totalCount)> GetPaginatedAsync(PaginationRequest request, string? search = null, CancellationToken cancellationToken = default)
+        return (items, totalCount);
+    }
+
+    public async Task<(List<Volunteer> items, long totalCount)> GetPaginatedAsync(PaginationRequest request, CancellationToken cancellationToken = default)
     {
         var query = context.Volunteers.Include(v => v.Team).AsQueryable();
 
         // Apply search filter
-        if (!string.IsNullOrEmpty(search))
+        if (!string.IsNullOrEmpty(request.SearchText))
         {
-            query = query.Where(v => v.FullName.Contains(search) ||
-                                   (v.QRId != null && v.QRId.Contains(search)) ||
-                                   v.Team.Name.Contains(search));
+            // TODO: Türkçe karakter küçük büyük harf aramalarında sorun var. Düzeltilecek.
+            query = query.Where(v => v.FullName.Contains(request.SearchText) ||
+                                   (v.QRId != null && v.QRId.Contains(request.SearchText)) ||
+                                   v.Team.Name.Contains(request.SearchText) ||
+                                   v.Role.Contains(request.SearchText));
         }
 
         var totalCount = await query.LongCountAsync(cancellationToken);
@@ -70,17 +102,17 @@ public class VolunteerRepository(SarDbContext context) : IVolunteerRepository
     public async Task<VolunteerStateCounts> GetVolunteerStateCountsAsync(CancellationToken cancellationToken)
     {
         var totalCount = await context.Volunteers.LongCountAsync(cancellationToken);
-        
+
         var stateCounts = await context.Volunteers
             .GroupBy(v => v.CurrentState)
             .Select(g => new { State = g.Key, Count = g.Count() })
             .ToListAsync(cancellationToken);
-        
+
         var nonArrivedCount = stateCounts.FirstOrDefault(x => x.State == Domain.Enums.VolunteerState.NotEntered)?.Count ?? 0;
         var inHubCount = stateCounts.FirstOrDefault(x => x.State == Domain.Enums.VolunteerState.InHub)?.Count ?? 0;
         var inSectorCount = stateCounts.FirstOrDefault(x => x.State == Domain.Enums.VolunteerState.InSector)?.Count ?? 0;
         var exitCount = stateCounts.FirstOrDefault(x => x.State == Domain.Enums.VolunteerState.Exited)?.Count ?? 0;
-        
+
         return new VolunteerStateCounts(
             TotalVolunteers: totalCount,
             NonArrivedCount: nonArrivedCount,
@@ -120,7 +152,7 @@ public class VolunteerRepository(SarDbContext context) : IVolunteerRepository
             select new CityDistributionItem(g.Key, g.Count())
         ).ToListAsync(cancellationToken);
 
-        return cityDistribution.OrderByDescending(d => d.Count).ToList();
+        return [.. cityDistribution.OrderByDescending(d => d.Count)];
     }
 
     public async Task<List<TeamVolunteerCount>> GetTeamVolunteerCountsAsync(CancellationToken cancellationToken)

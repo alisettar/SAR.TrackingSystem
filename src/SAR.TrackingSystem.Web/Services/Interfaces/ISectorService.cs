@@ -1,6 +1,6 @@
 using SAR.TrackingSystem.Web.Models;
 
-namespace SAR.TrackingSystem.Web.Services;
+namespace SAR.TrackingSystem.Web.Services.Interfaces;
 
 public interface ISectorService
 {

@@ -1,5 +1,4 @@
 using MediatR;
-using SAR.TrackingSystem.Application.Data;
 using SAR.TrackingSystem.Application.Repositories;
 
 namespace SAR.TrackingSystem.Application.Data.Movements.Queries;

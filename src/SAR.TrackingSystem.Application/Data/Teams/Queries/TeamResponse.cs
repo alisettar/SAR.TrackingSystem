@@ -29,7 +29,7 @@ public sealed record TeamDetailsResponse
     public string Name { get; init; } = string.Empty;
     public string Code { get; init; } = string.Empty;
     public string? City { get; init; }
-    public List<TeamMemberResponse> Members { get; init; } = new();
+    public List<TeamMemberResponse> Members { get; init; } = [];
 }
 
 public sealed record TeamMemberResponse

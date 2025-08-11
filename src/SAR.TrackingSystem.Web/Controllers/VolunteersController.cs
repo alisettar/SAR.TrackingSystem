@@ -1,32 +1,25 @@
 using Microsoft.AspNetCore.Mvc;
 using SAR.TrackingSystem.Web.Models;
 using SAR.TrackingSystem.Web.Models.Common;
-using SAR.TrackingSystem.Web.Services;
+using SAR.TrackingSystem.Web.Services.Interfaces;
 
 namespace SAR.TrackingSystem.Web.Controllers;
 
-public class VolunteersController : Controller
+public class VolunteersController(
+    IVolunteerService volunteerService,
+    ITeamService teamService) : Controller
 {
-    private readonly IVolunteerService _volunteerService;
-    private readonly ITeamService _teamService;
-
-    public VolunteersController(IVolunteerService volunteerService, ITeamService teamService)
-    {
-        _volunteerService = volunteerService;
-        _teamService = teamService;
-    }
-
     public async Task<IActionResult> Index(int page = 1, string search = "")
     {
         ViewBag.SearchTerm = search;
-        var request = new PaginationRequest(page - 1, 20, search); // Convert to 0-based
-        var volunteers = await _volunteerService.GetVolunteersAsync(request);
+        var request = new PaginationRequest(page - 1, 10, search); // Convert to 0-based
+        var volunteers = await volunteerService.GetVolunteersAsync(request);
         return View(volunteers);
     }
 
     public async Task<IActionResult> Create(string? qrId = null)
     {
-        ViewBag.Teams = await _teamService.GetTeamsAsync();
+        ViewBag.Teams = await teamService.GetTeamsAsync();
         
         var model = new VolunteerCreateViewModel();
         if (!string.IsNullOrEmpty(qrId))
@@ -43,31 +36,31 @@ public class VolunteersController : Controller
     {
         if (!ModelState.IsValid)
         {
-            ViewBag.Teams = await _teamService.GetTeamsAsync();
+            ViewBag.Teams = await teamService.GetTeamsAsync();
             return View(model);
         }
 
         try
         {
-            await _volunteerService.CreateVolunteerAsync(model);
+            await volunteerService.CreateVolunteerAsync(model);
             TempData["Success"] = "Ekip üyesi başarıyla oluşturuldu.";
             return RedirectToAction(nameof(Index));
         }
         catch (Exception ex)
         {
             ViewBag.Error = $"Hata: {ex.Message}";
-            ViewBag.Teams = await _teamService.GetTeamsAsync();
+            ViewBag.Teams = await teamService.GetTeamsAsync();
             return View(model);
         }
     }
 
     public async Task<IActionResult> Edit(Guid id)
     {
-        var volunteer = await _volunteerService.GetVolunteerByIdAsync(id);
+        var volunteer = await volunteerService.GetVolunteerByIdAsync(id);
         if (volunteer == null)
             return NotFound();
 
-        ViewBag.Teams = await _teamService.GetTeamsAsync();
+        ViewBag.Teams = await teamService.GetTeamsAsync();
         
         var model = new VolunteerUpdateViewModel
         {
@@ -85,13 +78,13 @@ public class VolunteersController : Controller
     {
         if (!ModelState.IsValid)
         {
-            ViewBag.Teams = await _teamService.GetTeamsAsync();
+            ViewBag.Teams = await teamService.GetTeamsAsync();
             return View(model);
         }
 
         try
         {
-            var success = await _volunteerService.UpdateVolunteerAsync(id, model);
+            var success = await volunteerService.UpdateVolunteerAsync(id, model);
             if (success)
             {
                 TempData["Success"] = "Ekip üyesi başarıyla güncellendi.";
@@ -107,7 +100,7 @@ public class VolunteersController : Controller
             ViewBag.Error = $"Hata: {ex.Message}";
         }
 
-        ViewBag.Teams = await _teamService.GetTeamsAsync();
+        ViewBag.Teams = await teamService.GetTeamsAsync();
         return View(model);
     }
 
@@ -116,7 +109,7 @@ public class VolunteersController : Controller
     {
         try
         {
-            var success = await _volunteerService.DeleteVolunteerAsync(id);
+            var success = await volunteerService.DeleteVolunteerAsync(id);
             if (success)
                 TempData["Success"] = "Ekip üyesi başarıyla silindi.";
             else

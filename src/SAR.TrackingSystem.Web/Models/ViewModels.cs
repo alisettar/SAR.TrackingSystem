@@ -1,5 +1,5 @@
-using System.ComponentModel.DataAnnotations;
 using SAR.TrackingSystem.Web.Services;
+using System.ComponentModel.DataAnnotations;
 
 namespace SAR.TrackingSystem.Web.Models;
 
@@ -178,7 +178,8 @@ public class TeamDetailsViewModel
     public string Name { get; set; } = null!;
     public string Code { get; set; } = null!;
     public string? City { get; set; }
-    public List<TeamMemberViewModel> Members { get; set; } = new();
+    public List<TeamMemberViewModel> Members { get; set; } = [];
+    public long TotalCount { get; set; }
 }
 
 public class TeamMemberViewModel
@@ -194,7 +195,4 @@ public class SectorViewModel
     public Guid Id { get; set; }
     public string Code { get; set; } = null!;
     public string Name { get; set; } = null!;
-    public bool IsEntryPoint { get; set; }
-    public bool IsExitPoint { get; set; }
-    public bool IsActive { get; set; }
 }

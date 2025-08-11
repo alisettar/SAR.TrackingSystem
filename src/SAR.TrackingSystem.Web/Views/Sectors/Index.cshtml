@@ -34,7 +34,6 @@
                     <tr>
                         <th>Ad</th>
                         <th>Kod</th>
-                        <th>Durum</th>
                         <th>İşlemler</th>
                     </tr>
                 </thead>
@@ -45,23 +44,13 @@
                             <td>@sector.Name</td>
                             <td>@sector.Code</td>
                             <td>
-                                @if (sector.IsActive)
-                                {
-                                    <span class="badge bg-success">Aktif</span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-secondary">Pasif</span>
-                                }
-                            </td>
-                            <td>
                                 <a href="/sectors/details/@sector.Id" class="btn btn-sm btn-primary">
                                     <i class="bi bi-eye"></i> Detay
                                 </a>
                                 
                                 @if (ViewBag.EnableDelete == true)
                                 {
-                                    var criticalSectors = new[] { "Entry", "BoO", "Exit" };
+                                    var criticalSectors = new[] { "BoO" };
                                     var isCritical = criticalSectors.Contains(sector.Code, StringComparer.OrdinalIgnoreCase);
                                     
                                     @if (isCritical)

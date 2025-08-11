@@ -1,4 +1,5 @@
 using SAR.TrackingSystem.Web.Services;
+using SAR.TrackingSystem.Web.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 

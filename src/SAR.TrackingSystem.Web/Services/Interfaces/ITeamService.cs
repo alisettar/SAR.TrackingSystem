@@ -1,7 +1,7 @@
 using SAR.TrackingSystem.Web.Models;
 using SAR.TrackingSystem.Web.Models.Common;
 
-namespace SAR.TrackingSystem.Web.Services;
+namespace SAR.TrackingSystem.Web.Services.Interfaces;
 
 public interface ITeamService
 {

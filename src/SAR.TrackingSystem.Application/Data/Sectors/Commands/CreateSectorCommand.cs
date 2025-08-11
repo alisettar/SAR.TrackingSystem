@@ -1,10 +1,9 @@
-﻿using MediatR;
-using SAR.TrackingSystem.Application.Repositories;
-using SAR.TrackingSystem.Domain.Entities;
-using FluentValidation;
+﻿using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.Options;
-
+using SAR.TrackingSystem.Application.Repositories;
 using SAR.TrackingSystem.Domain.Configuration;
+using SAR.TrackingSystem.Domain.Entities;
 
 namespace SAR.TrackingSystem.Application.Data.Sectors.Commands;
 
@@ -35,10 +34,7 @@ public sealed class CreateSectorCommandHandler(
         // Create Sector
         var sector = new Sector(
             code: request.Request.Code,
-            name: request.Request.Name,
-            isActive: request.Request.IsActive,
-            isEntryPoint: request.Request.IsEntryPoint,
-            isExitPoint: request.Request.IsExitPoint);
+            name: request.Request.Name);
 
         await sectorRepository.AddAsync(sector, cancellationToken);
         return sector.Id;
@@ -58,9 +54,5 @@ public sealed class CreateSectorCommandValidator : AbstractValidator<CreateSecto
             .NotEmpty()
             .MaximumLength(100)
             .WithMessage("Sektör adı maksimum 100 karakter olmalıdır.");
-
-        RuleFor(x => x.Request)
-            .Must(x => !(x.IsEntryPoint && x.IsExitPoint))
-            .WithMessage("Bir sektör hem giriş hem de çıkış noktası olamaz.");
     }
 }

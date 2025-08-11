@@ -10,14 +10,9 @@ public sealed class GetTeamMembersQueryHandler(IVolunteerRepository volunteerRep
 {
     public async Task<PaginationResponse<TeamMemberResponse>> Handle(GetTeamMembersQuery request, CancellationToken cancellationToken)
     {
-        var volunteers = await volunteerRepository.GetByTeamIdAsync(request.TeamId, cancellationToken);
+        (var volunteers, long totalCount) = await volunteerRepository.GetByTeamIdAsync(request.TeamId, request.Pagination, cancellationToken);
 
-        // Apply pagination
-        var totalCount = volunteers.Count;
-        var skip = (request.Pagination.Page - 1) * request.Pagination.PageSize;
-        var pagedVolunteers = volunteers.Skip(skip).Take(request.Pagination.PageSize).ToList();
-
-        var members = pagedVolunteers.Select(v => new TeamMemberResponse
+        var members = volunteers.Select(v => new TeamMemberResponse
         {
             Id = v.Id,
             FullName = v.FullName,

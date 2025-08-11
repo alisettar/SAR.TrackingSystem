@@ -4,7 +4,7 @@
 
 - [ ] Tüm arayüz uyarıları türkçe olacak şekilde ayarlanacak
 - [ ] Tüm datatable sayfalarında arama özelliği olacak.
-- [ ] Tüm datatable sayfalarında sayfa numaralarının çok fazla olmasından kaynaklı oluşacak hatalar giderilecek.
+- [x] Tüm datatable sayfalarında sayfa numaralarının çok fazla olmasından kaynaklı oluşacak hatalar giderilecek.
 - [x] Dark/Light tema toggle eklendi
 - [x] Dark theme dropdown uyumluluğu eklendi
 

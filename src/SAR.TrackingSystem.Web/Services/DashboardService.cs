@@ -1,22 +1,19 @@
 using SAR.TrackingSystem.Web.Models;
 using SAR.TrackingSystem.Web.Models.Common;
+using SAR.TrackingSystem.Web.Services.Interfaces;
 using System.Text.Json;
 
 namespace SAR.TrackingSystem.Web.Services;
-
-public interface IDashboardService
-{
-    Task<DashboardStats> GetDashboardStatsAsync();
-    Task<List<VolunteerViewModel>> GetNonArrivedVolunteersAsync();
-    Task<SectorDistributionData> GetSectorDistributionAsync();
-    Task<CityDistributionData> GetCityDistributionAsync();
-    Task<TeamDistributionData> GetTeamDistributionAsync();
-}
 
 public class DashboardService(
     HttpClient httpClient,
     IVolunteerService volunteerService) : IDashboardService
 {
+    private readonly JsonSerializerOptions _jsonOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
+
     public async Task<DashboardStats> GetDashboardStatsAsync()
     {
         try
@@ -25,10 +22,7 @@ public class DashboardService(
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
-            var apiStats = JsonSerializer.Deserialize<ApiDashboardStats>(content, new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            });
+            var apiStats = JsonSerializer.Deserialize<ApiDashboardStats>(content, _jsonOptions);
 
             return new DashboardStats
             {
@@ -54,10 +48,7 @@ public class DashboardService(
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
-            var apiData = JsonSerializer.Deserialize<ApiTeamDistribution>(content, new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            });
+            var apiData = JsonSerializer.Deserialize<ApiTeamDistribution>(content, _jsonOptions);
 
             return new TeamDistributionData
             {
@@ -68,7 +59,7 @@ public class DashboardService(
                     ArrivedCount = x.ArrivedCount,
                     TotalCount = x.TotalCount,
                     Percentage = x.TotalCount > 0 ? (int)Math.Round((double)x.ArrivedCount / x.TotalCount * 100) : 0
-                }).OrderBy(t => t.Name).ToList() ?? new()
+                }).OrderBy(t => t.Name).ToList() ?? []
             };
         }
         catch (Exception)
@@ -85,15 +76,12 @@ public class DashboardService(
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
-            var apiData = JsonSerializer.Deserialize<ApiSectorDistribution>(content, new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            });
+            var apiData = JsonSerializer.Deserialize<ApiSectorDistribution>(content, _jsonOptions);
 
             return new SectorDistributionData
             {
-                Labels = apiData?.Items.Select(x => x.SectorCode).ToList() ?? new(),
-                Data = apiData?.Items.Select(x => x.Count).ToList() ?? new(),
+                Labels = apiData?.Items.Select(x => x.SectorCode).ToList() ?? [],
+                Data = apiData?.Items.Select(x => x.Count).ToList() ?? [],
                 BackgroundColors = GenerateColors(apiData?.Items.Count ?? 0)
             };
         }
@@ -111,15 +99,12 @@ public class DashboardService(
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
-            var apiData = JsonSerializer.Deserialize<ApiCityDistribution>(content, new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            });
+            var apiData = JsonSerializer.Deserialize<ApiCityDistribution>(content, _jsonOptions);
 
             return new CityDistributionData
             {
-                Labels = apiData?.Items.Select(x => x.CityName).ToList() ?? new(),
-                Data = apiData?.Items.Select(x => x.Count).ToList() ?? new(),
+                Labels = apiData?.Items.Select(x => x.CityName).ToList() ?? [],
+                Data = apiData?.Items.Select(x => x.Count).ToList() ?? [],
                 BackgroundColors = GenerateColors(apiData?.Items.Count ?? 0)
             };
         }
@@ -134,11 +119,11 @@ public class DashboardService(
         try
         {
             var volunteers = await volunteerService.GetVolunteersAsync(new PaginationRequest(0, 1000));
-            return volunteers.Items.Where(v => v.CurrentState == 0).ToList();
+            return [.. volunteers.Items.Where(v => v.CurrentState == 0)];
         }
         catch (Exception)
         {
-            return new List<VolunteerViewModel>();
+            return [];
         }
     }
 
@@ -149,7 +134,7 @@ public class DashboardService(
             "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0",
             "#9966FF", "#FF9F40", "#FF6384", "#C9CBCF"
         };
-        return colors.Take(count).ToList();
+        return [.. colors.Take(count)];
     }
 }
 
@@ -168,9 +153,9 @@ public record ApiSectorDistributionItem(string SectorCode, string SectorName, in
 
 public class SectorDistributionData
 {
-    public List<string> Labels { get; set; } = new();
-    public List<int> Data { get; set; } = new();
-    public List<string> BackgroundColors { get; set; } = new();
+    public List<string> Labels { get; set; } = [];
+    public List<int> Data { get; set; } = [];
+    public List<string> BackgroundColors { get; set; } = [];
 }
 
 // City distribution models
@@ -179,9 +164,9 @@ public record ApiCityDistributionItem(string CityName, int Count);
 
 public class CityDistributionData
 {
-    public List<string> Labels { get; set; } = new();
-    public List<int> Data { get; set; } = new();
-    public List<string> BackgroundColors { get; set; } = new();
+    public List<string> Labels { get; set; } = [];
+    public List<int> Data { get; set; } = [];
+    public List<string> BackgroundColors { get; set; } = [];
 }
 
 // Team distribution models
@@ -190,7 +175,7 @@ public record ApiTeamDistributionItem(string TeamName, string City, int ArrivedC
 
 public class TeamDistributionData
 {
-    public List<TeamInfo> Teams { get; set; } = new();
+    public List<TeamInfo> Teams { get; set; } = [];
 }
 
 public class TeamInfo

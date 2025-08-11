@@ -1,4 +1,5 @@
 using SAR.TrackingSystem.Web.Models;
+using SAR.TrackingSystem.Web.Services.Interfaces;
 using System.Net;
 using System.Text.Json;
 
@@ -43,7 +44,7 @@ public class SectorService : ISectorService
 
     public async Task<bool> CreateSectorAsync(SectorViewModel model)
     {
-        var response = await _httpClient.PostAsJsonAsync("/api/sectors", model);
+        var response = await _httpClient.PostAsJsonAsync("/sectors", model);
         return response.IsSuccessStatusCode;
     }
 

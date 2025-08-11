@@ -2,7 +2,4 @@
 
 public sealed record SectorRequest(
     string Code,
-    string Name,
-    bool IsActive = true,
-    bool IsEntryPoint = false,
-    bool IsExitPoint = false);
+    string Name);
