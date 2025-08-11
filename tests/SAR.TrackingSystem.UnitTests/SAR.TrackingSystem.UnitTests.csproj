@@ -10,6 +10,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Domain\**" />
+    <EmbeddedResource Remove="Domain\**" />
+    <None Remove="Domain\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -36,10 +42,6 @@
     <ProjectReference Include="..\..\src\SAR.TrackingSystem.Domain\SAR.TrackingSystem.Domain.csproj" />
     <ProjectReference Include="..\..\src\SAR.TrackingSystem.Application\SAR.TrackingSystem.Application.csproj" />
     <ProjectReference Include="..\..\src\SAR.TrackingSystem.Infrastructure\SAR.TrackingSystem.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Domain\" />
   </ItemGroup>
 
 </Project>

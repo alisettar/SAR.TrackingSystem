@@ -10,4 +10,5 @@ public interface IVolunteerService
     Task<Guid> CreateVolunteerAsync(VolunteerCreateViewModel model);
     Task<bool> UpdateVolunteerAsync(Guid id, VolunteerUpdateViewModel model);
     Task<bool> DeleteVolunteerAsync(Guid id);
+    Task<List<MovementHistoryViewModel>> GetVolunteerMovementHistoryAsync(Guid id);
 }

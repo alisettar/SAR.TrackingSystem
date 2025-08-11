@@ -1,8 +1,8 @@
 # SAR Tracking System - Proje Dokümantasyonu
 
-**Tarih:** 10 Ağustos 2025  
-**Durum:** %100 Backend + Web UI + State Machine Complete ✅  
-**Süre:** 3 günlük hızlı geliştirme planı + State Machine Refactor (TAMAMLANDI)
+**Tarih:** 11 Ağustos 2025  
+**Durum:** %100 Backend + Web UI + State Machine + Timeline Complete ✅  
+**Süre:** 3 günlük hızlı geliştirme planı + State Machine Refactor + Timeline Özelliği (TAMAMLANDI)
 
 ## 📋 Proje Özeti
 
@@ -52,6 +52,7 @@ SAR.TrackingSystem/
 ### Backend API (Carter + MediatR) ✅
 ```
 ✅ /volunteers        - Full CRUD (GET, POST, PUT, DELETE)
+✅ /volunteers/{id}/movements - Movement history timeline (GET)
 ✅ /teams            - Read-only (GET, GET/{id})  
 ✅ /sectors          - Read-only (GET, GET/{id})
 ✅ /movements        - Create + Read (POST, GET, GET/{id})
@@ -128,6 +129,7 @@ public bool IsCriticalForBusinessRules { get; set; }
 ```
 ✅ Dashboard           - Statistics, recent movements, auto-refresh (30s AJAX)
 ✅ Volunteer CRUD      - Create/Read/Update/Delete forms (Ekip Üyesi)
+✅ Movement Timeline   - Offcanvas modal with vertical timeline view
 ✅ Movement Entry      - Bireysel/Grup hareket kayıt formu
 ✅ Bootstrap UI        - Responsive design + SAR theme
 ✅ Quick Actions       - Dashboard shortcuts (Team/Sector create)
@@ -290,6 +292,8 @@ builder.Services.Configure<SectorConfiguration>(
 - ✅ Dashboard pie/bar charts
 - ✅ Gelmeyen ekip üyeleri raporu
 - ✅ Şehir bazında dağılım raporu
+- ✅ **Movement Timeline**: Offcanvas modal ile dikey timeline gösterimi
+- ✅ **Timeline Refactor**: Modüler CSS/JS + Dark theme fix + UX improvements
 
 ---
 

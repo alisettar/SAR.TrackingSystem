@@ -163,4 +163,45 @@ public class VolunteerService(
         var response = await _httpClient.DeleteAsync($"/volunteers/{id}");
         return response.IsSuccessStatusCode;
     }
+    
+    public async Task<List<MovementHistoryViewModel>> GetVolunteerMovementHistoryAsync(Guid id)
+    {
+        try
+        {
+            var cacheBuster = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            var response = await _httpClient.GetAsync($"/volunteers/{id}/movements?_t={cacheBuster}");
+            
+            if (!response.IsSuccessStatusCode)
+                return [];
+            
+            var content = await response.Content.ReadAsStringAsync();
+            var apiData = JsonSerializer.Deserialize<List<MovementHistoryApiModel>>(content, _jsonOptions);
+            
+            return apiData?.Select(m => new MovementHistoryViewModel
+            {
+                Id = m.Id,
+                MovementTime = m.MovementTime,
+                FromSector = m.FromSector,
+                ToSector = m.ToSector,
+                MovementType = m.MovementType,
+                IsGroupMovement = m.IsGroupMovement,
+                Notes = m.Notes
+            }).ToList() ?? [];
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error getting movement history for volunteer {Id}", id);
+            return [];
+        }
+    }
 }
+
+public record MovementHistoryApiModel(
+    Guid Id,
+    DateTime MovementTime,
+    string FromSector,
+    string ToSector,
+    string MovementType,
+    bool IsGroupMovement,
+    string Notes
+);

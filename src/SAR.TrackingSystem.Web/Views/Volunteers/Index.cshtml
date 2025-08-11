@@ -3,6 +3,10 @@
     ViewData["Title"] = "Ekip Üyeleri";
 }
 
+@section Styles {
+    <link rel="stylesheet" href="~/css/timeline.css" />
+}
+
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h2><i class="bi bi-people"></i> @ViewBag.FilterTitle</h2>
@@ -14,7 +18,6 @@
                     <i class="bi bi-arrow-left"></i> Tümünü Göster
                 </a>
             </div>
-
         }
     </div>
     <div class="d-flex gap-2">
@@ -128,23 +131,16 @@
             var baseParams = searchParam + filterParam;
             <nav>
                 <ul class="pagination justify-content-center">
-                    @* İlk sayfa *@
                     @if (Model.Page > 1)
                     {
                         <li class="page-item">
                             <a class="page-link" href="?page=1@baseParams">İlk</a>
                         </li>
-                    }
-                    
-                    @* Önceki sayfa *@
-                    @if (Model.Page > 1)
-                    {
                         <li class="page-item">
                             <a class="page-link" href="?page=@(Model.Page - 1)@baseParams">‹</a>
                         </li>
                     }
                     
-                    @* Sayfa numaraları (mevcut sayfanın çevresinde 5 sayfa) *@
                     @{
                         var startPage = Math.Max(1, Model.Page - 2);
                         var endPage = Math.Min(Model.TotalPages, Model.Page + 2);
@@ -157,17 +153,11 @@
                         </li>
                     }
                     
-                    @* Sonraki sayfa *@
                     @if (Model.Page < Model.TotalPages)
                     {
                         <li class="page-item">
                             <a class="page-link" href="?page=@(Model.Page + 1)@baseParams">›</a>
                         </li>
-                    }
-                    
-                    @* Son sayfa *@
-                    @if (Model.Page < Model.TotalPages)
-                    {
                         <li class="page-item">
                             <a class="page-link" href="?page=@Model.TotalPages@baseParams">Son (@Model.TotalPages)</a>
                         </li>
@@ -185,155 +175,9 @@
     </div>
 </div>
 
-@section Scripts {
-    <script>
-        function deleteVolunteer(id) {
-            if (confirm('Bu ekip üyesini silmek istediğinizden emin misiniz?')) {
-                fetch(`/volunteers/delete/${id}`, {
-                    method: 'POST'
-                }).then(() => {
-                    location.reload();
-                });
-            }
-        }
-        
-        async function showTimeline(volunteerId, volunteerName) {
-            document.getElementById('timelineName').textContent = `${volunteerName} - Hareket Geçmişi`;
-            
-            const offcanvas = new bootstrap.Offcanvas(document.getElementById('timelineOffcanvas'));
-            offcanvas.show();
-            
-            // Dark theme fix
-            const isDark = document.documentElement.getAttribute('data-bs-theme') === 'dark';
-            const offcanvasEl = document.getElementById('timelineOffcanvas');
-            if (isDark) {
-                offcanvasEl.style.setProperty('--bs-offcanvas-bg', '#212529');
-                offcanvasEl.style.setProperty('--bs-offcanvas-color', '#f8f9fa');
-            }
-            
-            try {
-                const response = await fetch(`/volunteers/timeline/${volunteerId}`);
-                const movements = await response.json();
-                
-                const timelineHtml = movements.length > 0 
-                    ? generateTimelineHtml(movements)
-                    : '<div class="text-center text-muted p-4"><i class="bi bi-info-circle"></i><br>Henüz hareket kaydı bulunmuyor</div>';
-                    
-                document.getElementById('timelineContent').innerHTML = timelineHtml;
-            } catch (error) {
-                document.getElementById('timelineContent').innerHTML = 
-                    '<div class="alert alert-danger"><i class="bi bi-exclamation-triangle"></i> Veriler yüklenemedi</div>';
-            }
-        }
-        
-        function generateTimelineHtml(movements) {
-            return `
-                <div class="timeline">
-                    ${movements.map(m => `
-                        <div class="timeline-item">
-                            <div class="d-flex align-items-start">
-                                <div class="timeline-time text-muted me-3" style="min-width: 60px; font-size: 0.85rem; font-weight: 500;">
-                                    ${m.timeFormatted}
-                                </div>
-                                <div class="timeline-icon-wrapper me-3 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; border-radius: 50%; background: var(--bs-primary-bg-subtle); border: 2px solid var(--bs-primary);">
-                                    <i class="${m.timelineIcon}" style="font-size: 0.9rem;"></i>
-                                </div>
-                                <div class="timeline-content flex-grow-1">
-                                    <div class="fw-semibold text-body mb-1" style="font-size: 0.95rem;">${m.movementDescription}</div>
-                                    <div class="d-flex flex-wrap gap-2 mb-2">
-                                        <span class="badge bg-secondary-subtle text-secondary-emphasis" style="font-size: 0.75rem;">${m.movementType}</span>
-                                        ${m.isGroupMovement ? '<span class="badge bg-info-subtle text-info-emphasis" style="font-size: 0.75rem;">Grup</span>' : ''}
-                                    </div>
-                                    ${m.notes ? `<div class="small text-info-emphasis bg-info-subtle px-2 py-1 rounded" style="font-size: 0.8rem;">${m.notes}</div>` : ''}
-                                </div>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-                <style>
-                    .timeline {
-                        position: relative;
-                        padding: 0.5rem 0;
-                    }
-                    
-                    .timeline-item {
-                        position: relative;
-                        padding-bottom: 1.5rem;
-                    }
-                    
-                    .timeline-item:not(:last-child)::before {
-                        content: '';
-                        position: absolute;
-                        left: 91px;
-                        top: 32px;
-                        bottom: -8px;
-                        width: 2px;
-                        background: linear-gradient(to bottom, var(--bs-border-color), transparent);
-                    }
-                    
-                    /* Timeline modal genişliği */
-                    #timelineOffcanvas {
-                        --bs-offcanvas-width: 520px;
-                    }
-                    
-                    /* Dark theme styles */
-                    html[data-bs-theme="dark"] .offcanvas,
-                    [data-bs-theme="dark"] .offcanvas {
-                        background-color: #212529 !important;
-                        color: #f8f9fa !important;
-                    }
-                    
-                    html[data-bs-theme="dark"] .offcanvas-header,
-                    [data-bs-theme="dark"] .offcanvas-header {
-                        border-bottom-color: #495057 !important;
-                    }
-                    
-                    html[data-bs-theme="dark"] .timeline-icon-wrapper,
-                    [data-bs-theme="dark"] .timeline-icon-wrapper {
-                        background: #1a1e21 !important;
-                        border-color: #0d6efd !important;
-                    }
-                    
-                    html[data-bs-theme="dark"] .text-muted,
-                    [data-bs-theme="dark"] .text-muted {
-                        color: #6c757d !important;
-                    }
-                    
-                    html[data-bs-theme="dark"] .text-body,
-                    [data-bs-theme="dark"] .text-body {
-                        color: #f8f9fa !important;
-                    }
-                    
-                    html[data-bs-theme="dark"] .btn-close,
-                    [data-bs-theme="dark"] .btn-close {
-                        filter: invert(1) grayscale(100%) brightness(200%);
-                    }
-                    
-                    /* Responsive */
-                    @@media (max-width: 576px) {
-                        #timelineOffcanvas {
-                            --bs-offcanvas-width: 100vw;
-                        }
-                    }
-                </style>
-            `;
-        }
-    </script>
-}
+@* Include Timeline Modal *@
+@{await Html.RenderPartialAsync("_TimelineModal");}
 
-<!-- Timeline Offcanvas -->
-<div class="offcanvas offcanvas-end" tabindex="-1" id="timelineOffcanvas" aria-labelledby="timelineOffcanvasLabel">
-    <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="timelineOffcanvasLabel">
-            <i class="bi bi-clock-history me-2"></i><span id="timelineName">Hareket Geçmişi</span>
-        </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Kapat"></button>
-    </div>
-    <div class="offcanvas-body" id="timelineContent">
-        <div class="d-flex justify-content-center p-4">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Yüklüyor...</span>
-            </div>
-        </div>
-    </div>
-</div>
+@section Scripts {
+    <script src="~/js/timeline.js"></script>
+}

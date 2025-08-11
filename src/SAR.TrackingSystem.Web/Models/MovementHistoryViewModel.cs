@@ -26,8 +26,8 @@ public class MovementHistoryViewModel
     {
         return MovementType switch
         {
-            "Giriş" => $"ALAN DIŞI → {ToSector}",
-            "Çıkış" => $"{FromSector} → ALAN DIŞI",
+            "Giriş" => $"Alan Dışı → {ToSector}",
+            "Çıkış" => $"{FromSector} → Alan Dışı",
             "Transfer" => $"{FromSector} → {ToSector}",
             _ => $"{FromSector} → {ToSector}"
         };

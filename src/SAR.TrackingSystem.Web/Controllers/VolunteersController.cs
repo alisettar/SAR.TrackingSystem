@@ -134,4 +134,18 @@ public class VolunteersController(
 
         return RedirectToAction(nameof(Index));
     }
+    
+    [HttpGet]
+    public async Task<IActionResult> Timeline(Guid id)
+    {
+        try
+        {
+            var movements = await volunteerService.GetVolunteerMovementHistoryAsync(id);
+            return Json(movements);
+        }
+        catch
+        {
+            return BadRequest();
+        }
+    }
 }

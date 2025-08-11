@@ -2,7 +2,7 @@
 
 ### Genel
 
-- [ ] Tüm arayüz uyarıları türkçe olacak şekilde ayarlanacak
+- [x] Tüm arayüz uyarıları türkçe olacak şekilde ayarlanacak
 - [ ] Ekip Üyelieri sayfasında datatable arama özelliği olacak.
 - [x] Tüm datatable sayfalarında sayfa numaralarının çok fazla olmasından kaynaklı oluşacak hatalar giderilecek.
 - [x] Dark/Light tema toggle eklendi

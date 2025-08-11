@@ -1,0 +1,12 @@
+C:\Users\Alisettar\source\repos\SAR.TrackingSystem\src\SAR.TrackingSystem.Domain\bin\Release\net9.0\SAR.TrackingSystem.Domain.deps.json
+C:\Users\Alisettar\source\repos\SAR.TrackingSystem\src\SAR.TrackingSystem.Domain\bin\Release\net9.0\SAR.TrackingSystem.Domain.dll
+C:\Users\Alisettar\source\repos\SAR.TrackingSystem\src\SAR.TrackingSystem.Domain\bin\Release\net9.0\SAR.TrackingSystem.Domain.pdb
+C:\Users\Alisettar\source\repos\SAR.TrackingSystem\src\SAR.TrackingSystem.Domain\obj\Release\net9.0\SAR.TrackingSystem.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Alisettar\source\repos\SAR.TrackingSystem\src\SAR.TrackingSystem.Domain\obj\Release\net9.0\SAR.TrackingSystem.Domain.AssemblyInfoInputs.cache
+C:\Users\Alisettar\source\repos\SAR.TrackingSystem\src\SAR.TrackingSystem.Domain\obj\Release\net9.0\SAR.TrackingSystem.Domain.AssemblyInfo.cs
+C:\Users\Alisettar\source\repos\SAR.TrackingSystem\src\SAR.TrackingSystem.Domain\obj\Release\net9.0\SAR.TrackingSystem.Domain.csproj.CoreCompileInputs.cache
+C:\Users\Alisettar\source\repos\SAR.TrackingSystem\src\SAR.TrackingSystem.Domain\obj\Release\net9.0\SAR.TrackingSystem.Domain.sourcelink.json
+C:\Users\Alisettar\source\repos\SAR.TrackingSystem\src\SAR.TrackingSystem.Domain\obj\Release\net9.0\SAR.TrackingSystem.Domain.dll
+C:\Users\Alisettar\source\repos\SAR.TrackingSystem\src\SAR.TrackingSystem.Domain\obj\Release\net9.0\refint\SAR.TrackingSystem.Domain.dll
+C:\Users\Alisettar\source\repos\SAR.TrackingSystem\src\SAR.TrackingSystem.Domain\obj\Release\net9.0\SAR.TrackingSystem.Domain.pdb
+C:\Users\Alisettar\source\repos\SAR.TrackingSystem\src\SAR.TrackingSystem.Domain\obj\Release\net9.0\ref\SAR.TrackingSystem.Domain.dll

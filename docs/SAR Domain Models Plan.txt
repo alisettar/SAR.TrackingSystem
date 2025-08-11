@@ -41,6 +41,7 @@
 
 **API Endpoints (Carter) ✅**:
 - ✅ `/volunteers` - Full CRUD (GET, POST, PUT, DELETE)
+- ✅ `/volunteers/{id}/movements` - Movement timeline history (GET)
 - ✅ `/teams` - Read-only (GET, GET/{id})  
 - ✅ `/sectors` - Read-only (GET, GET/{id}) - **Simplified (5 sectors)**
 - ✅ `/movements` - Create + Read (GET, POST, GET/{id}) + **State Machine Validation**
@@ -70,6 +71,7 @@
 - ✅ **Movement Delete**: Hareket silme functionality added
 - ✅ **Team City**: City property added to Team entity
 - ✅ **Dark/Light Theme**: Theme toggle with dropdown compatibility
+- ✅ **Movement Timeline**: Offcanvas modal ile dikey timeline görüntüleme
 
 **Technical Stack Complete ✅**:
 - ✅ MediatR + FluentValidation + Carter
@@ -78,6 +80,34 @@
 - ✅ OpenAPI documentation
 - ✅ Business rules with detailed XML docs
 - ✅ Test coverage for all layers
+
+---
+
+## ✅ TIMELINE FEATURE IMPLEMENTATION (YENİ)
+
+### 📅 Timeline Architecture
+- ✅ **API Endpoint**: `/volunteers/{id}/movements` - Movement history retrieval
+- ✅ **Query Handler**: GetVolunteerMovementHistoryQuery + MovementHistoryResponse
+- ✅ **UI Component**: Bootstrap Offcanvas modal (sağdan açılan)
+- ✅ **Timeline Design**: Dikey timeline with icons, timestamps, movement descriptions
+- ✅ **Responsive**: Dark/Light theme uyumlu CSS styling
+
+### 🎯 Timeline Features
+- ✅ **Movement History**: Chronological movement display (newest first)
+- ✅ **Visual Icons**: Entry (green), Exit (red), Transfer (blue)
+- ✅ **Time Format**: HH:mm time display with movement type
+- ✅ **Group Indication**: Grup hareketi badge display
+- ✅ **Notes Support**: Movement notes displayed when available
+- ✅ **Cache Busting**: Real-time data with cache prevention
+
+### 🚀 Implementation Details
+- ✅ **Frontend**: JavaScript async/await + Bootstrap Offcanvas
+- ✅ **Backend**: Carter API + MediatR query pattern
+- ✅ **Styling**: CSS timeline with connecting lines + theme support
+- ✅ **Error Handling**: Graceful error display for failed requests
+- ✅ **Modular Architecture**: Ayrı CSS/JS dosyaları + Partial view
+- ✅ **Dark Theme Fix**: Modal dark theme uyumluluğu düzeltildi
+- ✅ **UX Improvements**: Modal kenar boşlukları optimize edildi
 
 ---
 

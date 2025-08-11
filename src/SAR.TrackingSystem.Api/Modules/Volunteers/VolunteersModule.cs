@@ -58,6 +58,15 @@ public class VolunteersModule : ICarterModule
                 operation.Description = "Deletes volunteer by ID.";
                 return operation;
             });
+
+        app.MapGet("/volunteers/{id}/movements", GetVolunteerMovementHistory)
+            .WithName(nameof(GetVolunteerMovementHistory))
+            .WithOpenApi(operation =>
+            {
+                operation.Summary = "Get volunteer movement history";
+                operation.Description = "Retrieves timeline of all movements for a volunteer.";
+                return operation;
+            });
     }
 
     private static async Task<Results<Ok<VolunteerResponse>, NotFound>> GetVolunteerById(
@@ -133,5 +142,16 @@ public class VolunteersModule : ICarterModule
         var result = await sender.Send(command, context.RequestAborted);
 
         return result ? TypedResults.NoContent() : TypedResults.NotFound();
+    }
+
+    private static async Task<Ok<List<MovementHistoryResponse>>> GetVolunteerMovementHistory(
+        Guid id,
+        [FromServices] ISender sender,
+        HttpContext context)
+    {
+        var query = new GetVolunteerMovementHistoryQuery(id);
+        var movements = await sender.Send(query, context.RequestAborted);
+
+        return TypedResults.Ok(movements);
     }
 }
