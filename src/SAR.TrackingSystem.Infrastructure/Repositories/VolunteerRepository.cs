@@ -15,6 +15,11 @@ public class VolunteerRepository(SarDbContext context) : IVolunteerRepository
             .Include(v => v.Team)
             .FirstOrDefaultAsync(v => v.Id == id, cancellationToken);
 
+    public async Task<Volunteer?> GetByQRIdAsync(string qRId, CancellationToken cancellationToken)
+        => await context.Volunteers
+            .Include(v => v.Team)
+            .FirstOrDefaultAsync(v => v.QRId == qRId, cancellationToken);
+
     public async Task<bool> ExistsByQRIdAsync(string qrId, Guid? excludeVolunteerId = null, CancellationToken cancellationToken = default)
     {
         var query = context.Volunteers.Where(v => v.QRId == qrId);
