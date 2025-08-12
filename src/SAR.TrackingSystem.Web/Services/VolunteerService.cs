@@ -64,6 +64,17 @@ public class VolunteerService(
         return JsonSerializer.Deserialize<VolunteerViewModel>(json, _jsonOptions);
     }
 
+    public async Task<VolunteerViewModel?> GetVolunteerByQRIdAsync(string qrid)
+    {
+        var response = await _httpClient.GetAsync($"/volunteers/qrid/{qrid}");
+        if (response.StatusCode == HttpStatusCode.NotFound)
+            return null;
+
+        response.EnsureSuccessStatusCode();
+        var json = await response.Content.ReadAsStringAsync();
+        return JsonSerializer.Deserialize<VolunteerViewModel>(json, _jsonOptions);
+    }
+
     public async Task<Guid> CreateVolunteerAsync(VolunteerCreateViewModel model)
     {
         try
