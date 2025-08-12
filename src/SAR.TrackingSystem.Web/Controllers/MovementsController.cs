@@ -141,10 +141,8 @@ public class MovementsController(
         try
         {
             // Find volunteer by QR ID
-            var request = new PaginationRequest(0, 1000, qrId);
-            var volunteers = await volunteerService.GetVolunteersAsync(request);
-            var volunteer = volunteers.Items.FirstOrDefault(v => v.QRId == qrId);
-            
+            var volunteer = await volunteerService.GetVolunteerByQRIdAsync(qrId);
+
             if (volunteer == null)
                 return (false, $"❌ {qrId} - QR ID bulunamadı");
                 
@@ -182,10 +180,8 @@ public class MovementsController(
         try
         {
             // Find volunteer by QR ID
-            var request = new PaginationRequest(0, 1000, qrId);
-            var volunteers = await volunteerService.GetVolunteersAsync(request);
-            var volunteer = volunteers.Items.FirstOrDefault(v => v.QRId == qrId);
-            
+            var volunteer = await volunteerService.GetVolunteerByQRIdAsync(qrId);
+
             if (volunteer == null)
                 return (false, $"❌ {qrId} - QR ID bulunamadı");
                 
@@ -220,10 +216,8 @@ public class MovementsController(
         try
         {
             // Find volunteer by QR ID
-            var volunteerRequest = new PaginationRequest(0, 1000, qrId);
-            var volunteers = await volunteerService.GetVolunteersAsync(volunteerRequest);
-            var volunteer = volunteers.Items.FirstOrDefault(v => v.QRId == qrId);
-            
+            var volunteer = await volunteerService.GetVolunteerByQRIdAsync(qrId);
+
             if (volunteer == null)
                 return (false, $"❌ {qrId} - QR ID bulunamadı");
                 

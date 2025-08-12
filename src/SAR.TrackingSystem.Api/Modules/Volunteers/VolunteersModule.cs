@@ -23,6 +23,15 @@ public class VolunteersModule : ICarterModule
                 return operation;
             });
 
+        app.MapGet("/volunteers/qrid/{qrid}", GetVolunteerByQRId)
+            .WithName(nameof(GetVolunteerByQRId))
+            .WithOpenApi(operation =>
+            {
+                operation.Summary = "Get volunteer by QRId";
+                operation.Description = "Retrieves a specific volunteer by QRId.";
+                return operation;
+            });
+
         app.MapGet("/volunteers", GetVolunteers)
             .WithName(nameof(GetVolunteers))
             .WithOpenApi(operation =>
@@ -75,6 +84,19 @@ public class VolunteersModule : ICarterModule
         HttpContext context)
     {
         var request = new GetVolunteerByIdQuery(id);
+        var volunteer = await sender.Send(request, context.RequestAborted);
+
+        return volunteer is not null
+            ? TypedResults.Ok(volunteer)
+            : TypedResults.NotFound();
+    }
+
+    private static async Task<Results<Ok<VolunteerResponse>, NotFound>> GetVolunteerByQRId(
+        string qrid,
+        [FromServices] ISender sender,
+        HttpContext context)
+    {
+        var request = new GetVolunteerByQRIdQuery(qrid);
         var volunteer = await sender.Send(request, context.RequestAborted);
 
         return volunteer is not null
