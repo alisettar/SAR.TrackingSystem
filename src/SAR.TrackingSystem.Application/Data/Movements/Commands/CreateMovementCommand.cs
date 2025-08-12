@@ -29,9 +29,8 @@ public sealed class CreateMovementCommandHandler(
         string? targetSectorCode = null;
         if (request.Request.ToSectorId.HasValue)
         {
-            var toSector = await sectorRepository.GetByIdAsync(request.Request.ToSectorId.Value, cancellationToken);
-            if (toSector == null)
-                throw new ValidationException("Invalid target sector.");
+            var toSector = await sectorRepository.GetByIdAsync(request.Request.ToSectorId.Value, cancellationToken) ?? throw new ValidationException("Invalid target sector.");
+
             targetSectorCode = toSector.Code;
         }
 
