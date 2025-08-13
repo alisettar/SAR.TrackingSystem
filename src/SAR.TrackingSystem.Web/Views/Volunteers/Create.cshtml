@@ -54,7 +54,8 @@
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label class="form-label">QR ID</label>
-                        <input asp-for="QRId" class="form-control" placeholder="QR kod okutarak otomatik doldurulabilir" required />
+                        <input asp-for="QRId" type="number" class="form-control" placeholder="QR kod okutarak otomatik doldurulabilir" 
+                               pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required />
                         <span asp-validation-for="QRId" class="text-danger"></span>
                     </div>
                 </div>

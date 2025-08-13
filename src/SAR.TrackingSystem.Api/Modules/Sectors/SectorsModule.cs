@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using SAR.TrackingSystem.Application.Data.Sectors.Commands;
 using SAR.TrackingSystem.Application.Data.Sectors.Queries;
+using SAR.TrackingSystem.Application.Data.Sectors.Statistics;
 
 namespace SAR.TrackingSystem.Api.Modules.Sectors;
 
@@ -18,6 +19,15 @@ public class SectorsModule : ICarterModule
             {
                 operation.Summary = "Get sector by ID";
                 operation.Description = "Retrieves a specific sector by ID.";
+                return operation;
+            });
+
+        app.MapGet("/sectors/{id}/statistics", GetSectorStatistics)
+            .WithName(nameof(GetSectorStatistics))
+            .WithOpenApi(operation =>
+            {
+                operation.Summary = "Get sector statistics";
+                operation.Description = "Gets real-time statistics for a specific sector.";
                 return operation;
             });
 
@@ -60,6 +70,17 @@ public class SectorsModule : ICarterModule
         return sector is not null
             ? TypedResults.Ok(sector)
             : TypedResults.NotFound();
+    }
+
+    private static async Task<Results<Ok<SectorStatisticsResponse>, NotFound>> GetSectorStatistics(
+        Guid id,
+        [FromServices] ISender sender,
+        HttpContext context)
+    {
+        var request = new GetSectorStatisticsQuery(id);
+        var statistics = await sender.Send(request, context.RequestAborted);
+
+        return TypedResults.Ok(statistics);
     }
 
     private static async Task<Ok<List<SectorResponse>>> GetSectors(

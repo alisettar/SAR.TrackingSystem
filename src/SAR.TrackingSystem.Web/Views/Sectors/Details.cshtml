@@ -5,20 +5,358 @@
 
 <h2><i class="bi bi-grid"></i> Sektör Detayları</h2>
 
-<div class="card">
-    <div class="card-body">
-        <dl class="row">
-            <dt class="col-sm-3">Ad:</dt>
-            <dd class="col-sm-9">@Model.Name</dd>
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-geo-alt-fill"></i> Sektör Bilgileri</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-4">Ad:</dt>
+                    <dd class="col-sm-8">@Model.Name</dd>
 
-            <dt class="col-sm-3">Kod:</dt>
-            <dd class="col-sm-9">@Model.Code</dd>
-        </dl>
+                    <dt class="col-sm-4">Kod:</dt>
+                    <dd class="col-sm-8"><code>@Model.Code</code></dd>
 
-        <div class="d-flex gap-2">
-            <a href="/sectors" class="btn btn-secondary">
-                <i class="bi bi-arrow-left"></i> Listeye Dön
-            </a>
+                    <dt class="col-sm-4">Çalışma Alanı:</dt>
+                    <dd class="col-sm-8">@(!string.IsNullOrEmpty(Model.WorkAreaName) ? Model.WorkAreaName : "-")</dd>
+
+                    <dt class="col-sm-4">Alan No:</dt>
+                    <dd class="col-sm-8">@(Model.WorkAreaNumber > 0 ? Model.WorkAreaNumber.ToString() : "-")</dd>
+
+                    <dt class="col-sm-4">Adres:</dt>
+                    <dd class="col-sm-8">@(!string.IsNullOrEmpty(Model.WorkAreaAddress) ? Model.WorkAreaAddress : "-")</dd>
+
+                    <dt class="col-sm-4">Koordinatlar:</dt>
+                    <dd class="col-sm-8">@(!string.IsNullOrEmpty(Model.Coordinates) ? Model.Coordinates : "-")</dd>
+
+                    <dt class="col-sm-4">Beklenen Afetzede:</dt>
+                    <dd class="col-sm-8">
+                        @if (Model.ExpectedVictimCount > 0)
+                        {
+                            <span class="badge bg-warning text-dark">@Model.ExpectedVictimCount</span>
+                        }
+                        else
+                        {
+                            <span class="text-muted">-</span>
+                        }
+                    </dd>
+                </dl>
+
+                <div class="d-flex gap-2">
+                    <a href="/sectors" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Geri
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-people"></i> Aktif Ekipler</h5>
+                <span class="badge bg-primary" id="totalVolunteers">-</span>
+            </div>
+            <div class="card-body p-2 scrollable-container">
+                <div class="scrollable-content">
+                    <div class="accordion" id="teamsAccordion">
+                        <div class="text-center text-muted p-3">
+                            <div class="spinner-border spinner-border-sm" role="status">
+                                <span class="visually-hidden">Yükleniyor...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-diagram-3"></i> Görev Dağılımı</h5>
+            </div>
+            <div class="card-body scrollable-container">
+                <div class="scrollable-content" id="roleDistribution">
+                    <div class="text-center text-muted p-3">
+                        <div class="spinner-border spinner-border-sm" role="status">
+                            <span class="visually-hidden">Yükleniyor...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-geo-alt"></i> Konum Haritası</h5>
+            </div>
+            <div class="card-body p-0">
+                @if (!string.IsNullOrEmpty(Model.Coordinates))
+                {
+                    <div id="map" style="height: 384px; width: 100%;"></div>
+                }
+                else
+                {
+                    <div class="d-flex align-items-center justify-content-center" style="height: 350px; background-color: #f8f9fa;">
+                        <div class="text-center text-muted">
+                            <i class="bi bi-geo-alt-fill" style="font-size: 3rem;"></i>
+                            <p class="mt-2 mb-0">Koordinat bilgisi bulunmuyor</p>
+                            <small>Harita gösterilemez</small>
+                        </div>
+                    </div>
+                }
+            </div>
         </div>
     </div>
 </div>
+
+<style>
+    /* Card'ların eşit yükseklikte olması için */
+    .card.h-100 {
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Card body'ler için flex yapısı */
+    .card-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden; /* İçerik taşmasını engelle */
+    }
+
+    /* Scrollable alanlar için */
+    .scrollable-container {
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .scrollable-content {
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+        max-height: 400px; /* isteğe bağlı sabit yükseklik */
+    }
+
+    /* Dark theme için accordion stilleri */
+    [data-theme="dark"] .accordion-item {
+        background-color: rgba(255, 255, 255, 0.03);
+        border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    [data-theme="dark"] .accordion-button {
+        background-color: rgba(255, 255, 255, 0.05);
+        color: #f1f1f1;
+        border: none;
+        box-shadow: none;
+    }
+
+        [data-theme="dark"] .accordion-button:not(.collapsed) {
+            background-color: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+        }
+
+    [data-theme="dark"] .accordion-body {
+        background-color: rgba(255, 255, 255, 0.02);
+        color: #f1f1f1;
+    }
+
+        /* İç elemanlar arası ayraç çizgileri */
+        [data-theme="dark"] .accordion-body .border-bottom {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+        }
+
+        /* Üye satırı paddings */
+        [data-theme="dark"] .accordion-body .d-flex {
+            padding: 0.4rem 0.5rem;
+        }
+
+    /* Badge stilleri */
+    [data-theme="dark"] .badge {
+        color: #fff;
+        background-color: #6c757d;
+        font-weight: 500;
+    }
+
+    /* Scrollbar stilleri */
+    [data-theme="dark"] ::-webkit-scrollbar-thumb {
+        background-color: rgba(255, 255, 255, 0.2);
+        border-radius: 4px;
+    }
+
+    [data-theme="dark"] ::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    [data-theme="dark"] .accordion-body span,
+    [data-theme="dark"] .accordion-body div,
+    [data-theme="dark"] .accordion-body {
+        color: #f1f1f1 !important;
+    }
+
+    [data-theme="dark"] .accordion-button {
+        color: #f1f1f1 !important;
+    }
+
+    [data-theme="dark"] .badge {
+        color: #fff;
+        background-color: #3b82f6; /* mavi tonu */
+        font-weight: 500;
+    }
+
+    [data-theme="dark"] .accordion-button span {
+        color: #f1f1f1 !important;
+    }
+
+    /* Scrollbar stilleri */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: rgba(0,0,0,0.1);
+        border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background-color: var(--bs-primary);
+        border-radius: 10px;
+    }
+
+    [data-theme="dark"] ::-webkit-scrollbar-thumb {
+        background-color: var(--bs-primary);
+    }
+
+    [data-theme="dark"] ::-webkit-scrollbar-track {
+        background: rgba(255,255,255,0.1);
+    }
+</style>
+
+@section Styles {
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+}
+
+@section Scripts {
+    @if (!string.IsNullOrEmpty(Model.Coordinates))
+    {
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    }
+    <script>
+        const sectorId = '@Model.Id';
+        const coordinatesStr = @Html.Raw(Json.Serialize(Model.Coordinates ?? ""));
+        const sectorName = @Html.Raw(Json.Serialize(Model.Name));
+        let refreshInterval;
+
+        // Load statistics
+        async function loadSectorStatistics() {
+            try {
+                const response = await fetch('/sectors/' + sectorId + '/statistics');
+                if (response.ok) {
+                    const stats = await response.json();
+                    updateStatistics(stats);
+                }
+            } catch (error) {
+                console.error('Statistics load error:', error);
+            }
+        }
+
+        function updateStatistics(stats) {
+            document.getElementById('totalVolunteers').textContent = stats.totalVolunteers;
+
+            const teamsContainer = document.getElementById('teamsAccordion');
+            if (stats.teams && stats.teams.length > 0) {
+                let teamsHtml = '';
+                stats.teams.forEach(team => {
+                    teamsHtml += '<div class="accordion-item border-0 mb-2">';
+                    teamsHtml += '<h2 class="accordion-header">';
+                    teamsHtml += '<button class="accordion-button collapsed bg-transparent border-0 rounded" type="button" data-bs-toggle="collapse" data-bs-target="#team-' + team.teamId + '" aria-expanded="false">';
+                    teamsHtml += '<span class="badge bg-info me-2">' + team.teamCode + '</span>';
+                    teamsHtml += '<span class="text-body">' + team.teamName + ' (' + team.memberCount + ')</span>';
+                    teamsHtml += '</button>';
+                    teamsHtml += '</h2>';
+                    teamsHtml += '<div id="team-' + team.teamId + '" class="accordion-collapse collapse" data-bs-parent="#teamsAccordion">';
+                    teamsHtml += '<div class="accordion-body pt-0 px-3">';
+                    if (team.members && team.members.length > 0) {
+                        team.members.forEach(member => {
+                            teamsHtml += '<div class="d-flex justify-content-between align-items-center py-2 border-bottom border-opacity-25">';
+                            teamsHtml += '<span class="small text-body">' + member.fullName + '</span>';
+                            teamsHtml += '<span class="badge bg-secondary">' + member.role + '</span>';
+                            teamsHtml += '</div>';
+                        });
+                    } else {
+                        teamsHtml += '<div class="text-muted small">Üye bilgisi yok</div>';
+                    }
+                    teamsHtml += '</div></div></div>';
+                });
+                teamsContainer.innerHTML = teamsHtml;
+            } else {
+                teamsContainer.innerHTML = '<div class="text-center text-muted p-3">Sektörde aktif ekip yok</div>';
+            }
+
+            const roleContainer = document.getElementById('roleDistribution');
+            if (stats.roleDistribution && stats.roleDistribution.length > 0) {
+                let rolesHtml = '';
+                stats.roleDistribution.forEach(role => {
+                    rolesHtml += '<div class="d-flex justify-content-between align-items-center py-1">';
+                    rolesHtml += '<span>' + role.role + '</span>';
+                    rolesHtml += '<span class="badge bg-primary">' + role.count + '</span>';
+                    rolesHtml += '</div>';
+                });
+                roleContainer.innerHTML = rolesHtml;
+            } else {
+                roleContainer.innerHTML = '<div class="text-muted small">Görev bilgisi yok</div>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSectorStatistics();
+            refreshInterval = setInterval(loadSectorStatistics, 30000);
+
+            // Initialize map if coordinates exist
+            if (coordinatesStr && coordinatesStr.trim()) {
+                initializeMap();
+            }
+        });
+
+        function initializeMap() {
+            // DMS Parser
+            function parseDMS(dmsStr) {
+                const matches = dmsStr.match(/(\d+)°(\d+)'([\d.]+)"([NSEW])/);
+                if (!matches) return null;
+                const degrees = parseFloat(matches[1]);
+                const minutes = parseFloat(matches[2]);
+                const seconds = parseFloat(matches[3]);
+                const direction = matches[4];
+                let decimal = degrees + minutes/60 + seconds/3600;
+                if (direction === 'S' || direction === 'W') decimal = -decimal;
+                return decimal;
+            }
+
+            const coords = coordinatesStr.trim().split(/\s+/);
+            if (coords.length >= 2) {
+                const lat = parseDMS(coords[0]);
+                const lng = parseDMS(coords[1]);
+                if (lat !== null && lng !== null) {
+                    const map = L.map('map').setView([lat, lng], 15);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '© OpenStreetMap contributors'
+                    }).addTo(map);
+                    L.marker([lat, lng])
+                        .addTo(map)
+                        .bindPopup('<b>' + sectorName + '</b><br>Koordinatlar: ' + coordinatesStr)
+                        .openPopup();
+                }
+            }
+        }
+
+        window.addEventListener('beforeunload', () => {
+            if (refreshInterval) clearInterval(refreshInterval);
+        });
+    </script>
+}

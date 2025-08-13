@@ -10,6 +10,13 @@ public class Sector : Entity
     public bool IsExitPoint { get; set; }                   // Exit = true
     public bool IsActive { get; set; } = true;
     public bool IsCriticalForBusinessRules { get; set; }    // Entry, BoO, Exit = true
+    
+    // Work Area Properties
+    public string WorkAreaName { get; set; } = string.Empty;        // Çalışma alanı adı
+    public string WorkAreaAddress { get; set; } = string.Empty;      // Çalışma alanı adresi
+    public string Coordinates { get; set; } = string.Empty;          // NoorEinat (enlem boylam)
+    public int WorkAreaNumber { get; set; } = 0;                     // Çalışma Alanı no
+    public int ExpectedVictimCount { get; set; } = 0;                // Beklenen Afetzede sayısı
 
     /// <summary>
     /// BUSİNESS CRİTİCAL: Bu sektörler SAR operasyon kuralları için kritiktir ve SİLİNMEMELİDİR:
@@ -30,7 +37,8 @@ public class Sector : Entity
         Id = Guid.NewGuid();
     }
 
-    public Sector(string code, string name, bool isActive = true, bool isEntryPoint = false, bool isExitPoint = false, bool isCriticalForBusinessRules = false)
+    public Sector(string code, string name, bool isActive = true, bool isEntryPoint = false, bool isExitPoint = false, bool isCriticalForBusinessRules = false,
+                  string workAreaName = "", string workAreaAddress = "", string coordinates = "", int workAreaNumber = 0, int expectedVictimCount = 0)
     {
         Id = Guid.NewGuid();
         Code = code;
@@ -39,5 +47,10 @@ public class Sector : Entity
         IsEntryPoint = isEntryPoint;
         IsExitPoint = isExitPoint;
         IsCriticalForBusinessRules = isCriticalForBusinessRules;
+        WorkAreaName = workAreaName;
+        WorkAreaAddress = workAreaAddress;
+        Coordinates = coordinates;
+        WorkAreaNumber = workAreaNumber;
+        ExpectedVictimCount = expectedVictimCount;
     }
 }

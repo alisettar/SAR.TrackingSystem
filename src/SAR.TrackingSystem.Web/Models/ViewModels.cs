@@ -196,4 +196,40 @@ public class SectorViewModel
     public Guid Id { get; set; }
     public string Code { get; set; } = null!;
     public string Name { get; set; } = null!;
+    public string WorkAreaName { get; set; } = null!;
+    public string WorkAreaAddress { get; set; } = null!;
+    public string Coordinates { get; set; } = null!;
+    public int WorkAreaNumber { get; set; }
+    public int ExpectedVictimCount { get; set; }
+}
+
+public class SectorStatisticsViewModel
+{
+    public int TotalVolunteers { get; set; }
+    public List<TeamInSectorViewModel> Teams { get; set; } = [];
+    public List<RoleDistributionViewModel> RoleDistribution { get; set; } = [];
+}
+
+public class TeamInSectorViewModel
+{
+    public Guid TeamId { get; set; }
+    public string TeamName { get; set; } = null!;
+    public string TeamCode { get; set; } = null!;
+    public int MemberCount { get; set; }
+    public List<VolunteerInSectorViewModel> Members { get; set; } = [];
+}
+
+public class VolunteerInSectorViewModel
+{
+    public Guid Id { get; set; }
+    public string FullName { get; set; } = null!;
+    public string Role { get; set; } = null!;
+    public string QRId { get; set; } = null!;
+    public DateTime LastMovementTime { get; set; }
+}
+
+public class RoleDistributionViewModel
+{
+    public string Role { get; set; } = null!;
+    public int Count { get; set; }
 }

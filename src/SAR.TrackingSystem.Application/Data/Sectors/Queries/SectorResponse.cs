@@ -8,7 +8,12 @@ public sealed record SectorResponse(
     string Name,
     bool IsEntryPoint,
     bool IsExitPoint,
-    bool IsActive)
+    bool IsActive,
+    string WorkAreaName,
+    string WorkAreaAddress,
+    string Coordinates,
+    int WorkAreaNumber,
+    int ExpectedVictimCount)
 {
     public static SectorResponse FromDomain(Sector sector)
     {
@@ -18,7 +23,12 @@ public sealed record SectorResponse(
             sector.Name,
             sector.IsEntryPoint,
             sector.IsExitPoint,
-            sector.IsActive);
+            sector.IsActive,
+            sector.WorkAreaName,
+            sector.WorkAreaAddress,
+            sector.Coordinates,
+            sector.WorkAreaNumber,
+            sector.ExpectedVictimCount);
     }
 
     public static List<SectorResponse> FromDomainList(IEnumerable<Sector> sectors)

@@ -42,6 +42,15 @@ public class SectorService : ISectorService
         return JsonSerializer.Deserialize<SectorViewModel>(json, _jsonOptions);
     }
 
+    public async Task<SectorStatisticsViewModel?> GetSectorStatisticsAsync(Guid id)
+    {
+        var response = await _httpClient.GetAsync($"/sectors/{id}/statistics");
+        response.EnsureSuccessStatusCode();
+        
+        var json = await response.Content.ReadAsStringAsync();
+        return JsonSerializer.Deserialize<SectorStatisticsViewModel>(json, _jsonOptions);
+    }
+
     public async Task<bool> CreateSectorAsync(SectorViewModel model)
     {
         var response = await _httpClient.PostAsJsonAsync("/sectors", model);

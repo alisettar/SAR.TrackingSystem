@@ -4,18 +4,12 @@ using SAR.TrackingSystem.Web.Services.Interfaces;
 
 namespace SAR.TrackingSystem.Web.Controllers;
 
-public class SectorsController : Controller
+public class SectorsController(
+    ISectorService sectorService) : Controller
 {
-    private readonly ISectorService _sectorService;
-
-    public SectorsController(ISectorService sectorService)
-    {
-        _sectorService = sectorService;
-    }
-
     public async Task<IActionResult> Index()
     {
-        var sectors = await _sectorService.GetSectorsAsync();
+        var sectors = await sectorService.GetSectorsAsync();
         
         // Backdoor for delete functionality
         ViewBag.EnableDelete = Request.Query.ContainsKey("admin") && Request.Query["admin"] == "true";
@@ -25,12 +19,24 @@ public class SectorsController : Controller
 
     public async Task<IActionResult> Details(Guid id)
     {
-        var sector = await _sectorService.GetSectorByIdAsync(id);
+        var sector = await sectorService.GetSectorByIdAsync(id);
         if (sector == null)
         {
             return NotFound();
         }
         return View(sector);
+    }
+
+    [HttpGet]
+    [Route("sectors/{id:guid}/statistics")]
+    public async Task<IActionResult> Statistics(Guid id)
+    {
+        var statistics = await sectorService.GetSectorStatisticsAsync(id);
+        if (statistics == null)
+        {
+            return NotFound();
+        }
+        return Json(statistics);
     }
 
     [HttpGet]
@@ -48,7 +54,7 @@ public class SectorsController : Controller
             return View(model);
         }
 
-        var result = await _sectorService.CreateSectorAsync(model);
+        var result = await sectorService.CreateSectorAsync(model);
         if (result)
         {
             return RedirectToAction(nameof(Index));
@@ -61,7 +67,7 @@ public class SectorsController : Controller
     [HttpGet]
     public async Task<IActionResult> Delete(Guid id)
     {
-        var sector = await _sectorService.GetSectorByIdAsync(id);
+        var sector = await sectorService.GetSectorByIdAsync(id);
         if (sector == null)
         {
             return NotFound();
@@ -81,7 +87,7 @@ public class SectorsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
-        var sector = await _sectorService.GetSectorByIdAsync(id);
+        var sector = await sectorService.GetSectorByIdAsync(id);
         if (sector == null)
         {
             return NotFound();
@@ -94,7 +100,7 @@ public class SectorsController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        var result = await _sectorService.DeleteSectorAsync(id);
+        var result = await sectorService.DeleteSectorAsync(id);
         if (result)
         {
             TempData["Success"] = "Sektör başarıyla silindi.";

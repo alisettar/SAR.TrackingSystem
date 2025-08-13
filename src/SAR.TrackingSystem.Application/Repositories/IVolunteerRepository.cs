@@ -10,6 +10,7 @@ public interface IVolunteerRepository
     Task<Volunteer?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
     Task<bool> ExistsByQRIdAsync(string qrId, Guid? excludeVolunteerId = null, CancellationToken cancellationToken = default);
     Task<List<Volunteer>> GetAllAsync(CancellationToken cancellationToken);
+    Task<List<Volunteer>> GetVolunteersBySectorAsync(Guid sectorId, CancellationToken cancellationToken);
     Task<(List<Volunteer> items, long totalCount)> GetByTeamIdAsync(Guid teamId, PaginationRequest request, CancellationToken cancellationToken);
     Task<(List<Volunteer> items, long totalCount)> GetPaginatedAsync(PaginationRequest request, VolunteerState? stateFilter = null, CancellationToken cancellationToken = default);
     Task<VolunteerStateCounts> GetVolunteerStateCountsAsync(CancellationToken cancellationToken);

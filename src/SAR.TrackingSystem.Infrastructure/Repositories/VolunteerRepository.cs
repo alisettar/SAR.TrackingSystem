@@ -36,6 +36,32 @@ public class VolunteerRepository(SarDbContext context) : IVolunteerRepository
             .OrderBy(v => v.FullName)
             .ToListAsync(cancellationToken);
 
+    public async Task<List<Volunteer>> GetVolunteersBySectorAsync(Guid sectorId, CancellationToken cancellationToken)
+    {
+        // Get volunteers currently in the specified sector (last movement ToSectorId = sectorId)
+        var volunteersInSector = await (
+            from v in context.Volunteers.AsNoTracking()
+            where v.CurrentState == VolunteerState.InSector
+            join m in (
+                from movement in context.Movements.AsNoTracking()
+                group movement by movement.VolunteerId into g
+                select new { VolunteerId = g.Key, LastMovementTime = g.Max(x => x.MovementTime) }
+            ) on v.Id equals m.VolunteerId
+            join lastM in context.Movements.AsNoTracking() 
+                on new { m.VolunteerId, m.LastMovementTime } 
+                equals new { lastM.VolunteerId, LastMovementTime = lastM.MovementTime }
+            where lastM.ToSectorId == sectorId
+            join t in context.Teams.AsNoTracking() on v.TeamId equals t.Id
+            select new { v, t, lastM.MovementTime }
+        ).ToListAsync(cancellationToken);
+
+        return volunteersInSector
+            .Select(x => { x.v.Team = x.t; return x.v; })
+            .OrderBy(v => v.Team.Name)
+            .ThenBy(v => v.FullName)
+            .ToList();
+    }
+
     public async Task<(List<Volunteer> items, long totalCount)> GetByTeamIdAsync(Guid teamId, PaginationRequest request, CancellationToken cancellationToken = default)
     {
         var query = context.Volunteers.AsNoTracking().Include(v => v.Team).AsQueryable();

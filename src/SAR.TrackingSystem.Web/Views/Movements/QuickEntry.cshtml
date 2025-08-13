@@ -105,9 +105,10 @@
                         <label for="qrId" class="form-label">
                             <i class="bi bi-qr-code"></i> QR ID
                         </label>
-                        <input type="text" class="form-control form-control-lg text-center" 
+                        <input type="number" class="form-control form-control-lg text-center" 
                                id="qrId" name="qrId" placeholder="QR kodu okutun veya yazın..." 
-                               autocomplete="off" autofocus>
+                               autocomplete="off" autofocus pattern="[0-9]*" 
+                               oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                     </div>
                     <div class="text-center">
                         <button type="submit" class="btn btn-primary btn-lg" id="processBtn">
