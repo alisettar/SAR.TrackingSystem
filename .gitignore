@@ -531,3 +531,8 @@ FodyWeavers.xsd
 !LICENSE
 !README.md
 !CHANGELOG.md
+
+
+*.db-shm
+*.db-wal
+/docs/misc
