@@ -205,6 +205,22 @@ public class VolunteerService(
             return [];
         }
     }
+
+    public async Task<List<Guid>> GetTeamIdsWithNonArrivedVolunteersAsync()
+    {
+        try
+        {
+            var response = await _httpClient.GetAsync("/volunteers/teams-with-non-arrived");
+            response.EnsureSuccessStatusCode();
+            var json = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<List<Guid>>(json, _jsonOptions) ?? [];
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error getting team IDs with non-arrived volunteers");
+            return [];
+        }
+    }
 }
 
 public record MovementHistoryApiModel(

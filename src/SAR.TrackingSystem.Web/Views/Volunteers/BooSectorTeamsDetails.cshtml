@@ -1,0 +1,274 @@
+﻿@model TeamDetailsViewModel
+@{
+    ViewData["Title"] = "Ekip Detayları";
+}
+
+<div class="container mt-4">
+    <h2><i class="bi bi-people-fill"></i> Ekip Detayları</h2>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">Ad:</dt>
+                        <dd class="col-sm-9">@Model.Name</dd>
+
+                        <dt class="col-sm-3">Kod:</dt>
+                        <dd class="col-sm-9">@Model.Code</dd>
+
+                        <dt class="col-sm-3">Şehir:</dt>
+                        <dd class="col-sm-9">@(Model.City ?? "-")</dd>
+                    </dl>
+
+                    <div class="d-flex gap-2">
+                        <a asp-action="BooTeams" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Listeye Dön
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Ekip Üyeleri (@Model.TotalCount)</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Members.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-sm table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Ad Soyad</th>
+                                        <th>QR ID</th>
+                                        <th>Görev</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var member in Model.Members)
+                                    {
+                                        <tr>
+                                            <td>@member.FullName</td>
+                                            <td>@(member.QRId ?? "-")</td>
+                                            <td>@(member.Role ?? "-")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        var membersPagination = ViewBag.MembersPagination as PaginatedResponse<TeamMemberViewModel>;
+
+                        @if (membersPagination?.TotalPages > 1)
+                        {
+                            <nav class="mt-3">
+                                <ul class="pagination pagination-sm justify-content-center">
+                                    @* Previous button *@
+                                    @if (membersPagination.Page > 1)
+                                    {
+                                        <li class="page-item">
+                                            <a class="page-link" asp-action="BooTeamsDetails" asp-route-teamId="@Model.Id" asp-route-page="@(membersPagination.Page - 1)">Önceki</a>
+                                        </li>
+                                    }
+
+                                    @* Page numbers with ellipsis *@
+                                    @{
+                                        var startPage = Math.Max(1, membersPagination.Page - 2);
+                                        var endPage = Math.Min(membersPagination.TotalPages, membersPagination.Page + 2);
+                                    }
+
+                                    @if (startPage > 1)
+                                    {
+                                        <li class="page-item">
+                                            <a class="page-link" asp-action="BooTeamsDetails" asp-route-teamId="@Model.Id" asp-route-page="1">1</a>
+                                        </li>
+                                        @if (startPage > 2)
+                                        {
+                                            <li class="page-item disabled">
+                                                <span class="page-link">...</span>
+                                            </li>
+                                        }
+                                    }
+
+                                    @for (int i = startPage; i <= endPage; i++)
+                                    {
+                                        <li class="page-item @(i == membersPagination.Page ? "active" : "")">
+                                            <a class="page-link" asp-action="BooTeamsDetails" asp-route-teamId="@Model.Id" asp-route-page="@i">@i</a>
+                                        </li>
+                                    }
+
+                                    @if (endPage < membersPagination.TotalPages)
+                                    {
+                                        @if (endPage < membersPagination.TotalPages - 1)
+                                        {
+                                            <li class="page-item disabled">
+                                                <span class="page-link">...</span>
+                                            </li>
+                                        }
+                                        <li class="page-item">
+                                            <a class="page-link" asp-action="BooTeamsDetails" asp-route-teamId="@Model.Id" asp-route-page="@membersPagination.TotalPages">@membersPagination.TotalPages</a>
+                                        </li>
+                                    }
+
+                                    @* Next button *@
+                                    @if (membersPagination.Page < membersPagination.TotalPages)
+                                    {
+                                        <li class="page-item">
+                                            <a class="page-link" asp-action="BooTeamsDetails" asp-route-teamId="@Model.Id" asp-route-page="@(membersPagination.Page + 1)">Sonraki</a>
+                                        </li>
+                                    }
+                                </ul>
+                            </nav>
+                        }
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i> Bu ekipte henüz üye yok.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@model TeamDetailsViewModel
+@{
+    ViewData["Title"] = "Ekip Detayları";
+}
+
+<div class="container mt-4">
+    <h2><i class="bi bi-people-fill"></i> Ekip Detayları</h2>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">Ad:</dt>
+                        <dd class="col-sm-9">@Model.Name</dd>
+
+                        <dt class="col-sm-3">Kod:</dt>
+                        <dd class="col-sm-9">@Model.Code</dd>
+
+                        <dt class="col-sm-3">Şehir:</dt>
+                        <dd class="col-sm-9">@(Model.City ?? "-")</dd>
+                    </dl>
+
+                    <div class="d-flex gap-2">
+                        <a asp-action="BooTeams" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Listeye Dön
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Ekip Üyeleri (@Model.TotalCount)</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Members.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-sm table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Ad Soyad</th>
+                                        <th>QR ID</th>
+                                        <th>Görev</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var member in Model.Members)
+                                    {
+                                        <tr>
+                                            <td>@member.FullName</td>
+                                            <td>@(member.QRId ?? "-")</td>
+                                            <td>@(member.Role ?? "-")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        var membersPagination = ViewBag.MembersPagination as PaginatedResponse<TeamMemberViewModel>;
+
+                        @if (membersPagination?.TotalPages > 1)
+                        {
+                            <nav class="mt-3">
+                                <ul class="pagination pagination-sm justify-content-center">
+                                    @* Previous button *@
+                                    @if (membersPagination.Page > 1)
+                                    {
+                                        <li class="page-item">
+                                            <a class="page-link" asp-action="BooTeamsDetails" asp-route-teamId="@Model.Id" asp-route-page="@(membersPagination.Page - 1)">Önceki</a>
+                                        </li>
+                                    }
+
+                                    @* Page numbers with ellipsis *@
+                                    @{
+                                        var startPage = Math.Max(1, membersPagination.Page - 2);
+                                        var endPage = Math.Min(membersPagination.TotalPages, membersPagination.Page + 2);
+                                    }
+
+                                    @if (startPage > 1)
+                                    {
+                                        <li class="page-item">
+                                            <a class="page-link" asp-action="BooTeamsDetails" asp-route-teamId="@Model.Id" asp-route-page="1">1</a>
+                                        </li>
+                                        @if (startPage > 2)
+                                        {
+                                            <li class="page-item disabled">
+                                                <span class="page-link">...</span>
+                                            </li>
+                                        }
+                                    }
+
+                                    @for (int i = startPage; i <= endPage; i++)
+                                    {
+                                        <li class="page-item @(i == membersPagination.Page ? "active" : "")">
+                                            <a class="page-link" asp-action="BooTeamsDetails" asp-route-teamId="@Model.Id" asp-route-page="@i">@i</a>
+                                        </li>
+                                    }
+
+                                    @if (endPage < membersPagination.TotalPages)
+                                    {
+                                        @if (endPage < membersPagination.TotalPages - 1)
+                                        {
+                                            <li class="page-item disabled">
+                                                <span class="page-link">...</span>
+                                            </li>
+                                        }
+                                        <li class="page-item">
+                                            <a class="page-link" asp-action="BooTeamsDetails" asp-route-teamId="@Model.Id" asp-route-page="@membersPagination.TotalPages">@membersPagination.TotalPages</a>
+                                        </li>
+                                    }
+
+                                    @* Next button *@
+                                    @if (membersPagination.Page < membersPagination.TotalPages)
+                                    {
+                                        <li class="page-item">
+                                            <a class="page-link" asp-action="BooTeamsDetails" asp-route-teamId="@Model.Id" asp-route-page="@(membersPagination.Page + 1)">Sonraki</a>
+                                        </li>
+                                    }
+                                </ul>
+                            </nav>
+                        }
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i> Bu ekipte henüz üye yok.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

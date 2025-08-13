@@ -4,7 +4,7 @@
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/timeline.css" />
+<link rel="stylesheet" href="~/css/timeline.css" />
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -39,6 +39,21 @@
                 </a>
             }
         </form>
+
+        @if (@ViewBag.FilterTitle == "BoO'da Bulunan Ekip Üyeleri")
+        {
+            <a href="/volunteers/BooSectorTeams" class="btn btn-primary">
+                <i class="bi bi-person-plus"></i> Boo'daki Takımlar
+            </a>
+        }
+
+        @if (@ViewBag.FilterTitle == "Tüm Ekip Üyeleri")
+        {
+            <a href="/volunteers/BooSectorTeams" class="btn btn-primary">
+                <i class="bi bi-person-plus"></i> Sektör'deki Takımlar
+            </a>
+        }
+
         <a href="/volunteers/create" class="btn btn-primary">
             <i class="bi bi-person-plus"></i> Yeni Ekip Üyesi
         </a>

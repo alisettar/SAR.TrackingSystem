@@ -76,6 +76,24 @@ public class VolunteersModule : ICarterModule
                 operation.Description = "Retrieves timeline of all movements for a volunteer.";
                 return operation;
             });
+
+        app.MapGet("/volunteers/teams-with-non-arrived", GetTeamsWithNonArrivedVolunteers)
+            .WithName(nameof(GetTeamsWithNonArrivedVolunteers))
+            .WithOpenApi(operation =>
+            {
+                operation.Summary = "Get team IDs with non-arrived volunteers";
+                operation.Description = "Retrieves list of team IDs that have volunteers who haven't arrived yet.";
+                return operation;
+            });
+    }
+
+    private static async Task<Ok<List<Guid>>> GetTeamsWithNonArrivedVolunteers(
+    [FromServices] ISender sender,
+    HttpContext context)
+    {
+        var query = new GetTeamIdsWithNonArrivedVolunteersQuery();
+        var teamIds = await sender.Send(query, context.RequestAborted);
+        return TypedResults.Ok(teamIds);
     }
 
     private static async Task<Results<Ok<VolunteerResponse>, NotFound>> GetVolunteerById(

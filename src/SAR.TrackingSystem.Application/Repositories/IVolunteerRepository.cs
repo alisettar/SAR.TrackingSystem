@@ -21,4 +21,6 @@ public interface IVolunteerRepository
     Task UpdateAsync(Volunteer volunteer, CancellationToken cancellationToken);
     Task DeleteAsync(Guid id, CancellationToken cancellationToken);
     Task<Volunteer?> GetByQRIdAsync(string qRId, CancellationToken cancellationToken);
+
+    Task<List<Guid>> GetTeamIdsWithNonArrivedVolunteersAsync(CancellationToken cancellationToken = default);
 }

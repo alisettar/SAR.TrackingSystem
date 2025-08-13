@@ -12,4 +12,6 @@ public interface IVolunteerService
     Task<bool> UpdateVolunteerAsync(Guid id, VolunteerUpdateViewModel model);
     Task<bool> DeleteVolunteerAsync(Guid id);
     Task<List<MovementHistoryViewModel>> GetVolunteerMovementHistoryAsync(Guid id);
+
+    Task<List<Guid>> GetTeamIdsWithNonArrivedVolunteersAsync();
 }

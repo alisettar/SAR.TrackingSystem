@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SAR.TrackingSystem.Web.Models;
 using SAR.TrackingSystem.Web.Models.Common;
+using SAR.TrackingSystem.Web.Services;
 using SAR.TrackingSystem.Web.Services.Interfaces;
 
 namespace SAR.TrackingSystem.Web.Controllers;
@@ -147,5 +148,47 @@ public class VolunteersController(
         {
             return BadRequest();
         }
+    }
+
+    public async Task<IActionResult> BooSectorTeams()
+    {
+        var teamIds = await volunteerService.GetTeamIdsWithNonArrivedVolunteersAsync();
+
+        var teams = new List<TeamViewModel>();
+        foreach (var teamId in teamIds)
+        {
+            var team = await teamService.GetTeamByIdAsync(teamId);
+            if (team != null)
+            {
+                teams.Add(team);
+            }
+        }
+
+        return View(teams);
+    }
+
+    public async Task<IActionResult> BooSectorTeamsDetails(Guid teamId, int page = 1)
+    {
+        var team = await teamService.GetTeamByIdAsync(teamId);
+        if (team == null)
+        {
+            return NotFound();
+        }
+
+        var request = new PaginationRequest(page - 1, 10); // Convert to 0-based
+        var members = await teamService.GetTeamMembersAsync(teamId, request);
+
+        var model = new TeamDetailsViewModel
+        {
+            Id = team.Id,
+            Name = team.Name,
+            Code = team.Code,
+            City = team.City,
+            Members = [.. members.Items],
+            TotalCount = members.TotalCount,
+        };
+
+        ViewBag.MembersPagination = members;
+        return View(model);
     }
 }

@@ -230,4 +230,36 @@ public class VolunteerRepository(SarDbContext context) : IVolunteerRepository
             await context.SaveChangesAsync(cancellationToken);
         }
     }
+
+
+    public async Task<List<Guid>> GetTeamIdsWithNonArrivedVolunteersAsync(CancellationToken cancellationToken = default)
+    {
+        return await context.Volunteers
+            .Where(v => context.Movements.Any(m => m.VolunteerId == v.Id))
+            .Select(v => v.TeamId)
+            .Distinct()
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<List<Guid>> GetTeamId(Guid teamId, CancellationToken cancellationToken = default)
+    {
+        var result = await context.Volunteers
+            .Where(v => v.CurrentState == VolunteerState.InHub || v.CurrentState == VolunteerState.InSector)
+            .Select(v => new
+            {
+                v.Id,
+                v.TeamId,
+                LatestMovement = context.Movements
+                    .Where(m => m.VolunteerId == v.Id)
+                    .OrderByDescending(m => m.MovementTime)
+                    .FirstOrDefault()
+            })
+            .Where(x => x.LatestMovement != null)
+            .Where(x => x.TeamId == teamId)
+            .Select(x => x.TeamId)
+            .Distinct()
+            .ToListAsync(cancellationToken);
+
+        return result;
+    }
 }
