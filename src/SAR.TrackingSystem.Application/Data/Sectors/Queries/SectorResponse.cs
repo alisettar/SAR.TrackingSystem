@@ -13,7 +13,10 @@ public sealed record SectorResponse(
     string WorkAreaAddress,
     string Coordinates,
     int WorkAreaNumber,
-    int ExpectedVictimCount)
+    int ExpectedVictimCount,
+    int RescuedCount,
+    int ExtricatedCount,
+    DateTime? LastUpdated)
 {
     public static SectorResponse FromDomain(Sector sector)
     {
@@ -28,11 +31,14 @@ public sealed record SectorResponse(
             sector.WorkAreaAddress,
             sector.Coordinates,
             sector.WorkAreaNumber,
-            sector.ExpectedVictimCount);
+            sector.ExpectedVictimCount,
+            sector.RescuedCount,
+            sector.ExtricatedCount,
+            sector.LastUpdated);
     }
 
     public static List<SectorResponse> FromDomainList(IEnumerable<Sector> sectors)
     {
-        return sectors.Select(FromDomain).ToList();
+        return [.. sectors.Select(FromDomain)];
     }
 }

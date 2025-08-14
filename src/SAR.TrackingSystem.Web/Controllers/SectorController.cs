@@ -119,4 +119,28 @@ public class SectorsController(
         return criticalSectors.Contains(code, StringComparer.OrdinalIgnoreCase);
     }
 
+    [HttpPut("/api/sectors/{id}/counts")]
+    public async Task<IActionResult> UpdateCounts(Guid id, [FromBody] UpdateCountsRequest request)
+    {
+        try
+        {
+            var result = await sectorService.UpdateSectorCountsAsync(id, request.RescuedCount, request.ExtricatedCount);
+            return result ? Ok() : NotFound();
+        }
+        catch (HttpRequestException ex) when (ex.Message.Contains("400"))
+        {
+            return BadRequest(new { error = "Geçersiz değerler girdiniz." });
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, new { error = "Bir hata oluştu." });
+        }
+    }
+
+    public class UpdateCountsRequest
+    {
+        public int RescuedCount { get; set; }
+        public int ExtricatedCount { get; set; }
+    }
+
 }

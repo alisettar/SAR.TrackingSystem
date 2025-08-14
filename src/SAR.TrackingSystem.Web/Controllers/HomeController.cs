@@ -36,7 +36,8 @@ public class HomeController : Controller
                 SectorDistribution = sectorDistribution,
                 CityDistribution = cityDistribution,
                 TeamDistribution = teamDistribution,
-                TotalTeamCount = totalTeamCount
+                TotalTeamCount = totalTeamCount,
+                Sectors = stats.Sectors // Already mapped in stats
             };
             
             return View(dashboardViewModel);

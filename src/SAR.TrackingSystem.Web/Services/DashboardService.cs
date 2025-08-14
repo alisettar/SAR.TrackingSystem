@@ -25,6 +25,17 @@ public class DashboardService(
             var content = await response.Content.ReadAsStringAsync();
             var apiStats = JsonSerializer.Deserialize<ApiDashboardStats>(content, _jsonOptions);
 
+            var sectors = apiStats?.Sectors?.Select(s => new SectorMapData
+            {
+                Code = s.Code,
+                Name = s.Name,
+                Coordinates = s.Coordinates,
+                RescuedCount = s.RescuedCount,
+                ExtricatedCount = s.ExtricatedCount,
+                ExpectedVictimCount = s.ExpectedVictimCount,
+                WorkAreaName = s.WorkAreaName
+            }).ToList() ?? new List<SectorMapData>();
+
             return new DashboardStats
             {
                 TotalVolunteers = apiStats?.TotalVolunteers ?? 0,
@@ -32,7 +43,11 @@ public class DashboardService(
                 InHubCount = apiStats?.InHubCount ?? 0,
                 InSectorCount = apiStats?.InSectorCount ?? 0,
                 EntryCount = apiStats?.EntryCount ?? 0,
-                ExitCount = apiStats?.ExitCount ?? 0
+                ExitCount = apiStats?.ExitCount ?? 0,
+                TotalExpectedVictims = apiStats?.TotalExpectedVictims ?? 0,
+                TotalRescuedCount = apiStats?.TotalRescuedCount ?? 0,
+                TotalExtricatedCount = apiStats?.TotalExtricatedCount ?? 0,
+                Sectors = sectors
             };
         }
         catch (Exception)
@@ -162,7 +177,20 @@ public record ApiDashboardStats(
     int InHubCount,
     int InSectorCount,
     int EntryCount,
-    int ExitCount);
+    int ExitCount,
+    int TotalExpectedVictims,
+    int TotalRescuedCount,
+    int TotalExtricatedCount,
+    List<ApiSectorMapData> Sectors);
+
+public record ApiSectorMapData(
+    string Code,
+    string Name,
+    string Coordinates,
+    int RescuedCount,
+    int ExtricatedCount,
+    int ExpectedVictimCount,
+    string WorkAreaName);
 
 // Sector distribution models
 public record ApiSectorDistribution(List<ApiSectorDistributionItem> Items);

@@ -6,4 +6,17 @@ public sealed record DashboardStatsResponse(
     int InHubCount,
     int InSectorCount,
     int EntryCount,
-    int ExitCount);
+    int ExitCount,
+    int TotalExpectedVictims,
+    int TotalRescuedCount,
+    int TotalExtricatedCount,
+    List<SectorMapResponse> Sectors);
+
+public sealed record SectorMapResponse(
+    string Code,
+    string Name,
+    string Coordinates,
+    int RescuedCount,
+    int ExtricatedCount,
+    int ExpectedVictimCount,
+    string WorkAreaName);

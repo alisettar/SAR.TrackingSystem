@@ -70,4 +70,19 @@ public class SectorService : ISectorService
             return false;
         }
     }
+
+    public async Task<bool> UpdateSectorCountsAsync(Guid id, int rescuedCount, int extricatedCount)
+    {
+        try
+        {
+            var request = new { RescuedCount = rescuedCount, ExtricatedCount = extricatedCount };
+            var response = await _httpClient.PutAsJsonAsync($"/sectors/{id}/counts", request);
+            return response.IsSuccessStatusCode;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error updating sector counts {SectorId}", id);
+            return false;
+        }
+    }
 }

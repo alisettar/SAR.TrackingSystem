@@ -57,6 +57,15 @@ public class SectorsModule : ICarterModule
                 operation.Description = "Deletes a sector by ID. Critical sectors cannot be deleted.";
                 return operation;
             });
+
+        app.MapPut("/sectors/{id}/counts", UpdateSectorCounts)
+            .WithName(nameof(UpdateSectorCounts))
+            .WithOpenApi(operation =>
+            {
+                operation.Summary = "Update sector rescue counts";
+                operation.Description = "Updates rescued and extricated counts for a specific sector.";
+                return operation;
+            });
     }
 
     private static async Task<Results<Ok<SectorResponse>, NotFound>> GetSectorById(
@@ -124,5 +133,19 @@ public class SectorsModule : ICarterModule
                 ["error"] = [ex.Message]
             });
         }
+    }
+
+    private static async Task<Results<Ok, NotFound, ValidationProblem>> UpdateSectorCounts(
+        Guid id,
+        UpdateSectorCountsRequest request,
+        [FromServices] ISender sender,
+        HttpContext context)
+    {
+        var command = new UpdateSectorCountsCommand(id, request.RescuedCount, request.ExtricatedCount);
+        var result = await sender.Send(command, context.RequestAborted);
+
+        return result
+            ? TypedResults.Ok()
+            : TypedResults.NotFound();
     }
 }

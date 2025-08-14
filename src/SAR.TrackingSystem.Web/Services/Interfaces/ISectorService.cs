@@ -9,4 +9,5 @@ public interface ISectorService
     Task<SectorStatisticsViewModel?> GetSectorStatisticsAsync(Guid id);
     Task<bool> CreateSectorAsync(SectorViewModel model);
     Task<bool> DeleteSectorAsync(Guid id);
+    Task<bool> UpdateSectorCountsAsync(Guid id, int rescuedCount, int extricatedCount);
 }

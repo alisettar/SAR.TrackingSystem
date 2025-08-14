@@ -1,0 +1,22 @@
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Data Source=SarTrackingDb.db"
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  },
+  "DataProcessor": {
+    "ExcelImportPath": "Data/Import",
+    "ExcelExportPath": "Data/Export",
+    "BackupPath": "Data/Backup",
+    "ProcessBatchSize": 100,
+    "EnableDataValidation": true
+  },
+  "SectorSettings": {
+    "HubCode": "BoO"
+  }
+}

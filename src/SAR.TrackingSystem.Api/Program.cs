@@ -36,15 +36,32 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<SarDbContext>();
-    context.Database.Migrate();
+    try
+    {
+        context.Database.Migrate();
+    }
+    catch
+    {
+        // Fallback to EnsureCreated if no migrations exist
+        await context.Database.EnsureCreatedAsync();
+    }
 }
 
 // Initialize Database
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<SarDbContext>();
-    await context.Database.EnsureCreatedAsync();
-    await DatabaseSeeder.SeedAsync(context);
+    
+    // JSON seed file path
+    var jsonPath = Path.Combine(AppContext.BaseDirectory, "SeedData", "2025_yaka_karti_liste_processed.json");
+    if (File.Exists(jsonPath))
+    {
+        await DatabaseSeeder.SeedAsync(context, jsonPath);
+    }
+    else
+    {
+        await DatabaseSeeder.SeedAsync(context);
+    }
 }
 
 // Configure the HTTP request pipeline.

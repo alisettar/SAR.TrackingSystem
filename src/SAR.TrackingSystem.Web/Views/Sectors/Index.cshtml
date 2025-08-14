@@ -37,6 +37,11 @@
                     <tr>
                         <th>Ad</th>
                         <th>Kod</th>
+                        <th>Çalışma Alanı</th>
+                        <th>Beklenen Afetzede</th>
+                        <th>Sağ</th>
+                        <th>Ex</th>
+                        <th>Son Güncelleme</th>
                         <th>İşlemler</th>
                     </tr>
                 </thead>
@@ -47,9 +52,65 @@
                             <td>@sector.Name</td>
                             <td>@sector.Code</td>
                             <td>
+                                @if (!string.IsNullOrEmpty(sector.WorkAreaName))
+                                {
+                                    <span class="text-primary">@sector.WorkAreaName</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">-</span>
+                                }
+                            </td>
+                            <td>
+                                @if (sector.ExpectedVictimCount > 0)
+                                {
+                                    <span class="badge bg-warning text-dark">@sector.ExpectedVictimCount</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">-</span>
+                                }
+                            </td>
+                            <td>
+                                @if (sector.RescuedCount > 0)
+                                {
+                                    <span class="badge bg-success">@sector.RescuedCount</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">0</span>
+                                }
+                            </td>
+                            <td>
+                                @if (sector.ExtricatedCount > 0)
+                                {
+                                    <span class="badge bg-danger">@sector.ExtricatedCount</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">0</span>
+                                }
+                            </td>
+                            <td>
+                                @if (sector.LastUpdated.HasValue)
+                                {
+                                    <small class="text-muted">@sector.LastUpdated.Value.ToString("HH:mm")</small>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">-</span>
+                                }
+                            </td>
+                            <td>
                                 <a href="/sectors/details/@sector.Id" class="btn btn-sm btn-primary">
                                     <i class="bi bi-eye"></i> Detay
                                 </a>
+                                
+                                <button type="button" class="btn btn-sm btn-warning" 
+                                        onclick="showUpdateCountsModal('@sector.Id', '@sector.Name', @sector.RescuedCount, @sector.ExtricatedCount)"
+                                        title="Sayıları Güncelle">
+                                    <i class="bi bi-calculator"></i>
+                                </button>
                                 
                                 @if (ViewBag.EnableDelete == true)
                                 {
@@ -77,3 +138,95 @@
         </div>
     </div>
 </div>
+
+<!-- Update Counts Modal -->
+<div class="modal fade" id="updateCountsModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-light" data-bs-theme="dark">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title">Sağ/Ex Sayılarını Güncelle</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="updateCountsForm">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Sektör:</label>
+                        <span id="modalSectorName" class="fw-bold text-warning"></span>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <label for="rescuedCount" class="form-label">Sağ Çıkarılan</label>
+                            <input type="number" class="form-control bg-dark text-light border-secondary" id="rescuedCount" min="0" required>
+                        </div>
+                        <div class="col-6">
+                            <label for="extricatedCount" class="form-label">Ex Çıkarılan</label>
+                            <input type="number" class="form-control bg-dark text-light border-secondary" id="extricatedCount" min="0" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-secondary">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Güncelle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let currentSectorId = null;
+        
+        function showUpdateCountsModal(sectorId, sectorName, rescuedCount, extricatedCount) {
+            currentSectorId = sectorId;
+            document.getElementById('modalSectorName').textContent = sectorName;
+            document.getElementById('rescuedCount').value = rescuedCount;
+            document.getElementById('extricatedCount').value = extricatedCount;
+            
+            new bootstrap.Modal(document.getElementById('updateCountsModal')).show();
+        }
+        
+        document.getElementById('updateCountsForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const rescuedCount = parseInt(document.getElementById('rescuedCount').value);
+            const extricatedCount = parseInt(document.getElementById('extricatedCount').value);
+            
+            // Clear previous error messages
+            const errorDiv = document.getElementById('errorMessage');
+            if (errorDiv) errorDiv.remove();
+            
+            try {
+                const response = await fetch(`/api/sectors/${currentSectorId}/counts`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ rescuedCount, extricatedCount })
+                });
+                
+                if (response.ok) {
+                    bootstrap.Modal.getInstance(document.getElementById('updateCountsModal')).hide();
+                    location.reload();
+                } else if (response.status === 400) {
+                    const errorData = await response.json();
+                    showValidationError(errorData.error);
+                } else {
+                    showValidationError('Güncelleme başarısız oldu.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showValidationError('Bir hata oluştu.');
+            }
+        });
+        
+        function showValidationError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.id = 'errorMessage';
+            errorDiv.className = 'alert alert-danger mt-2';
+            errorDiv.textContent = message;
+            
+            document.querySelector('.modal-body').appendChild(errorDiv);
+        }
+    </script>
+}

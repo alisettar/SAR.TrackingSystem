@@ -1,0 +1,612 @@
+[
+  {
+    "1": "2",
+    "AdSoyad": "Zeynel Abidin Özkan",
+    "Görev": "LİDER YARDIMCISI"
+  },
+  {
+    "1": "3",
+    "AdSoyad": "ERKAN HALICI",
+    "Görev": "İRTİBAT YETKİLİSİ"
+  },
+  {
+    "1": "1",
+    "AdSoyad": "Gürhan Çiçek ",
+    "Görev": "HABERLEŞME EKİP LİDERİ"
+  },
+  {
+    "1": "2",
+    "AdSoyad": "Orhan Gazi KAVALCILAR ",
+    "Görev": "HABERLEŞME"
+  },
+  {
+    "1": "3",
+    "AdSoyad": "Ömer Faruk Altın",
+    "Görev": "HABERLEŞME"
+  },
+  {
+    "1": "4",
+    "AdSoyad": "M.ALİ ÜSTÜN",
+    "Görev": "HABERLEŞME"
+  },
+  {
+    "1": "1",
+    "AdSoyad": "Mehmet Ender Hazar ",
+    "Görev": "GÖZLEMCİ LİDERİ"
+  },
+  {
+    "1": "2",
+    "AdSoyad": "Halit Hakan Derindere ",
+    "Görev": "GÖZLEMCİ"
+  },
+  {
+    "1": "3",
+    "AdSoyad": "Abdurrahman ŞEŞE",
+    "Görev": "GÖZLEMCİ"
+  },
+  {
+    "1": "4",
+    "AdSoyad": "Abidin Araboğa ",
+    "Görev": "GÖZLEMCİ"
+  },
+  {
+    "1": "5",
+    "AdSoyad": "Emin furkan bostan",
+    "Görev": "GÖZLEMCİ"
+  },
+  {
+    "1": "6",
+    "AdSoyad": "Emrah Ateş",
+    "Görev": "GÖZLEMCİ"
+  },
+  {
+    "1": "7",
+    "AdSoyad": "Fatih Özmen",
+    "Görev": "GÖZLEMCİ"
+  },
+  {
+    "1": "8",
+    "AdSoyad": "Fatih Sağlam ",
+    "Görev": "GÖZLEMCİ"
+  },
+  {
+    "1": "9",
+    "AdSoyad": "Harun Çakır ",
+    "Görev": "GÖZLEMCİ"
+  },
+  {
+    "1": "10",
+    "AdSoyad": "Hayrullah KARAKAŞ",
+    "Görev": "GÖZLEMCİ"
+  },
+  {
+    "1": "11",
+    "AdSoyad": "İbrahim Ayan ",
+    "Görev": "GÖZLEMCİ"
+  },
+  {
+    "1": "12",
+    "AdSoyad": "İbrahim Taşdemir ",
+    "Görev": "GÖZLEMCİ"
+  },
+  {
+    "1": "13",
+    "AdSoyad": "Muhammet coşkun",
+    "Görev": "GÖZLEMCİ"
+  },
+  {
+    "1": "14",
+    "AdSoyad": "Yavuz Bilgen",
+    "Görev": "GÖZLEMCİ"
+  },
+  {
+    "1": "15",
+    "AdSoyad": "MEHMET AKIL",
+    "Görev": "GÖZLEMCİ"
+  },
+  {
+    "1": "16",
+    "AdSoyad": "Osman çavuş",
+    "Görev": "GÖZLEMCİ"
+  },
+  {
+    "1": "17",
+    "AdSoyad": "Seyfullah Furkan Kılıç ",
+    "Görev": "GÖZLEMCİ"
+  },
+  {
+    "1": "18",
+    "AdSoyad": "Süleyman MENGÜ",
+    "Görev": "GÖZLEMCİ"
+  },
+  {
+    "1": "19",
+    "AdSoyad": "Ramazan Demirhan ",
+    "Görev": "GÖZLEMCİ"
+  },
+  {
+    "1": "20",
+    "AdSoyad": "Ensar Dönmez ",
+    "Görev": "GÖZLEMCİ"
+  },
+  {
+    "1": "1",
+    "AdSoyad": "İbrahim KURMUŞ ",
+    "Görev": "BOO ALANI ÜST YÖNETİCİSİ"
+  },
+  {
+    "1": "2",
+    "AdSoyad": "Ercan Bostancı ",
+    "Görev": "KOORDİNASYON ALANI YÖNETİCİSİ"
+  },
+  {
+    "1": "3",
+    "AdSoyad": "AHMET ARSLAN ",
+    "Görev": "KOORDİNASYON "
+  },
+  {
+    "1": "4",
+    "AdSoyad": "Hasan Talha yaman",
+    "Görev": "KOORDİNASYON "
+  },
+  {
+    "1": "5",
+    "AdSoyad": "Mehmet Taş ",
+    "Görev": "KOORDİNASYON "
+  },
+  {
+    "1": "6",
+    "AdSoyad": "Hakan Yavuz",
+    "Görev": "KOORDİNASYON "
+  },
+  {
+    "1": "7",
+    "AdSoyad": "Hamit çiftçi ",
+    "Görev": "KOORDİNASYON "
+  },
+  {
+    "1": "8",
+    "AdSoyad": "Serkan Codal",
+    "Görev": "PROROKOL SORUMLUSU"
+  },
+  {
+    "1": "9",
+    "AdSoyad": "Fatih Arslan ",
+    "Görev": "PROTOKOL"
+  },
+  {
+    "1": "10",
+    "AdSoyad": "Muhammet Salih Karaaslan ",
+    "Görev": "PROTOKOL"
+  },
+  {
+    "1": "11",
+    "AdSoyad": "Selim zorlu",
+    "Görev": "ARAÇ,OTOPARK SORUMLUSU"
+  },
+  {
+    "1": "12",
+    "AdSoyad": "Furkan Kalem",
+    "Görev": "ARAÇ,OTOPARK"
+  },
+  {
+    "1": "13",
+    "AdSoyad": "Halil mert",
+    "Görev": "ARAÇ,OTOPARK"
+  },
+  {
+    "1": "14",
+    "AdSoyad": "Kadir Kurtoğlu ",
+    "Görev": "ARAÇ,OTOPARK"
+  },
+  {
+    "1": "15",
+    "AdSoyad": "OMER İNCİ ",
+    "Görev": "ARAÇ,OTOPARK"
+  },
+  {
+    "1": "16",
+    "AdSoyad": "Mustafa YUSUFOĞLU ",
+    "Görev": "ARAÇ,OTOPARK"
+  },
+  {
+    "1": "17",
+    "AdSoyad": "Furkan çelebi",
+    "Görev": "ARAÇ,OTOPARK"
+  },
+  {
+    "1": "18",
+    "AdSoyad": "Mehmet Fehmi Dündar",
+    "Görev": "ARAÇ,OTOPARK"
+  },
+  {
+    "1": "19",
+    "AdSoyad": "Mustafa salih öztürk ",
+    "Görev": "ARAÇ,OTOPARK"
+  },
+  {
+    "1": "20",
+    "AdSoyad": "Faruk Zorlu",
+    "Görev": "ÇADIR ALANI SORUMLUSU"
+  },
+  {
+    "1": "21",
+    "AdSoyad": "Maruf Altun",
+    "Görev": "ÇADIR ALANI"
+  },
+  {
+    "1": "22",
+    "AdSoyad": "Adnan Genç ",
+    "Görev": "ÇADIR ALANI"
+  },
+  {
+    "1": "23",
+    "AdSoyad": "Mehmet Kırmızı ",
+    "Görev": "ÇADIR ALANI"
+  },
+  {
+    "1": "24",
+    "AdSoyad": "Ali Ekber Yaradılmış ",
+    "Görev": "ÇADIR ALANI"
+  },
+  {
+    "1": "25",
+    "AdSoyad": "Mehmet Fatih kısak ",
+    "Görev": "ÇADIR ALANI"
+  },
+  {
+    "1": "26",
+    "AdSoyad": "Murat bakışgan ",
+    "Görev": "ÇADIR ALANI"
+  },
+  {
+    "1": "27",
+    "AdSoyad": "Muhammed Tayyip Bulut",
+    "Görev": "ÇADIR ALANI"
+  },
+  {
+    "1": "28",
+    "AdSoyad": "AHMET KASIM",
+    "Görev": "BOO ALANI - MEDYA"
+  },
+  {
+    "1": "1",
+    "AdSoyad": "ERTAN ŞEŞE",
+    "Görev": "PLANLAMA EKİP LİDERİ"
+  },
+  {
+    "1": "2",
+    "AdSoyad": "Erdem Bayrak ",
+    "Görev": "PLANLAMA"
+  },
+  {
+    "1": "3",
+    "AdSoyad": "Erhan iyiaksu",
+    "Görev": "PLANLAMA"
+  },
+  {
+    "1": "4",
+    "AdSoyad": "Gökhan çağrı Üstün",
+    "Görev": "PLANLAMA"
+  },
+  {
+    "1": "5",
+    "AdSoyad": "Hanifi İlkdoğan",
+    "Görev": "PLANLAMA"
+  },
+  {
+    "1": "6",
+    "AdSoyad": "Kürşat Oğuz Arslantaş ",
+    "Görev": "PLANLAMA"
+  },
+  {
+    "1": "7",
+    "AdSoyad": "NAMIK KEMAL ÖZEROĞLU",
+    "Görev": "PLANLAMA"
+  },
+  {
+    "1": "8",
+    "AdSoyad": "Rifat DIVARCI",
+    "Görev": "PLANLAMA"
+  },
+  {
+    "1": "9",
+    "AdSoyad": "Tayyar Tercan ",
+    "Görev": "PLANLAMA"
+  },
+  {
+    "1": "10",
+    "AdSoyad": "Alisettar Hüseyinli",
+    "Görev": "PLANLAMA"
+  },
+  {
+    "1": "1",
+    "AdSoyad": "Mehmet Furkan Başköylü",
+    "Görev": "SAHA EKİP LİDERİ"
+  },
+  {
+    "1": "2",
+    "AdSoyad": "Abdulkadir Tozcuer ",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "3",
+    "AdSoyad": "Adnan Şenol",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "4",
+    "AdSoyad": "Ahmet gökberk kurmuş ",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "5",
+    "AdSoyad": "Ahmet Hakan Bozkurt ",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "6",
+    "AdSoyad": "Ahmet Rıdvan Çetin ",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "7",
+    "AdSoyad": "Ahmet Yusuf Sedef ",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "8",
+    "AdSoyad": "Bedirhan Demirci ",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "9",
+    "AdSoyad": "Burak Öz",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "10",
+    "AdSoyad": "Cengiz mirza",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "11",
+    "AdSoyad": "Dilaver Kantık ",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "12",
+    "AdSoyad": "Ebuzer Köçer",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "13",
+    "AdSoyad": "Emrah ipek ",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "14",
+    "AdSoyad": "EMRE KIZILTAN ",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "15",
+    "AdSoyad": "Emre TOPRAK",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "16",
+    "AdSoyad": "Ferhat Çam",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "17",
+    "AdSoyad": "Halid islam ak",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "18",
+    "AdSoyad": "Halil BAŞKAYA ",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "19",
+    "AdSoyad": "Halil İbrahim CAN",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "20",
+    "AdSoyad": "Harun kiraz",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "21",
+    "AdSoyad": "İhsan Yıldız ",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "22",
+    "AdSoyad": "İhsan ZIYPAK",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "23",
+    "AdSoyad": "İskender AYYILDIZ",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "24",
+    "AdSoyad": "İzzet Alşan ",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "25",
+    "AdSoyad": "Mehmet Emin Osmanlı ",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "26",
+    "AdSoyad": "Mesut Alşan",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "27",
+    "AdSoyad": "MİRAC ÜSTÜN",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "28",
+    "AdSoyad": "MURAT ŞABAN TOSUN ",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "29",
+    "AdSoyad": "Musab Zeki Zoray ",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "30",
+    "AdSoyad": "Jihad Ammar",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "31",
+    "AdSoyad": "Mustafa Necmeddin GÖZEL ",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "32",
+    "AdSoyad": "Ömer Faruk YİĞİT",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "33",
+    "AdSoyad": "Samed Mert",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "34",
+    "AdSoyad": "Serkan Yıldızhan ",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "35",
+    "AdSoyad": "Şevket Batu",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "36",
+    "AdSoyad": "Muhammed Efe Aksu",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "37",
+    "AdSoyad": "Tunç yılmaz ",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "38",
+    "AdSoyad": "Volkan mirza",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "39",
+    "AdSoyad": "Yalgın Kahraman ",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "40",
+    "AdSoyad": "Yunus Emre Yılmaz ",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "41",
+    "AdSoyad": "Yusuf Aytar ",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "42",
+    "AdSoyad": "Yuşa Yozkayası ",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "43",
+    "AdSoyad": "Zekai Doğrusöz ",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "44",
+    "AdSoyad": "Mehmet Taş",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "45",
+    "AdSoyad": "MUSTAFA ATEŞ",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "46",
+    "AdSoyad": "ABDULSAMET DORAN",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "47",
+    "AdSoyad": "Kadir angın",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "48",
+    "AdSoyad": "Ahmet usta",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "49",
+    "AdSoyad": "Talha Yahya Sakin",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "50",
+    "AdSoyad": "Ahmet Erden",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "51",
+    "AdSoyad": "Mehmet Abdullahoğlu ",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "52",
+    "AdSoyad": "Muhammet YASİN",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "53",
+    "AdSoyad": "AHMET TAŞCI",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "54",
+    "AdSoyad": "Bilal Akan ",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "55",
+    "AdSoyad": "Şükri elramo",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "56",
+    "AdSoyad": "Tanser BOLAT ",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "57",
+    "AdSoyad": "Ömer Tikenli ",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  },
+  {
+    "1": "58",
+    "AdSoyad": "ÖZGÜR ALPI",
+    "Görev": "ENKAZ ÇALIŞMASI"
+  }
+]

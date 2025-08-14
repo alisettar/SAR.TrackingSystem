@@ -74,7 +74,7 @@ public static class DefaultSeedData
                     Coordinates = "39°59'4.58\"N 32°47'35.11\"E", WorkAreaNumber = 37, ExpectedVictimCount = 2 },
         new Sector { Id = new Guid("00000000-0000-0000-0000-000000000017"), Code = "B-5a", Name = "Sektör B-5a", IsActive = true,
                     WorkAreaName = "Çubuk 1 Barajı", WorkAreaAddress = "Çubuk 1 Barajı, 06150 Altındağ/Ankara",
-                    Coordinates = "40°0'27.63\"N, 32°56'33.13\"E", WorkAreaNumber = 39, ExpectedVictimCount = 5 },
+                    Coordinates = "40°0'27.63\"N 32°56'33.13\"E", WorkAreaNumber = 39, ExpectedVictimCount = 5 },
         new Sector { Id = new Guid("00000000-0000-0000-0000-000000000018"), Code = "D-3a", Name = "Sektör D-3a", IsActive = true,
                     WorkAreaName = "Etimesgut AFAD Eğitim Merkezi", WorkAreaAddress = "Ayyıldız Mahallesi, 798. Sokak 06796 Etimesgut, Ankara",
                     Coordinates = "39°55'7.98\"N 32°37'3.49\"E", WorkAreaNumber = 11, ExpectedVictimCount = 3 },
@@ -118,16 +118,60 @@ public static class DefaultSeedData
                     IsEntryPoint = true, IsActive = true, WorkAreaName = "Tevfik İleri Anadolu İmamhatip Lisesi", WorkAreaAddress = "Emniyet, Silahtar Cd. No:13, 06560 Yenimahalle/Ankara", Coordinates = "39°56'35.97\"N, 32°49'29.67\"E" }
     ];
 
-    public static List<Team> Teams =>
-    [
-        new Team { Id = new Guid("11111111-0000-0000-0000-000000000001"), Name = "EKİP LİDERİ", Code = "LDR" },
-        new Team { Id = new Guid("11111111-0000-0000-0000-000000000002"), Name = "LİDER YARDIMCISI", Code = "ALDR" },
-        new Team { Id = new Guid("11111111-0000-0000-0000-000000000003"), Name = "A TİMİ", Code = "A" },
-        new Team { Id = new Guid("11111111-0000-0000-0000-000000000004"), Name = "B TİMİ", Code = "B" },
-        new Team { Id = new Guid("11111111-0000-0000-0000-000000000005"), Name = "C TİMİ", Code = "C" },
-        new Team { Id = new Guid("11111111-0000-0000-0000-000000000006"), Name = "D TİMİ", Code = "D" },
-        new Team { Id = new Guid("11111111-0000-0000-0000-000000000007"), Name = "ARAMA", Code = "ARA" },
-        new Team { Id = new Guid("11111111-0000-0000-0000-000000000008"), Name = "MEDİKAL", Code = "MED" },
-        new Team { Id = new Guid("11111111-0000-0000-0000-000000000009"), Name = "LOJİSTİK", Code = "LOG" }
-    ];
+    // Default teams (keep existing ones as fallback)
+    public static List<Team> DefaultTeams => [];
+
+    // New method to get teams from JSON file
+    public static List<Team> GetTeamsFromJson(string? jsonFilePath = null)
+    {
+        if (string.IsNullOrEmpty(jsonFilePath) || !File.Exists(jsonFilePath))
+            return DefaultTeams;
+
+        try
+        {
+            var processedData = JsonSeedProcessor.ProcessJsonFile(jsonFilePath);
+            // Merge JSON teams with default teams, prioritize JSON teams
+            var allTeams = new List<Team>();
+            allTeams.AddRange(processedData.Teams);
+
+            // Add default teams that don't exist in JSON (check both name and code)
+            var jsonTeamNames = processedData.Teams.Select(t => t.Name).ToHashSet();
+            var jsonTeamCodes = processedData.Teams.Select(t => t.Code).ToHashSet();
+
+            foreach (var defaultTeam in DefaultTeams)
+            {
+                if (!jsonTeamNames.Contains(defaultTeam.Name) && !jsonTeamCodes.Contains(defaultTeam.Code))
+                {
+                    allTeams.Add(defaultTeam);
+                }
+            }
+
+            return allTeams;
+        }
+        catch
+        {
+            // Fallback to default teams on error
+            return DefaultTeams;
+        }
+    }
+
+    // New method to get volunteers from JSON file
+    public static List<Volunteer> GetVolunteersFromJson(string? jsonFilePath = null)
+    {
+        if (string.IsNullOrEmpty(jsonFilePath) || !File.Exists(jsonFilePath))
+            return [];
+
+        try
+        {
+            var processedData = JsonSeedProcessor.ProcessJsonFile(jsonFilePath);
+            return processedData.Volunteers;
+        }
+        catch
+        {
+            return [];
+        }
+    }
+
+    // Backward compatibility
+    public static List<Team> Teams => DefaultTeams;
 }

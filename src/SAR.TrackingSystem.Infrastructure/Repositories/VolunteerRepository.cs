@@ -41,7 +41,7 @@ public class VolunteerRepository(SarDbContext context) : IVolunteerRepository
         // Get volunteers currently in the specified sector (last movement ToSectorId = sectorId)
         var volunteersInSector = await (
             from v in context.Volunteers.AsNoTracking()
-            where v.CurrentState == VolunteerState.InSector
+            where v.CurrentState == VolunteerState.InSector || v.CurrentState == VolunteerState.InHub
             join m in (
                 from movement in context.Movements.AsNoTracking()
                 group movement by movement.VolunteerId into g
@@ -55,11 +55,10 @@ public class VolunteerRepository(SarDbContext context) : IVolunteerRepository
             select new { v, t, lastM.MovementTime }
         ).ToListAsync(cancellationToken);
 
-        return volunteersInSector
+        return [.. volunteersInSector
             .Select(x => { x.v.Team = x.t; return x.v; })
             .OrderBy(v => v.Team.Name)
-            .ThenBy(v => v.FullName)
-            .ToList();
+            .ThenBy(v => v.FullName)];
     }
 
     public async Task<(List<Volunteer> items, long totalCount)> GetByTeamIdAsync(Guid teamId, PaginationRequest request, CancellationToken cancellationToken = default)

@@ -5,7 +5,7 @@
         <a href="/volunteers?filter=inHub" class="text-decoration-none">
             <div class="card stat-card h-100 clickable-card">
                 <div class="card-body text-center">
-                    <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
                         <div>
                             <h3 class="text-success fw-bold mb-0">@Model.Stats.InHubCount</h3>
                             <p class="text-muted mb-0">BoO'da</p>
@@ -79,6 +79,94 @@
                 </div>
             </div>
         </a>
+    </div>
+</div>
+
+<!-- Sağ/Ex İstatistikleri -->
+<div class="row g-3 mb-4">
+    <div class="col">
+        <div class="card stat-card h-100">
+            <div class="card-body text-center">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div>
+                        <h3 class="text-secondary fw-bold mb-0">@Model.Stats.TotalExpectedVictims</h3>
+                        <p class="text-muted mb-0">Beklenen Afetzede</p>
+                    </div>
+                    <i class="bi bi-person-lines-fill text-secondary fs-2"></i>
+                </div>
+                <div class="progress" style="height: 6px;">
+                    <div class="progress-bar bg-info" role="progressbar" style="width: 100%"
+                         aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <small class="text-muted">%100</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card stat-card h-100">
+            <div class="card-body text-center">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div>
+                        <h3 class="text-success fw-bold mb-0">@Model.Stats.TotalRescuedCount</h3>
+                        <p class="text-muted mb-0">Sağ Çıkarılan</p>
+                    </div>
+                    <i class="bi bi-shield-check text-success fs-2"></i>
+                </div>
+                @{
+                    var rescuedPercentage = Model.Stats.TotalExpectedVictims > 0
+                    ? Math.Round((double)Model.Stats.TotalRescuedCount / Model.Stats.TotalExpectedVictims * 100, 1)
+                    : 0;
+                }
+                <div class="progress" style="height: 6px;">
+                    <div class="progress-bar bg-success" role="progressbar" style="width: @(rescuedPercentage)%"
+                         aria-valuenow="@rescuedPercentage" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <small class="text-muted">%@rescuedPercentage</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card stat-card h-100">
+            <div class="card-body text-center">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div>
+                        <h3 class="text-dark fw-bold mb-0">@Model.Stats.TotalExtricatedCount</h3>
+                        <p class="text-muted mb-0">Ex Çıkarılan</p>
+                    </div>
+                    <i class="bi bi-shield-x text-dark fs-2"></i>
+                </div>
+                @{
+                    var extricatedPercentage = Model.Stats.TotalExpectedVictims > 0
+                    ? Math.Round((double)Model.Stats.TotalExtricatedCount / Model.Stats.TotalExpectedVictims * 100, 1)
+                    : 0;
+                }
+                <div class="progress" style="height: 6px;">
+                    <div class="progress-bar bg-dark" role="progressbar" style="width: @(extricatedPercentage)%"
+                         aria-valuenow="@extricatedPercentage" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <small class="text-muted">%@extricatedPercentage</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sektör Haritası -->
+<div class="row g-3 mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-map"></i>
+                    Sektör Haritası
+                </h5>
+                <small class="text-muted">Sağ/Ex sayıları ile sektör konumları</small>
+            </div>
+            <div class="card-body p-0">
+                <div id="sectorMap" style="height: 400px; width: 100%;"></div>
+            </div>
+        </div>
     </div>
 </div>
 

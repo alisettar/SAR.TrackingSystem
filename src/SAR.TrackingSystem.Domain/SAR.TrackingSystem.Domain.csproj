@@ -6,4 +6,14 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="SeedData\2025_yaka_karti_liste_processed.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="SeedData\2025_yaka_karti_liste_processed.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

@@ -17,6 +17,11 @@ public class Sector : Entity
     public string Coordinates { get; set; } = string.Empty;          // NoorEinat (enlem boylam)
     public int WorkAreaNumber { get; set; } = 0;                     // Çalışma Alanı no
     public int ExpectedVictimCount { get; set; } = 0;                // Beklenen Afetzede sayısı
+    
+    // Rescue Statistics
+    public int RescuedCount { get; set; } = 0;                       // Sağ çıkarılan sayısı
+    public int ExtricatedCount { get; set; } = 0;                    // Ex çıkarılan sayısı
+    public DateTime? LastUpdated { get; set; }                       // Son güncelleme zamanı
 
     /// <summary>
     /// BUSİNESS CRİTİCAL: Bu sektörler SAR operasyon kuralları için kritiktir ve SİLİNMEMELİDİR:
@@ -38,7 +43,8 @@ public class Sector : Entity
     }
 
     public Sector(string code, string name, bool isActive = true, bool isEntryPoint = false, bool isExitPoint = false, bool isCriticalForBusinessRules = false,
-                  string workAreaName = "", string workAreaAddress = "", string coordinates = "", int workAreaNumber = 0, int expectedVictimCount = 0)
+                  string workAreaName = "", string workAreaAddress = "", string coordinates = "", int workAreaNumber = 0, int expectedVictimCount = 0,
+                  int rescuedCount = 0, int extricatedCount = 0)
     {
         Id = Guid.NewGuid();
         Code = code;
@@ -52,5 +58,8 @@ public class Sector : Entity
         Coordinates = coordinates;
         WorkAreaNumber = workAreaNumber;
         ExpectedVictimCount = expectedVictimCount;
+        RescuedCount = rescuedCount;
+        ExtricatedCount = extricatedCount;
+        LastUpdated = null;
     }
 }

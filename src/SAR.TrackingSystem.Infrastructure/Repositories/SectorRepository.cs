@@ -24,6 +24,12 @@ public class SectorRepository(SarDbContext context) : ISectorRepository
         await context.SaveChangesAsync(cancellationToken);
     }
 
+    public async Task UpdateAsync(Sector sector, CancellationToken cancellationToken)
+    {
+        context.Sectors.Update(sector);
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
     public async Task DeleteAsync(Sector sector, CancellationToken cancellationToken)
     {
         context.Sectors.Remove(sector);

@@ -11,6 +11,10 @@ public class DashboardStats
     public int EntryCount { get; set; }
     public int ExitCount { get; set; }
     public int NonArrivedCount { get; set; }
+    public int TotalExpectedVictims { get; set; }
+    public int TotalRescuedCount { get; set; }
+    public int TotalExtricatedCount { get; set; }
+    public List<SectorMapData> Sectors { get; set; } = new();
 }
 
 public class DashboardViewModel
@@ -22,6 +26,7 @@ public class DashboardViewModel
     public CityDistributionData CityDistribution { get; set; } = new();
     public TeamDistributionData TeamDistribution { get; set; } = new();
     public int TotalTeamCount { get; set; }
+    public List<SectorMapData> Sectors { get; set; } = new();
 }
 
 public class PaginatedResponse<T>
@@ -201,6 +206,9 @@ public class SectorViewModel
     public string Coordinates { get; set; } = null!;
     public int WorkAreaNumber { get; set; }
     public int ExpectedVictimCount { get; set; }
+    public int RescuedCount { get; set; }
+    public int ExtricatedCount { get; set; }
+    public DateTime? LastUpdated { get; set; }
 }
 
 public class SectorStatisticsViewModel
@@ -232,4 +240,15 @@ public class RoleDistributionViewModel
 {
     public string Role { get; set; } = null!;
     public int Count { get; set; }
+}
+
+public class SectorMapData
+{
+    public string Code { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public string Coordinates { get; set; } = string.Empty;
+    public int RescuedCount { get; set; }
+    public int ExtricatedCount { get; set; }
+    public int ExpectedVictimCount { get; set; }
+    public string WorkAreaName { get; set; } = string.Empty;
 }
