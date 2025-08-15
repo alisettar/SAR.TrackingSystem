@@ -57,6 +57,11 @@ public sealed class CreateMovementCommandHandler(
             correctFromSectorId = lastMovement?.ToSectorId;
         }
 
+        // Validate same sector movement
+        if (correctFromSectorId.HasValue && request.Request.ToSectorId.HasValue && 
+            correctFromSectorId.Value == request.Request.ToSectorId.Value)
+            throw new ValidationException("Aynı sektöre hareket yapılamaz.");
+
         // Create Movement with corrected FromSectorId
         var movement = Movement.Create(
             volunteerId: request.Request.VolunteerId,

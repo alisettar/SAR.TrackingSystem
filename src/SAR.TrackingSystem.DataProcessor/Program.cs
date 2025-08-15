@@ -7,7 +7,7 @@ class Program
 {
     static readonly HashSet<string> TurkishCities = new(StringComparer.OrdinalIgnoreCase)
     {
-        "Adana", "Adıyaman", "Afyonkarahisar", "Ağrı", "Amasya", "Ankara", "Antalya", "Artvin",
+        "Adana", "Adıyaman", "Afyonkarahisar", "Ağrı", "Amasya", "Ankara", "Antalya", "Alanya", "Artvin",
         "Aydın", "Balıkesir", "Bilecik", "Bingöl", "Bitlis", "Bolu", "Burdur", "Bursa",
         "Çanakkale", "Çankırı", "Çorum", "Denizli", "Diyarbakır", "Edirne", "Elazığ", "Erzincan",
         "Erzurum", "Eskişehir", "Gaziantep", "Giresun", "Gümüşhane", "Hakkâri", "Hatay", "Isparta",
@@ -19,23 +19,23 @@ class Program
         "Bartın", "Ardahan", "Iğdır", "Yalova", "Karabük", "Kilis", "Osmaniye", "Düzce"
     };
 
-    static readonly HashSet<string> GozlemciNames = new()
-    {
+    static readonly HashSet<string> GozlemciNames =
+    [
         "harun çakır", "emin furkan bostan", "ensar dönmez", "emre toprak", 
         "mehmet ender hazar", "mehmet akıl", "abidin araboğa", "halit hakan derindere",
         "fatih sağlam", "hayrullah karakaş", "ibrahim ayan", "seyfullah furkan kılıç",
         "ibrahim taşdemir", "murat şaban tosun", "fatih özmen", "osman çavuş",
         "yavuz bilgen", "abdurrahman şeşe", "emrah ateş", "muhammet coşkun",
         "ramazan demirhan", "süleyman mengü"
-    };
+    ];
 
     static readonly CultureInfo TurkishCulture = new CultureInfo("tr-TR");
 
     static async Task Main(string[] args)
     {
-        var yakaKartiPath = "Data/2025_yaka_karti_liste.json";
+        var yakaKartiPath = "Data/2025_yaka_karti_liste_v2.json";
         var ekipGorevPath = "Data/ekip_gorevlendirme.json";
-        var outputPath = "Data/2025_yaka_karti_liste_processed.json";
+        var outputPath = "SeedData/2025_yaka_karti_liste_processed.json";
         
         if (!File.Exists(yakaKartiPath))
         {
@@ -56,7 +56,7 @@ class Program
             Console.WriteLine($"Ana dosya capitalize edildi: {yakaKartiArray.Count} kayıt");
 
             // 2. Ekip görevlendirme dosyasını oku ve capitalize et
-            Dictionary<string, string> ekipGorevDict = new();
+            Dictionary<string, string> ekipGorevDict = [];
             if (File.Exists(ekipGorevPath))
             {
                 var ekipGorevContent = await File.ReadAllTextAsync(ekipGorevPath);
@@ -89,7 +89,7 @@ class Program
                 // Önce ekip görevlendirme match
                 if (ekipGorevDict.TryGetValue(adSoyadLower, out var ekipGorev))
                 {
-                    item["Görev2"] = ekipGorev;
+                    item["Görev2"] = ekipGorev == "Enkaz Çalişmasi" ? "Arama Kurtarma" : ekipGorev;
                     Console.WriteLine($"Ekip görevi eklendi: {adSoyad} -> {ekipGorev}");
                 }
                 
@@ -101,11 +101,11 @@ class Program
                 }
                 
                 // Şehir ayrıştırma
-                if (item["Görev"] != null)
+                if (item["Ekip"] != null)
                 {
-                    var gorev = item["Görev"]?.ToString();
-                    var ekip = ExtractCityFromGorev(gorev) ?? "Afet Yönetim";
-                    item["Ekip"] = ekip;
+                    var gorev = item["Ekip"]?.ToString();
+                    var ekip = ExtractCityFromGorev(gorev) ?? "Belirsiz";
+                    item["Şehir"] = ekip;
                 }
 
                 // Field isimlerini yeniden düzenle
@@ -125,23 +125,25 @@ class Program
     {
         // Mevcut değerleri al
         var gorevValue = item["Görev"]?.ToString();
-        var ekipValue = item["Ekip"]?.ToString();
         var gorev2Value = item["Görev2"]?.ToString();
 
         // Eski alanları kaldır
         if (item["Görev"] != null) ((JObject)item).Remove("Görev");
-        if (item["Ekip"] != null) ((JObject)item).Remove("Ekip");
         if (item["Görev2"] != null) ((JObject)item).Remove("Görev2");
 
         // Yeni isimlerde ekle
         if (!string.IsNullOrWhiteSpace(gorevValue))
             item["Ekip"] = gorevValue;
         
-        if (!string.IsNullOrWhiteSpace(ekipValue))
-            item["Şehir"] = ekipValue;
-        
         if (!string.IsNullOrWhiteSpace(gorev2Value))
+        {
+            Console.WriteLine($"Görev eklendi: {gorev2Value}");
             item["Görev"] = gorev2Value;
+        }
+        else
+        {
+            item["Görev"] = "Arama Kurtarma";
+        }
     }
 
     static string? ExtractCityFromGorev(string? gorev)
@@ -149,7 +151,7 @@ class Program
         if (string.IsNullOrWhiteSpace(gorev))
             return null;
 
-        var words = gorev.Split(new[] { ' ', ',', '-', '(', ')', '/', '\\' }, 
+        var words = gorev.Split([' ', ',', '-', '(', ')', '/', '\\'], 
                               StringSplitOptions.RemoveEmptyEntries);
         
         return words.FirstOrDefault(word => TurkishCities.Contains(word.Trim()));

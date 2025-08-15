@@ -8,12 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Data\2025_yaka_karti_liste.json" />
+    <None Remove="Data\2025_yaka_karti_liste_v2.json" />
     <None Remove="Data\ekip_gorevlendirme.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Data\2025_yaka_karti_liste.json">
+    <Content Include="Data\2025_yaka_karti_liste_v2.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\ekip_gorevlendirme.json">
