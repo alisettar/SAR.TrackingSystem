@@ -80,13 +80,19 @@ public class VolunteerRepository(SarDbContext context) : IVolunteerRepository
 
         var totalCount = await query.LongCountAsync(cancellationToken);
 
-        // Apply ordering
+        // Apply ordering - her durumda FullName secondary sort olarak ekle
         query = request.OrderBy switch
         {
-            "FullName" => request.OrderDescending ? query.OrderByDescending(v => v.FullName) : query.OrderBy(v => v.FullName),
-            "TeamName" => request.OrderDescending ? query.OrderByDescending(v => v.Team.Name) : query.OrderBy(v => v.Team.Name),
-            "QRId" => request.OrderDescending ? query.OrderByDescending(v => v.QRId) : query.OrderBy(v => v.QRId),
-            _ => request.OrderDescending ? query.OrderByDescending(v => v.FullName) : query.OrderBy(v => v.FullName)
+            "FullName" => request.OrderDescending 
+                ? query.OrderByDescending(v => v.FullName) 
+                : query.OrderBy(v => v.FullName),
+            "TeamName" => request.OrderDescending 
+                ? query.OrderByDescending(v => v.Team.Name).ThenBy(v => v.FullName) 
+                : query.OrderBy(v => v.Team.Name).ThenBy(v => v.FullName),
+            "QRId" => request.OrderDescending 
+                ? query.OrderByDescending(v => v.QRId).ThenBy(v => v.FullName) 
+                : query.OrderBy(v => v.QRId).ThenBy(v => v.FullName),
+            _ => query.OrderBy(v => v.FullName) // Default: İsim sıralaması
         };
 
         var items = await query
@@ -119,13 +125,19 @@ public class VolunteerRepository(SarDbContext context) : IVolunteerRepository
 
         var totalCount = await query.LongCountAsync(cancellationToken);
 
-        // Apply ordering
+        // Apply ordering - her durumda FullName secondary sort olarak ekle
         query = request.OrderBy switch
         {
-            "FullName" => request.OrderDescending ? query.OrderByDescending(v => v.FullName) : query.OrderBy(v => v.FullName),
-            "TeamName" => request.OrderDescending ? query.OrderByDescending(v => v.Team.Name) : query.OrderBy(v => v.Team.Name),
-            "QRId" => request.OrderDescending ? query.OrderByDescending(v => v.QRId) : query.OrderBy(v => v.QRId),
-            _ => request.OrderDescending ? query.OrderByDescending(v => v.FullName) : query.OrderBy(v => v.FullName)
+            "FullName" => request.OrderDescending 
+                ? query.OrderByDescending(v => v.FullName) 
+                : query.OrderBy(v => v.FullName),
+            "TeamName" => request.OrderDescending 
+                ? query.OrderByDescending(v => v.Team.Name).ThenBy(v => v.FullName) 
+                : query.OrderBy(v => v.Team.Name).ThenBy(v => v.FullName),
+            "QRId" => request.OrderDescending 
+                ? query.OrderByDescending(v => v.QRId).ThenBy(v => v.FullName) 
+                : query.OrderBy(v => v.QRId).ThenBy(v => v.FullName),
+            _ => query.OrderBy(v => v.FullName) // Default: İsim sıralaması
         };
 
         var items = await query

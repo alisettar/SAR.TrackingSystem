@@ -257,7 +257,7 @@
                     data: rawData,
                     colors: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.CityDistribution.BackgroundColors))
                 };
-                createChart('city', 'pie');
+                createChart('city', 'bar'); // Default olarak bar chart
             }
         }
         

@@ -109,34 +109,38 @@ public class MovementsController(
                 "exit" => await ProcessQuickExit(qrId.Trim()), 
                 "sector" => await ProcessSectorTransfer(qrId.Trim(), targetSectorId),
                 "hub" => await ProcessReturnToHub(qrId.Trim()),
-                _ => (false, "❌ Geçersiz işlem türü")
+                _ => (false, "❌ Geçersiz işlem türü", "")
             };
             
-            return Json(new { success = result.Item1, message = result.Item2 });
+            return Json(new { success = result.Item1, message = result.Item2, volunteerName = result.Item3 });
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "QuickEntry {Operation} error for {QRId}", operationType, qrId);
-            return Json(new { success = false, message = $"❌ Sistem hatası: {ex.Message}" });
+            return Json(new { success = false, message = $"❌ Sistem hatası: {ex.Message}", volunteerName = "" });
         }
     }
     
-    private async Task<(bool success, string message)> ProcessQuickEntry(string qrId)
+    private async Task<(bool success, string message, string volunteerName)> ProcessQuickEntry(string qrId)
     {
         try
         {
+            var volunteer = await volunteerService.GetVolunteerByQRIdAsync(qrId);
+            if (volunteer == null)
+                return (false, $"❌ {qrId} - QR ID bulunamadı", "");
+                
             var success = await movementService.CreateQuickEntryAsync(qrId);
             return success 
-                ? (true, $"✅ {qrId} - Alana giriş kaydedildi")
-                : (false, $"❌ {qrId} - QR ID bulunamadı veya giriş kurallarına uymuyor");
+                ? (true, $"✅ {qrId} - Alana giriş kaydedildi", volunteer.FullName)
+                : (false, $"❌ {qrId} - QR ID bulunamadı veya giriş kurallarına uymuyor", volunteer.FullName);
         }
         catch (HttpRequestException ex) when (ex.Message.Contains("400"))
         {
-            return (false, $"❌ {qrId} - Giriş kurallarına uymuyor");
+            return (false, $"❌ {qrId} - Giriş kurallarına uymuyor", "");
         }
     }
     
-    private async Task<(bool success, string message)> ProcessQuickExit(string qrId)
+    private async Task<(bool success, string message, string volunteerName)> ProcessQuickExit(string qrId)
     {
         try
         {
@@ -144,14 +148,14 @@ public class MovementsController(
             var volunteer = await volunteerService.GetVolunteerByQRIdAsync(qrId);
 
             if (volunteer == null)
-                return (false, $"❌ {qrId} - QR ID bulunamadı");
+                return (false, $"❌ {qrId} - QR ID bulunamadı", "");
                 
             // Get Hub sector for exit validation (InHub → Exited)
             var sectors = await sectorService.GetSectorsAsync();
             var hubSector = sectors.FirstOrDefault(s => s.Code == "BoO");
             
             if (hubSector == null)
-                return (false, $"❌ {qrId} - Sistem hatası: Hub sektörü bulunamadı");
+                return (false, $"❌ {qrId} - Sistem hatası: Hub sektörü bulunamadı", volunteer.FullName);
             
             // STATE MACHINE: InHub → Exited (BoO → null)
             var model = new MovementCreateViewModel
@@ -164,18 +168,18 @@ public class MovementsController(
             };
             
             await movementService.CreateMovementAsync(model);
-            return (true, $"✅ {qrId} - Alandan çıkış kaydedildi");
+            return (true, $"✅ {qrId} - Alandan çıkış kaydedildi", volunteer.FullName);
         }
         catch (HttpRequestException ex) when (ex.Message.Contains("400"))
         {
-            return (false, $"❌ {qrId} - Çıkış kurallarına uymuyor (BoO'da değil)");
+            return (false, $"❌ {qrId} - Çıkış kurallarına uymuyor (BoO'da değil)", "");
         }
     }
     
-    private async Task<(bool success, string message)> ProcessSectorTransfer(string qrId, Guid? targetSectorId)
+    private async Task<(bool success, string message, string volunteerName)> ProcessSectorTransfer(string qrId, Guid? targetSectorId)
     {
         if (!targetSectorId.HasValue)
-            return (false, "❌ Hedef sektör seçiniz");
+            return (false, "❌ Hedef sektör seçiniz", "");
         
         try
         {
@@ -183,7 +187,7 @@ public class MovementsController(
             var volunteer = await volunteerService.GetVolunteerByQRIdAsync(qrId);
 
             if (volunteer == null)
-                return (false, $"❌ {qrId} - QR ID bulunamadı");
+                return (false, $"❌ {qrId} - QR ID bulunamadı", "");
                 
             // Get sectors
             var sectors = await sectorService.GetSectorsAsync();
@@ -191,7 +195,7 @@ public class MovementsController(
             var targetSector = sectors.FirstOrDefault(s => s.Id == targetSectorId.Value);
             
             if (hubSector == null || targetSector == null)
-                return (false, $"❌ {qrId} - Sektör bulunamadı");
+                return (false, $"❌ {qrId} - Sektör bulunamadı", volunteer.FullName);
             
             var model = new MovementCreateViewModel
             {
@@ -203,15 +207,15 @@ public class MovementsController(
             };
             
             await movementService.CreateMovementAsync(model);
-            return (true, $"✅ {qrId} - {targetSector.Name}'ya gönderildi");
+            return (true, $"✅ {qrId} - {targetSector.Name}'ya gönderildi", volunteer.FullName);
         }
         catch (HttpRequestException ex) when (ex.Message.Contains("400"))
         {
-            return (false, $"❌ {qrId} - Sektöre gönderme kurallarına uymuyor (BoO'da değil)");
+            return (false, $"❌ {qrId} - Sektöre gönderme kurallarına uymuyor (BoO'da değil)", "");
         }
     }
     
-    private async Task<(bool success, string message)> ProcessReturnToHub(string qrId)
+    private async Task<(bool success, string message, string volunteerName)> ProcessReturnToHub(string qrId)
     {
         try
         {
@@ -219,7 +223,7 @@ public class MovementsController(
             var volunteer = await volunteerService.GetVolunteerByQRIdAsync(qrId);
 
             if (volunteer == null)
-                return (false, $"❌ {qrId} - QR ID bulunamadı");
+                return (false, $"❌ {qrId} - QR ID bulunamadı", "");
                 
             // Get last movement to determine source sector
             var movementRequest = new PaginationRequest(0, 50);
@@ -230,7 +234,7 @@ public class MovementsController(
                 .FirstOrDefault();
                 
             if (lastMovement == null)
-                return (false, $"❌ {qrId} - Hareket geçmişi bulunamadı");
+                return (false, $"❌ {qrId} - Hareket geçmişi bulunamadı", volunteer.FullName);
                 
             // Get sectors
             var sectors = await sectorService.GetSectorsAsync();
@@ -238,7 +242,7 @@ public class MovementsController(
             var fromSector = sectors.FirstOrDefault(s => s.Name == lastMovement.ToSectorName);
             
             if (hubSector == null || fromSector == null || fromSector.Code == "BoO")
-                return (false, $"❌ {qrId} - BoO'ya dönüş için bir sektörde olmalısınız");
+                return (false, $"❌ {qrId} - BoO'ya dönüş için bir sektörde olmalısınız", volunteer.FullName);
             
             var model = new MovementCreateViewModel
             {
@@ -250,11 +254,11 @@ public class MovementsController(
             };
             
             await movementService.CreateMovementAsync(model);
-            return (true, $"✅ {qrId} - BoO'ya dönüş kaydedildi");
+            return (true, $"✅ {qrId} - BoO'ya dönüş kaydedildi", volunteer.FullName);
         }
         catch (HttpRequestException ex) when (ex.Message.Contains("400"))
         {
-            return (false, $"❌ {qrId} - BoO'ya dönüş kurallarına uymuyor (sektörde değil)");
+            return (false, $"❌ {qrId} - BoO'ya dönüş kurallarına uymuyor (sektörde değil)", "");
         }
     }
 }

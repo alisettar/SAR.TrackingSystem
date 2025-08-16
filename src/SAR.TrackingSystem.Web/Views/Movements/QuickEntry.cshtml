@@ -149,6 +149,55 @@
         });
     });
     
+    // Focus management for QR scanning - Keep focus locked on QR input
+    (function() {
+        const qrInput = document.getElementById('qrId');
+        const targetSector = document.getElementById('targetSector');
+        
+        // Prevent focus loss by returning to QR input, but allow form interactions
+        document.addEventListener('click', function(e) {
+            // Allow clicks on form elements, buttons, tabs, and alerts
+            if (e.target.matches('input, button, select, option, .nav-link, .alert *, .btn-close, label')) {
+                return; // Don't interfere with form interactions
+            }
+            
+            // Return focus to QR input after a short delay
+            setTimeout(() => {
+                if (document.activeElement !== qrInput && document.activeElement !== targetSector) {
+                    qrInput.focus();
+                }
+            }, 100);
+        });
+        
+        // Prevent tab navigation away from input (except to targetSector)
+        qrInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+                // Allow tab to targetSector when on sector tab
+                if (activeOperation === 'sector' && !e.shiftKey) {
+                    return; // Allow tab to sector dropdown
+                }
+                e.preventDefault();
+                qrInput.focus();
+            }
+        });
+        
+        // Auto-return focus when input loses focus (except for targetSector)
+        qrInput.addEventListener('blur', function(e) {
+            setTimeout(() => {
+                // Don't steal focus from targetSector dropdown
+                if (document.activeElement !== targetSector && 
+                    !document.activeElement.matches('select, option')) {
+                    qrInput.focus();
+                }
+            }, 100);
+        });
+        
+        // Return focus to QR input after sector selection
+        targetSector.addEventListener('change', function() {
+            setTimeout(() => qrInput.focus(), 100);
+        });
+    })();
+    
     // Load saved tab on page load
     document.addEventListener('DOMContentLoaded', function() {
         const savedTab = localStorage.getItem('qrActiveTab') || 'entry';
@@ -212,7 +261,7 @@
             
             if (result.success) {
                 showAlert('success', result.message);
-                addToRecentEntries(qrId, activeOperation);
+                addToRecentEntries(qrId, activeOperation, result.volunteerName || '');
                 qrInput.value = ''; // Clear input
                 qrInput.focus(); // Return focus for next scan
             } else {
@@ -256,7 +305,7 @@
         }
     }
     
-    function addToRecentEntries(qrId, operation) {
+    function addToRecentEntries(qrId, operation, volunteerName = '') {
         const now = new Date().toLocaleTimeString();
         const operationLabels = {
             entry: '🟢 Giriş',
@@ -265,7 +314,10 @@
             hub: '🔵 BoO\'ya'
         };
         
-        recentEntries.unshift(`${operationLabels[operation]} - ${qrId} - ${now}`);
+        const entryText = volunteerName 
+            ? `${operationLabels[operation]} - ${volunteerName} (${qrId}) - ${now}`
+            : `${operationLabels[operation]} - ${qrId} - ${now}`;
+        recentEntries.unshift(entryText);
         
         if (recentEntries.length > 5) {
             recentEntries = recentEntries.slice(0, 5);

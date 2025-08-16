@@ -10,7 +10,15 @@
                             <h3 class="text-success fw-bold mb-0">@Model.Stats.InHubCount</h3>
                             <p class="text-muted mb-0">BoO'da</p>
                         </div>
-                        <i class="bi bi-house-check-fill text-success fs-2"></i>
+                        <div class="text-end">
+                            <i class="bi bi-house-check-fill text-success fs-2"></i>
+                            @{
+                                var inHubPercentage = Model.Stats.TotalVolunteers > 0 
+                                    ? Math.Round((double)Model.Stats.InHubCount / Model.Stats.TotalVolunteers * 100, 1) 
+                                    : 0;
+                            }
+                            <span class="text-muted d-block" style="font-size: 0.9rem;">%@inHubPercentage</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -26,7 +34,15 @@
                             <h3 class="text-warning fw-bold mb-0">@Model.Stats.InSectorCount</h3>
                             <p class="text-muted mb-0">Sektörde</p>
                         </div>
-                        <i class="bi bi-geo-alt-fill text-warning fs-2"></i>
+                        <div class="text-end">
+                            <i class="bi bi-geo-alt-fill text-warning fs-2"></i>
+                            @{
+                                var inSectorPercentage = Model.Stats.TotalVolunteers > 0 
+                                    ? Math.Round((double)Model.Stats.InSectorCount / Model.Stats.TotalVolunteers * 100, 1) 
+                                    : 0;
+                            }
+                            <span class="text-muted d-block" style="font-size: 0.9rem;">%@inSectorPercentage</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -42,7 +58,15 @@
                             <h3 class="text-info fw-bold mb-0">@Model.Stats.ExitCount</h3>
                             <p class="text-muted mb-0">Çıkış Yapan</p>
                         </div>
-                        <i class="bi bi-door-open-fill text-info fs-2"></i>
+                        <div class="text-end">
+                            <i class="bi bi-door-open-fill text-info fs-2"></i>
+                            @{
+                                var exitPercentage = Model.Stats.TotalVolunteers > 0 
+                                    ? Math.Round((double)Model.Stats.ExitCount / Model.Stats.TotalVolunteers * 100, 1) 
+                                    : 0;
+                            }
+                            <span class="text-muted d-block" style="font-size: 0.9rem;">%@exitPercentage</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -58,7 +82,15 @@
                             <h3 class="text-danger fw-bold mb-0">@Model.Stats.NonArrivedCount</h3>
                             <p class="text-muted mb-0">Katılmayan</p>
                         </div>
-                        <i class="bi bi-person-x-fill text-danger fs-2"></i>
+                        <div class="text-end">
+                            <i class="bi bi-person-x-fill text-danger fs-2"></i>
+                            @{
+                                var nonArrivedPercentage = Model.Stats.TotalVolunteers > 0 
+                                    ? Math.Round((double)Model.Stats.NonArrivedCount / Model.Stats.TotalVolunteers * 100, 1) 
+                                    : 0;
+                            }
+                            <span class="text-muted d-block" style="font-size: 0.9rem;">%@nonArrivedPercentage</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -74,7 +106,10 @@
                             <h3 class="text-primary fw-bold mb-0">@Model.Stats.TotalVolunteers</h3>
                             <p class="text-muted mb-0">Toplam Ekip Üyesi</p>
                         </div>
-                        <i class="bi bi-people-fill text-primary fs-2"></i>
+                        <div class="text-end">
+                            <i class="bi bi-people-fill text-primary fs-2"></i>
+                            <span class="text-muted d-block" style="font-size: 0.9rem;">%100</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -299,10 +334,10 @@
                         Şehir Dağılımı
                     </h5>
                     <div class="btn-group btn-group-sm" role="group">
-                        <button type="button" class="btn btn-outline-info active" id="cityPieBtn" onclick="switchChart('city', 'pie')">
+                        <button type="button" class="btn btn-outline-info" id="cityPieBtn" onclick="switchChart('city', 'pie')">
                             <i class="bi bi-pie-chart"></i>
                         </button>
-                        <button type="button" class="btn btn-outline-info" id="cityBarBtn" onclick="switchChart('city', 'bar')">
+                        <button type="button" class="btn btn-outline-info active" id="cityBarBtn" onclick="switchChart('city', 'bar')">
                             <i class="bi bi-bar-chart"></i>
                         </button>
                     </div>
